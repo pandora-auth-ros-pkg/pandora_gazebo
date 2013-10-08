@@ -5710,6 +5710,7 @@
     </axis>
   </joint>
   
+  <plugin name="motionPlugin" filename="libmotion_plugin.so"/>
   
 	<include>
 		<uri>model://pandora_hokuyo</uri>

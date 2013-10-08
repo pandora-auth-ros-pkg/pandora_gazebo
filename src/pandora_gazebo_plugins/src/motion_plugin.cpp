@@ -16,6 +16,8 @@
 #include "gazebo/sensors/SensorManager.hh"
 #include "math/Vector3.hh"
 #include <math/gzmath.hh>
+#include "tf/transform_broadcaster.h"
+#include "tf/tf.h"
 
 static float Vlin=0.0, Vang=0.0; // set as global 
 
@@ -77,6 +79,14 @@ namespace gazebo
             ros::Time current_time;
             current_time = ros::Time::now();
             
+            tf::Vector3 translation(p.x, p.y, p.z);
+            tf::Quaternion rotation(r.x, r.y, r.z, r.w);
+            
+            tf::Transform transform(rotation, translation);
+            
+            _poseFrameBroadcaster.sendTransform(tf::StampedTransform(transform, current_time,"world", "base_link"));
+            
+            
 // ******************************************
         //Pub Pose msg
             geometry_msgs::Point p2ros;
@@ -133,7 +143,10 @@ namespace gazebo
 
         // ROS Publisher
         ros::Publisher pubpose;
+        
         //*************
+        
+        tf::TransformBroadcaster _poseFrameBroadcaster;
 
   };
 
