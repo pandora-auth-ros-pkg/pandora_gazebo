@@ -1,7 +1,4 @@
 #include <boost/bind.hpp>
-#include <gazebo.hh>
-#include <physics/physics.hh>
-#include <common/common.hh>
 #include <stdio.h>
 
 #include "ros/ros.h"
@@ -14,8 +11,8 @@
 #include "gazebo/common/common.hh"
 #include "gazebo/sensors/RaySensor.hh"
 #include "gazebo/sensors/SensorManager.hh"
-#include "math/Vector3.hh"
-#include <math/gzmath.hh>
+#include <gazebo/math/Vector3.hh>
+#include <gazebo/math/gzmath.hh>
 #include "tf/transform_broadcaster.h"
 #include "tf/tf.h"
 
