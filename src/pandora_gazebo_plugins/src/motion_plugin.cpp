@@ -84,7 +84,7 @@ namespace gazebo
             
             tf::Transform transform(rotation, translation);
             
-            _poseFrameBroadcaster.sendTransform(tf::StampedTransform(transform, current_time,"world", "base_link"));
+//~             _poseFrameBroadcaster.sendTransform(tf::StampedTransform(transform, current_time,"world", "base_link"));
             
             
 // ******************************************

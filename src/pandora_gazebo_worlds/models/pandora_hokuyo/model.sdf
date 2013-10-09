@@ -55,7 +55,7 @@
         <plugin name="laser" filename="libRayPlugin.so" />
         <plugin name="laser2Ros" filename="libgazebo_ros_laser.so">
 			<topicName>/slam/scan</topicName>
-			<frameName>/map</frameName>
+			<frameName>/laser</frameName>
 		</plugin>
 		  
         <always_on>1</always_on>

@@ -1,0 +1,9 @@
+<launch>
+	
+	<include file="$(find hector_nist_arena_worlds)/launch/go2013_arena_flat.launch" />
+	
+	<include file="$(find pandora_gazebo_worlds)/launch/pioneer3at_static_transforms.launch" />
+	
+	<node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" args="-file $(find pandora_gazebo_worlds)/models/pioneer3at_robot/model.sdf -sdf -model pioneer3at_robot" />
+	
+</launch>

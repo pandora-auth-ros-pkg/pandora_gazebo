@@ -5593,13 +5593,12 @@
       </link>
     </model>
     
-<!--
     <include>
 		<uri>model://simple_robot</uri>
 		<pose>0 0 0 0 0 0</pose>
     </include>
--->
     
+<!--
     <model name="my_robot">
   <static>false</static>
 	<link name='chassis'>
@@ -5747,6 +5746,7 @@
   
   
   </model>
+-->
     
     
     
