@@ -9,4 +9,8 @@
 	<node pkg="tf" type="static_transform_publisher" name="baseLink2leftRearWheel" args="-0.125 0.235 -0.055 0 0 1.57 base_link left_rear_wheel 100" />
 	<node pkg="tf" type="static_transform_publisher" name="baseLink2RightRearWheel" args="-0.125 -0.235 -0.055 0 0 1.57 base_link right_rear_wheel 100" />
 	
+	<!-- Sonars -->
+	<node pkg="tf" type="static_transform_publisher" name="baseLink2LeftRearSonar" args="-0.2 0.15 0.13 0 0 3.14 base_link left_rear_sonar 100" />
+	<node pkg="tf" type="static_transform_publisher" name="baseLink2RightRearSonar" args="-0.2 -0.15 0.13 0 0 3.14 base_link right_rear_sonar 100" />
+	
 </launch>

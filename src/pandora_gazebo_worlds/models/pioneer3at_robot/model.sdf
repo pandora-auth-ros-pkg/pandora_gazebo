@@ -190,36 +190,34 @@
         <xyz>0 1 0</xyz>
       </axis>
     </joint>
-
-<!--
-    <plugin name="SkidSteerDrivePlugin" filename="libSkidSteerDrivePlugin.so">
-      <right_front>right_front</right_front>
-      <right_rear>right_rear</right_rear>
-      <left_front>left_front</left_front>
-      <left_rear>left_rear</left_rear>
-      <max_force>5.0</max_force>
-    </plugin>
--->
   
 	<plugin name="RosSkidSteerDrivePlugin" filename="libgazebo_ros_skid_steer_drive.so">
 		<updateRate>50.0</updateRate>
-	    <robotNamespace>/</robotNamespace>
+	    <robotNamespace></robotNamespace>
 	    <leftFrontJoint>left_front</leftFrontJoint>
 	    <rightFrontJoint>right_front</rightFrontJoint>
 	    <leftRearJoint>left_rear</leftRearJoint>
 	    <rightRearJoint>right_rear</rightRearJoint>
-	    <wheelSeparation>0.25</wheelSeparation>
+	    <wheelSeparation>0.4</wheelSeparation>
 	    <wheelDiameter>0.220</wheelDiameter>
 	    <robotBaseFrame>base_link</robotBaseFrame>
 	    <topicName>cmd_vel</topicName>
-	    <broadcastTF>true</broadcastTF>
+	    <broadcastTF>1</broadcastTF>
+	    <torque>5.0</torque>
+	    <commandTopic>cmd_vel</commandTopic>
+	    <odometryTopic>odom</odometryTopic>
+	    <odometryFrame>odom</odometryFrame>
 	</plugin>
 	
 	<plugin name="RosImuPlugin" filename="libgazebo_ros_imu.so">
 		<topicName>/sensors/imu</topicName>
 		<bodyName>chassis</bodyName>
 		<updateRate>50.0</updateRate>
-	    <robotNamespace>/</robotNamespace>
+	    <robotNamespace></robotNamespace>
+	    <serviceName>default_imu</serviceName>
+	    <gaussianNoise>0.0</gaussianNoise>
+	    <xyzOffset>0 0 0</xyzOffset>
+	    <rpyOffset>0 0 0</rpyOffset>
 	</plugin>
   
 	<include>
@@ -255,6 +253,40 @@
 	  </axis>
 	</joint>
   
+  
+	<include>
+		<uri>model://pandora_sonar</uri>
+		<name>left_rear_sonar</name>
+		<pose>-0.2 0.15 0.13 0 0 3.14</pose>
+	</include>
+	<joint name="left_rear_sonar_joint" type="revolute">
+	  <child>left_rear_sonar::link</child>
+	  <parent>chassis</parent>
+	  <axis>
+	    <xyz>0 0 1</xyz>
+	    <limit>
+	      <upper>0</upper>
+	      <lower>0</lower>
+	    </limit>
+	  </axis>
+	</joint>
+	
+	<include>
+		<uri>model://pandora_sonar</uri>
+		<name>right_rear_sonar</name>
+		<pose>-0.2 -0.15 0.13 0 0 3.14</pose>
+	</include>
+	<joint name="right_rear_sonar_joint" type="revolute">
+	  <child>right_rear_sonar::link</child>
+	  <parent>chassis</parent>
+	  <axis>
+	    <xyz>0 0 1</xyz>
+	    <limit>
+	      <upper>0</upper>
+	      <lower>0</lower>
+	    </limit>
+	  </axis>
+	</joint>
   
   </model>
 </sdf>

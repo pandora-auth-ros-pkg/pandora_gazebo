@@ -9,6 +9,10 @@ find_package(catkin REQUIRED roscpp
 							geometry_msgs
 							sensor_msgs
 							gazebo_ros
+							gazebo_msgs
+							tf
+							#~ gazebo_plugins
+							#~ gazebo_ros_pkgs
 							)
 							
 include_directories(include
@@ -18,8 +22,12 @@ include_directories(include
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 find_package(gazebo REQUIRED)
+find_package(SDFormat REQUIRED)
+find_package(Boost REQUIRED COMPONENTS thread)
 
-link_directories(${GAZEBO_LIBRARY_DIRS})
+include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} ${OGRE_INCLUDE_DIRS} ${SDFormat_INCLUDE_DIRS})
+
+link_directories(${GAZEBO_LIBRARY_DIRS} "~/catkin_ws/devel/lib")
 include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -96,6 +104,12 @@ add_library(motion_plugin src/motion_plugin.cpp  )
 target_link_libraries(motion_plugin ${catkin_LIBRARIES}
 									${GAZEBO_LIBRARIES}	
 										)
+										
+				
+add_library(pandora_sonar_plugin src/pandora_sonar_plugin.cpp)
+#~ set_target_properties(pandora_sonar_plugin PROPERTIES LINK_FLAGS "${ld_flags}")
+#~ set_target_properties(pandora_sonar_plugin PROPERTIES COMPILE_FLAGS "${cxx_flags}")
+target_link_libraries(pandora_sonar_plugin gazebo_ros_camera_utils ${GAZEBO_LIBRARIES} ${SDFormat_LIBRARIES} DepthCameraPlugin ${catkin_LIBRARIES})
 										
 add_executable(twist_publisher src/twist_publisher.cpp  )
 target_link_libraries(twist_publisher ${catkin_LIBRARIES}

@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="pandora_sonar">
+    <pose>0 0 0.036 0 0 0</pose>
+    <link name="link">
+      <inertial>
+        <mass>0.001</mass>
+      </inertial>
+
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.01 0.01 0.01</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://pandora_sonar/meshes/max_sonar_ez4.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <sensor name="camera" type="depth">
+        <update_rate>5</update_rate>
+        <camera>
+          <horizontal_fov>1.5</horizontal_fov>
+          <image>
+            <width>10</width>
+            <height>10</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>3</far>
+          </clip>
+        </camera>
+        
+<!--
+        <plugin name="sonar2ros" filename="libpandora_sonar_plugin.so">
+			<topicName>/sensors/sonar</topicName>
+		<plugin>
+-->
+        
+      </sensor>
+    </link>
+  </model>
+</sdf>
