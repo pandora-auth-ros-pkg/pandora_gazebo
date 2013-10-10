@@ -208,8 +208,8 @@
 	    <rightFrontJoint>right_front</rightFrontJoint>
 	    <leftRearJoint>left_rear</leftRearJoint>
 	    <rightRearJoint>right_rear</rightRearJoint>
-	    <wheelSeparation>0.4</wheelSeparation>
-	    <wheelDiameter>0.215</wheelDiameter>
+	    <wheelSeparation>0.25</wheelSeparation>
+	    <wheelDiameter>0.220</wheelDiameter>
 	    <robotBaseFrame>base_link</robotBaseFrame>
 	    <topicName>cmd_vel</topicName>
 	    <broadcastTF>true</broadcastTF>
