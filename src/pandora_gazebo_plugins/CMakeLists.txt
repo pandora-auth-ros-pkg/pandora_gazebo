@@ -114,8 +114,10 @@ target_link_libraries(twist_publisher ${catkin_LIBRARIES}
 add_executable(pandora_teleop_key src/pandora_teleop_key.cpp  )
 target_link_libraries(pandora_teleop_key ${catkin_LIBRARIES}
 										)
+										
 add_library(pandora_thermal_plugin src/pandora_thermal_plugin.cpp)
 target_link_libraries(pandora_thermal_plugin ${GAZEBO_LIBRARIES}  ${catkin_LIBRARIES}  CameraPlugin)
+
 
 #############
 ## Install ##
