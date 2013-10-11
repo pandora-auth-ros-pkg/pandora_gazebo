@@ -257,6 +257,11 @@
 	<include>
 		<uri>model://pandora_sonar</uri>
 		<name>left_rear_sonar</name>
+<!--
+		<plugin>
+			<frameName>left_read_sonar</frameName>
+		</plugin>
+-->
 		<pose>-0.2 0.15 0.13 0 0 3.14</pose>
 	</include>
 	<joint name="left_rear_sonar_joint" type="revolute">
@@ -274,6 +279,11 @@
 	<include>
 		<uri>model://pandora_sonar</uri>
 		<name>right_rear_sonar</name>
+<!--
+		<plugin>
+			<frameName>right_read_sonar</frameName>
+		</plugin>
+-->
 		<pose>-0.2 -0.15 0.13 0 0 3.14</pose>
 	</include>
 	<joint name="right_rear_sonar_joint" type="revolute">

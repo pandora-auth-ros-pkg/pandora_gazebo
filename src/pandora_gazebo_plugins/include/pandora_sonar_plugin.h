@@ -1,6 +1,6 @@
 /*
  *  Gazebo - Outdoor Multi-Robot Simulator
- *  Copyright (C) 2003
+ *  Copyright (C) 2003  
  *     Nate Koenig & Andrew Howard
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -19,118 +19,113 @@
  *
  */
 /*
- * Desc: A dynamic controller plugin that publishes ROS image_raw camera_info topic for generic camera sensor.
- * Author: John Hsu
- * Date: 24 Sept 2008
- * SVN: $Id$
+ * Desc: ros laser controller.
+ * Author: Nathan Koenig
+ * Date: 01 Feb 2007
+ * SVN: $Id: gazebo_ros_block_laser.hh 6656 2008-06-20 22:52:19Z natepak $
  */
-#ifndef PANDRORA_SONAR_PLUGIN_H
-#define PANDRORA_SONAR_PLUGIN_H
 
-// ros stuff
+#ifndef PANDORA_SONAR_PLUGIN_HH
+#define PANDORA_SONAR_PLUGIN_HH
+
+// Custom Callback Queue
 #include <ros/ros.h>
 #include <ros/callback_queue.h>
 #include <ros/advertise_options.h>
 
-
-// ros messages stuff
-#include <sensor_msgs/Image.h>
-#include <sensor_msgs/Range.h>
-#include <std_msgs/Float64.h>
-
-// gazebo stuff
 #include <sdf/Param.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/transport/TransportTypes.hh>
 #include <gazebo/msgs/MessageTypes.hh>
 #include <gazebo/common/Time.hh>
+#include <gazebo/common/Plugin.hh>
 #include <gazebo/sensors/SensorTypes.hh>
-#include <gazebo/plugins/DepthCameraPlugin.hh>
+#include <gazebo/plugins/RayPlugin.hh>
 
-// dynamic reconfigure stuff
-#include <gazebo_plugins/GazeboRosCameraConfig.h>
-#include <dynamic_reconfigure/server.h>
-
-// boost stuff
+#include <boost/bind.hpp>
+#include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
-// camera stuff
-#include <gazebo_plugins/gazebo_ros_camera_utils.h>
+#include <sensor_msgs/PointCloud.h>
+#include <sensor_msgs/Range.h>
 
 namespace gazebo
 {
-  class GazeboRosDepthCamera : public DepthCameraPlugin, GazeboRosCameraUtils
+
+  class PandoraSonarPlugin : public RayPlugin
   {
     /// \brief Constructor
     /// \param parent The parent entity, must be a Model or a Sensor
-    public: GazeboRosDepthCamera();
+    public: PandoraSonarPlugin();
 
     /// \brief Destructor
-    public: ~GazeboRosDepthCamera();
+    public: ~PandoraSonarPlugin();
 
     /// \brief Load the plugin
     /// \param take in SDF root element
-    public: virtual void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
-
-    /// \brief Advertise point cloud and depth image
-    public: virtual void Advertise();
+    public: void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
 
     /// \brief Update the controller
-    protected: virtual void OnNewDepthFrame(const float *_image,
-                   unsigned int _width, unsigned int _height,
-                   unsigned int _depth, const std::string &_format);
+    protected: virtual void OnNewLaserScans();
 
-    /// \brief Update the controller
-    protected: virtual void OnNewRGBPointCloud(const float *_pcd,
-                    unsigned int _width, unsigned int _height,
-                    unsigned int _depth, const std::string &_format);
+    /// \brief Put laser data to the ROS topic
+    private: void PutLaserData(common::Time &_updateTime);
 
-    /// \brief Update the controller
-    protected: virtual void OnNewImageFrame(const unsigned char *_image,
-                   unsigned int _width, unsigned int _height,
-                   unsigned int _depth, const std::string &_format);
+    private: common::Time last_update_time_;
 
-    /// \brief Put camera data to the ROS topic
-    private: void FillPointdCloud(const float *_src);
+    /// \brief Keep track of number of connctions
+    private: int laser_connect_count_;
+    private: void LaserConnect();
+    private: void LaserDisconnect();
 
-    /// \brief push depth image data into ros topic
-    private: void FillDepthImage(const float *_src);
+    // Pointer to the model
+    private: physics::WorldPtr world_;
+    /// \brief The parent sensor
+    private: sensors::SensorPtr parent_sensor_;
+    private: sensors::RaySensorPtr parent_ray_sensor_;
 
-    /// \brief Keep track of number of connctions for point clouds
-    private: int depth_image_connect_count_;
-    private: void DepthImageConnect();
-    private: void DepthImageDisconnect();
-    private: common::Time last_depth_image_camera_info_update_time_;
+    /// \brief pointer to ros node
+    private: ros::NodeHandle* rosnode_;
+    private: ros::Publisher pub_;
 
-    private: bool FillDepthImageHelper( sensor_msgs::Range& sonar_msg,
-                                  uint32_t rows_arg, uint32_t cols_arg,
-                                  uint32_t step_arg, void* data_arg);
-
-    /// \brief A pointer to the ROS node.  A node will be instantiated if it does not exist.
-    private: ros::Publisher depth_image_pub_;
-
-    /// \brief PCL point cloud message
+    /// \brief ros message
+    private: sensor_msgs::PointCloud cloud_msg_;
     private: sensor_msgs::Range sonar_msg_;
+   
+    /// \brief topic name
+    private: std::string topic_name_;
 
+    /// \brief frame transform name, should match link name
+    private: std::string frame_name_;
 
-    /// \brief ROS image topic name
-    private: std::string point_cloud_topic_name_;
+    /// \brief Gaussian noise
+    private: double gaussian_noise_;
 
-    using GazeboRosCameraUtils::PublishCameraInfo;
+    /// \brief Gaussian noise generator
+    private: double GaussianKernel(double mu,double sigma);
 
-    /// \brief image where each pixel contains the depth information
-    private: std::string depth_image_topic_name_;
-    private: int depth_info_connect_count_;
-    private: void DepthInfoConnect();
-    private: void DepthInfoDisconnect();
+    /// \brief A mutex to lock access to fields that are used in message callbacks
+    private: boost::mutex lock;
 
-    // overload with our own
-    private: common::Time depth_sensor_update_time_;
-    protected: ros::Publisher depth_image_camera_info_pub_;
+    /// update rate of this sensor
+    private: double update_rate_;
 
-    private: event::ConnectionPtr load_connection_;
+    /// \brief for setting ROS name space
+    private: std::string robot_namespace_;
+
+    // Custom Callback Queue
+    private: ros::CallbackQueue laser_queue_;
+    private: void LaserQueueThread();
+    private: boost::thread callback_laser_queue_thread_;
+
+    // subscribe to world stats
+    private: transport::NodePtr node_;
+    private: common::Time sim_time_;
+    public: void OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
+
   };
 
 }
+
 #endif
 

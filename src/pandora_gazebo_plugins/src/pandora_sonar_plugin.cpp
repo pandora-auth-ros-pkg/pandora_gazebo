@@ -15,49 +15,124 @@
  *
 */
 /*
-   Desc: GazeboRosDepthCamera plugin for simulating cameras in Gazebo
-   Author: John Hsu
-   Date: 24 Sept 2008
+ * Desc: Ros Block Laser controller.
+ * Author: Nathan Koenig
+ * Date: 01 Feb 2007
  */
 
 #include <algorithm>
 #include <assert.h>
-#include <boost/thread/thread.hpp>
-#include <boost/bind.hpp>
 
 #include <pandora_sonar_plugin.h>
 
+#include <gazebo/physics/World.hh>
+#include <gazebo/physics/HingeJoint.hh>
 #include <gazebo/sensors/Sensor.hh>
 #include <sdf/sdf.hh>
+#include <sdf/Param.hh>
+#include <gazebo/common/Exception.hh>
+#include <gazebo/sensors/RaySensor.hh>
 #include <gazebo/sensors/SensorTypes.hh>
+#include <gazebo/transport/Node.hh>
 
+#include <geometry_msgs/Point32.h>
+#include <sensor_msgs/ChannelFloat32.h>
 
 #include <tf/tf.h>
 
 namespace gazebo
 {
 // Register this plugin with the simulator
-GZ_REGISTER_SENSOR_PLUGIN(GazeboRosDepthCamera)
+GZ_REGISTER_SENSOR_PLUGIN(PandoraSonarPlugin)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constructor
-GazeboRosDepthCamera::GazeboRosDepthCamera()
+PandoraSonarPlugin::PandoraSonarPlugin()
 {
-  this->depth_info_connect_count_ = 0;
-  this->last_depth_image_camera_info_update_time_ = common::Time(0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Destructor
-GazeboRosDepthCamera::~GazeboRosDepthCamera()
+PandoraSonarPlugin::~PandoraSonarPlugin()
 {
+  ////////////////////////////////////////////////////////////////////////////////
+  // Finalize the controller / Custom Callback Queue
+  this->laser_queue_.clear();
+  this->laser_queue_.disable();
+  this->rosnode_->shutdown();
+  this->callback_laser_queue_thread_.join();
+
+  delete this->rosnode_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Load the controller
-void GazeboRosDepthCamera::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
+void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
 {
-  DepthCameraPlugin::Load(_parent, _sdf);
+  // load plugin
+  RayPlugin::Load(_parent, _sdf);
+
+  // Get then name of the parent sensor
+  this->parent_sensor_ = _parent;
+  
+  // Get the world name.
+  std::string worldName = _parent->GetWorldName();
+  this->world_ = physics::get_world(worldName);
+
+  last_update_time_ = this->world_->GetSimTime();
+
+  this->node_ = transport::NodePtr(new transport::Node());
+  this->node_->Init(worldName);
+
+  this->parent_ray_sensor_ = boost::dynamic_pointer_cast<sensors::RaySensor>(this->parent_sensor_);
+
+  if (!this->parent_ray_sensor_)
+    gzthrow("PandoraSonarPlugin controller requires a Ray Sensor as its parent");
+
+  this->robot_namespace_ = "";
+  if (_sdf->HasElement("robotNamespace"))
+    this->robot_namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>() + "/";
+
+  if (!_sdf->HasElement("frameName"))
+  {
+    ROS_INFO("Block laser plugin missing <frameName>, defaults to /world");
+    this->frame_name_ = "/world";
+  }
+  else
+    this->frame_name_ = _sdf->GetElement("frameName")->Get<std::string>();
+    
+  if (this->parent_sensor_->GetScopedName().find("left") != std::string::npos)
+	this->frame_name_ = std::string("/right")+std::string("_")+this->frame_name_;
+  else
+	this->frame_name_ = std::string("/left")+std::string("_")+this->frame_name_;
+
+  if (!_sdf->HasElement("topicName"))
+  {
+    ROS_INFO("Block laser plugin missing <topicName>, defaults to /world");
+    this->topic_name_ = "/world";
+  }
+  else
+    this->topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
+
+  if (!_sdf->HasElement("gaussianNoise"))
+  {
+    ROS_INFO("Block laser plugin missing <gaussianNoise>, defaults to 0.0");
+    this->gaussian_noise_ = 0;
+  }
+  else
+    this->gaussian_noise_ = _sdf->GetElement("gaussianNoise")->Get<double>();
+
+  if (!_sdf->GetElement("updateRate"))
+  {
+    ROS_INFO("Block laser plugin missing <updateRate>, defaults to 0");
+    this->update_rate_ = 0;
+  }
+  else
+    this->update_rate_ = _sdf->GetElement("updateRate")->Get<double>();
+  // FIXME:  update the update_rate_
+
+
+  this->laser_connect_count_ = 0;
 
   // Make sure the ROS node for Gazebo has already been initialized
   if (!ros::isInitialized())
@@ -67,180 +142,269 @@ void GazeboRosDepthCamera::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     return;
   }
 
-  // copying from DepthCameraPlugin into GazeboRosCameraUtils
-  this->parentSensor_ = this->parentSensor;
-  this->width_ = this->width;
-  this->height_ = this->height;
-  this->depth_ = this->depth;
-  this->format_ = this->format;
-  this->camera_ = this->depthCamera;
+  this->rosnode_ = new ros::NodeHandle(this->robot_namespace_);
+
+  // resolve tf prefix
+  std::string prefix;
+  this->rosnode_->getParam(std::string("tf_prefix"), prefix);
+  this->frame_name_ = tf::resolve(prefix, this->frame_name_);
   
-  ROS_ERROR("Depth: %d", this->depth_);
+  // set size of cloud message, starts at 0!! FIXME: not necessary
+  this->cloud_msg_.points.clear();
+  this->cloud_msg_.channels.clear();
+  this->cloud_msg_.channels.push_back(sensor_msgs::ChannelFloat32());
 
-//~   // using a different default
-//~   if (!_sdf->GetElement("imageTopicName"))
-//~     this->image_topic_name_ = "ir/image_raw";
-//~   if (!_sdf->HasElement("cameraInfoTopicName"))
-//~     this->camera_info_topic_name_ = "ir/camera_info";
-
-
-  // depth image stuff
-  if (!_sdf->GetElement("topicName"))
-    this->depth_image_topic_name_ = "/sonar";
-  else
-    this->depth_image_topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
-
-//~   if (!_sdf->GetElement("depthImageCameraInfoTopicName"))
-//~     this->depth_image_camera_info_topic_name_ = "depth/camera_info";
-//~   else
-//~     this->depth_image_camera_info_topic_name_ = _sdf->GetElement("depthImageCameraInfoTopicName")->Get<std::string>();
+  if (this->topic_name_ != "")
+  {
+    // Custom Callback Queue
+    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<sensor_msgs::Range>(
+      this->topic_name_,1,
+      boost::bind( &PandoraSonarPlugin::LaserConnect,this),
+      boost::bind( &PandoraSonarPlugin::LaserDisconnect,this), ros::VoidPtr(), &this->laser_queue_);
+    this->pub_ = this->rosnode_->advertise(ao);
+  }
 
 
-  load_connection_ = GazeboRosCameraUtils::OnLoad(boost::bind(&GazeboRosDepthCamera::Advertise, this));
-  GazeboRosCameraUtils::Load(_parent, _sdf);
-}
+  // Initialize the controller
 
-void GazeboRosDepthCamera::Advertise()
-{
-  ros::AdvertiseOptions depth_image_ao =
-    ros::AdvertiseOptions::create< sensor_msgs::Range >(
-      this->depth_image_topic_name_,1,
-      boost::bind( &GazeboRosDepthCamera::DepthImageConnect,this),
-      boost::bind( &GazeboRosDepthCamera::DepthImageDisconnect,this),
-      ros::VoidPtr(), &this->camera_queue_);
-  this->depth_image_pub_ = this->rosnode_->advertise(depth_image_ao);
+  // sensor generation off by default
+  this->parent_ray_sensor_->SetActive(false);
+  // start custom queue for laser
+  this->callback_laser_queue_thread_ = boost::thread( boost::bind( &PandoraSonarPlugin::LaserQueueThread,this ) );
 
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Increment count
-void GazeboRosDepthCamera::DepthImageConnect()
+void PandoraSonarPlugin::LaserConnect()
 {
-  this->depth_image_connect_count_++;
-  this->parentSensor->SetActive(true);
+  this->laser_connect_count_++;
+  this->parent_ray_sensor_->SetActive(true);
 }
 ////////////////////////////////////////////////////////////////////////////////
 // Decrement count
-void GazeboRosDepthCamera::DepthImageDisconnect()
+void PandoraSonarPlugin::LaserDisconnect()
 {
-  this->depth_image_connect_count_--;
-}
+  this->laser_connect_count_--;
 
+  if (this->laser_connect_count_ == 0)
+    this->parent_ray_sensor_->SetActive(false);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Update the controller
-void GazeboRosDepthCamera::OnNewDepthFrame(const float *_image,
-    unsigned int _width, unsigned int _height, unsigned int _depth,
-    const std::string &_format)
+void PandoraSonarPlugin::OnNewLaserScans()
 {
-  if (!this->initialized_ || this->height_ <=0 || this->width_ <=0)
-    return;
-
-  this->depth_sensor_update_time_ = this->parentSensor->GetLastUpdateTime();
-  if (this->parentSensor->IsActive())
+  if (this->topic_name_ != "")
   {
-    if (this->depth_image_connect_count_ <= 0 &&
-        (*this->image_connect_count_) <= 0)
+    common::Time sensor_update_time = this->parent_sensor_->GetLastUpdateTime();
+    if (last_update_time_ < sensor_update_time)
     {
-      this->parentSensor->SetActive(false);
-    }
-    else
-    {
-        this->FillDepthImage(_image);
+      this->PutLaserData(sensor_update_time);
+      last_update_time_ = sensor_update_time;
     }
   }
   else
   {
-      // do this first so there's chance for sensor to run 1 frame after activate
-      this->parentSensor->SetActive(true);
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Update the controller
-void GazeboRosDepthCamera::OnNewRGBPointCloud(const float *_pcd,
-    unsigned int _width, unsigned int _height, unsigned int _depth,
-    const std::string &_format)
-{
-  
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Update the controller
-void GazeboRosDepthCamera::OnNewImageFrame(const unsigned char *_image,
-    unsigned int _width, unsigned int _height, unsigned int _depth,
-    const std::string &_format)
-{
-  if (!this->initialized_ || this->height_ <=0 || this->width_ <=0)
-    return;
-
-  //ROS_ERROR("camera_ new frame %s %s",this->parentSensor_->GetName().c_str(),this->frame_name_.c_str());
-  this->sensor_update_time_ = this->parentSensor->GetLastUpdateTime();
-
-  if (!this->parentSensor->IsActive())
-  {
-    if ((*this->image_connect_count_) > 0)
-      // do this first so there's chance for sensor to run 1 frame after activate
-      this->parentSensor->SetActive(true);
-  }
-  else
-  {
-    if ((*this->image_connect_count_) > 0)
-      this->PutCameraData(_image);
+    ROS_INFO("gazebo_ros_block_laser topic name not set");
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Put depth image data to the interface
-void GazeboRosDepthCamera::FillDepthImage(const float *_src)
+// Put laser data to the interface
+void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
 {
-  this->lock_.lock();
-  // copy data into image
-  
+  int i, hja, hjb;
+  int j, vja, vjb;
+  double vb, hb;
+  int    j1, j2, j3, j4; // four corners indices
+  double r1, r2, r3, r4, r; // four corner values + interpolated range
+  double intensity;
+
+  this->parent_ray_sensor_->SetActive(false);
+
+  math::Angle maxAngle = this->parent_ray_sensor_->GetAngleMax();
+  math::Angle minAngle = this->parent_ray_sensor_->GetAngleMin();
+
+  double maxRange = this->parent_ray_sensor_->GetRangeMax();
+  double minRange = this->parent_ray_sensor_->GetRangeMin();
+  int rayCount = this->parent_ray_sensor_->GetRayCount();
+  int rangeCount = this->parent_ray_sensor_->GetRangeCount();
+
+  int verticalRayCount = this->parent_ray_sensor_->GetVerticalRayCount();
+  int verticalRangeCount = this->parent_ray_sensor_->GetVerticalRangeCount();
+  math::Angle verticalMaxAngle = this->parent_ray_sensor_->GetVerticalAngleMax();
+  math::Angle verticalMinAngle = this->parent_ray_sensor_->GetVerticalAngleMin();
+
+  double yDiff = maxAngle.Radian() - minAngle.Radian();
+  double pDiff = verticalMaxAngle.Radian() - verticalMinAngle.Radian();
+
+
+  // set size of cloud message everytime!
+  //int r_size = rangeCount * verticalRangeCount;
+  this->cloud_msg_.points.clear();
+  this->cloud_msg_.channels.clear();
+  this->cloud_msg_.channels.push_back(sensor_msgs::ChannelFloat32());
+
+  /***************************************************************/
+  /*                                                             */
+  /*  point scan from laser                                      */
+  /*                                                             */
+  /***************************************************************/
+  boost::mutex::scoped_lock sclock(this->lock);
+  // Add Frame Name
   this->sonar_msg_.header.frame_id = this->frame_name_;
-  this->sonar_msg_.header.stamp.sec = this->depth_sensor_update_time_.sec;
-  this->sonar_msg_.header.stamp.nsec = this->depth_sensor_update_time_.nsec;
-  this->sonar_msg_.field_of_view = this->parentSensor->GetDepthCamera()->GetHFOV().Radian();
+  this->sonar_msg_.header.stamp.sec = _updateTime.sec;
+  this->sonar_msg_.header.stamp.nsec = _updateTime.nsec;
+  this->sonar_msg_.min_range = minRange;
+  this->sonar_msg_.max_range = maxRange;
+  this->sonar_msg_.field_of_view = yDiff;
+  this->sonar_msg_.radiation_type = sensor_msgs::Range::ULTRASOUND;
+  
+  this->sonar_msg_.range = maxRange;
 
-  ///copy from depth to depth image message
-  FillDepthImageHelper(this->sonar_msg_,
-                 this->height,
-                 this->width,
-                 this->skip_,
-                 (void*)_src );
-
-  this->depth_image_pub_.publish(this->sonar_msg_);
-
-  this->lock_.unlock();
-}
-
-// Fill depth information
-bool GazeboRosDepthCamera::FillDepthImageHelper(
-    sensor_msgs::Range& sonar_msg,
-    uint32_t rows_arg, uint32_t cols_arg,
-    uint32_t step_arg, void* data_arg)
-{
-  const float bad_point = std::numeric_limits<float>::quiet_NaN();
-
-  float* toCopyFrom = (float*)data_arg;
-  int index = 0;
-
-  sonar_msg.range = toCopyFrom[index];
-
-  // convert depth to point cloud
-  for (uint32_t j = 0; j < rows_arg; j++)
+  for (j = 0; j<verticalRangeCount; j++)
   {
-    for (uint32_t i = 0; i < cols_arg; i++)
+    // interpolating in vertical direction
+    vb = (verticalRangeCount == 1) ? 0 : (double) j * (verticalRayCount - 1) / (verticalRangeCount - 1);
+    vja = (int) floor(vb);
+    vjb = std::min(vja + 1, verticalRayCount - 1);
+    vb = vb - floor(vb); // fraction from min
+
+    assert(vja >= 0 && vja < verticalRayCount);
+    assert(vjb >= 0 && vjb < verticalRayCount);
+
+    for (i = 0; i<rangeCount; i++)
     {
-      float depth = toCopyFrom[index++];
-      
-      if (sonar_msg.range > toCopyFrom[index++]) {
-		  sonar_msg.range = toCopyFrom[index];
-	  }
+      // Interpolate the range readings from the rays in horizontal direction
+      hb = (rangeCount == 1)? 0 : (double) i * (rayCount - 1) / (rangeCount - 1);
+      hja = (int) floor(hb);
+      hjb = std::min(hja + 1, rayCount - 1);
+      hb = hb - floor(hb); // fraction from min
+
+      assert(hja >= 0 && hja < rayCount);
+      assert(hjb >= 0 && hjb < rayCount);
+
+      // indices of 4 corners
+      j1 = hja + vja * rayCount;
+      j2 = hjb + vja * rayCount;
+      j3 = hja + vjb * rayCount;
+      j4 = hjb + vjb * rayCount;
+      // range readings of 4 corners
+      r1 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j1) , maxRange-minRange);
+      r2 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j2) , maxRange-minRange);
+      r3 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j3) , maxRange-minRange);
+      r4 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j4) , maxRange-minRange);
+
+      // Range is linear interpolation if values are close,
+      // and min if they are very different
+      r = (1-vb)*((1 - hb) * r1 + hb * r2)
+         +   vb *((1 - hb) * r3 + hb * r4);
+
+      // Intensity is averaged
+      intensity = 0.25*(this->parent_ray_sensor_->GetLaserShape()->GetRetro(j1) +
+                        this->parent_ray_sensor_->GetLaserShape()->GetRetro(j2) +
+                        this->parent_ray_sensor_->GetLaserShape()->GetRetro(j3) +
+                        this->parent_ray_sensor_->GetLaserShape()->GetRetro(j4));
+
+      // std::cout << " block debug "
+      //           << "  ij("<<i<<","<<j<<")"
+      //           << "  j1234("<<j1<<","<<j2<<","<<j3<<","<<j4<<")"
+      //           << "  r1234("<<r1<<","<<r2<<","<<r3<<","<<r4<<")"
+      //           << std::endl;
+
+      // get angles of ray to get xyz for point
+      double yAngle = 0.5*(hja+hjb) * yDiff / (rayCount -1) + minAngle.Radian();
+      double pAngle = 0.5*(vja+vjb) * pDiff / (verticalRayCount -1) + verticalMinAngle.Radian();
+
+      /***************************************************************/
+      /*                                                             */
+      /*  point scan from laser                                      */
+      /*                                                             */
+      /***************************************************************/
+      if (r == maxRange - minRange)
+      {
+        // no noise if at max range
+        geometry_msgs::Point32 point;
+        point.x = (r+minRange) * cos(pAngle)*cos(yAngle);
+        point.y = -(r+minRange) * sin(yAngle);
+        point.z = (r+minRange) * sin(pAngle)*cos(yAngle);
+
+        //pAngle is rotated by yAngle:
+        point.x = (r+minRange) * cos(pAngle) * cos(yAngle);
+        point.y = -(r+minRange) * cos(pAngle) * sin(yAngle);
+        point.z = (r+minRange) * sin(pAngle);
+
+        this->cloud_msg_.points.push_back(point); 
+      } 
+      else 
+      { 
+        geometry_msgs::Point32 point;
+        point.x = (r+minRange) * cos(pAngle)*cos(yAngle) + this->GaussianKernel(0,this->gaussian_noise_) ;
+        point.y = -(r+minRange) * sin(yAngle) + this->GaussianKernel(0,this->gaussian_noise_) ;
+        point.z = (r+minRange) * sin(pAngle)*cos(yAngle) + this->GaussianKernel(0,this->gaussian_noise_) ;
+        //pAngle is rotated by yAngle:
+        point.x = (r+minRange) * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
+        point.y = -(r+minRange) * cos(pAngle) * sin(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
+        point.z = (r+minRange) * sin(pAngle) + this->GaussianKernel(0,this->gaussian_noise_);
+        this->cloud_msg_.points.push_back(point);
+        if (point.x < sonar_msg_.range) {
+			sonar_msg_.range = point.x;
+		}
+		
+      } // only 1 channel 
+
+      this->cloud_msg_.channels[0].values.push_back(intensity + this->GaussianKernel(0,this->gaussian_noise_)) ;
     }
   }
-  return true;
-}
+  this->parent_ray_sensor_->SetActive(true);
+
+  // send data out via ros message
+  this->pub_.publish(this->sonar_msg_);
+
+
 
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Utility for adding noise
+double PandoraSonarPlugin::GaussianKernel(double mu,double sigma)
+{
+  // using Box-Muller transform to generate two independent standard normally disbributed normal variables
+  // see wikipedia
+  double U = (double)rand()/(double)RAND_MAX; // normalized uniform random variable
+  double V = (double)rand()/(double)RAND_MAX; // normalized uniform random variable
+  double X = sqrt(-2.0 * ::log(U)) * cos( 2.0*M_PI * V);
+  //double Y = sqrt(-2.0 * ::log(U)) * sin( 2.0*M_PI * V); // the other indep. normal variable
+  // we'll just use X
+  // scale to our mu and sigma
+  X = sigma * X + mu;
+  return X;
+}
+
+// Custom Callback Queue
+////////////////////////////////////////////////////////////////////////////////
+// custom callback queue thread
+void PandoraSonarPlugin::LaserQueueThread()
+{
+  static const double timeout = 0.01;
+
+  while (this->rosnode_->ok())
+  {
+    this->laser_queue_.callAvailable(ros::WallDuration(timeout));
+  }
+}
+
+void PandoraSonarPlugin::OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg)
+{
+  this->sim_time_  = msgs::Convert( _msg->sim_time() );
+
+  math::Pose pose;
+  pose.pos.x = 0.5*sin(0.01*this->sim_time_.Double());
+  gzdbg << "plugin simTime [" << this->sim_time_.Double() << "] update pose [" << pose.pos.x << "]\n";
+}
+
+
+}
+
