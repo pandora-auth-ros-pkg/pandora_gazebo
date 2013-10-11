@@ -99,12 +99,13 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
     this->frame_name_ = "/world";
   }
   else
+  {
     this->frame_name_ = _sdf->GetElement("frameName")->Get<std::string>();
-    
-  if (this->parent_sensor_->GetScopedName().find("left") != std::string::npos)
-	this->frame_name_ = std::string("/right")+std::string("_")+this->frame_name_;
-  else
-	this->frame_name_ = std::string("/left")+std::string("_")+this->frame_name_;
+    if (this->parent_sensor_->GetScopedName().find("left") != std::string::npos)
+		this->frame_name_ = std::string("/left")+std::string("_")+this->frame_name_;
+	else
+    	this->frame_name_ = std::string("/right")+std::string("_")+this->frame_name_;
+  }
 
   if (!_sdf->HasElement("topicName"))
   {
@@ -112,7 +113,23 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
     this->topic_name_ = "/world";
   }
   else
+  {
     this->topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
+        
+    if (this->parent_sensor_->GetScopedName().find("left") != std::string::npos) {
+	  if (this->parent_sensor_->GetScopedName().find("rear") != std::string::npos) 
+		this->topic_name_ = this->topic_name_+std::string("/rear_left");
+	  else
+		this->topic_name_ = this->topic_name_+std::string("/front_left");
+	}
+    else {
+	  if (this->parent_sensor_->GetScopedName().find("rear") != std::string::npos) 
+		this->topic_name_ = this->topic_name_+std::string("/rear_right");
+	  else
+		this->topic_name_ = this->topic_name_+std::string("/front_right");
+    }
+  }
+
 
   if (!_sdf->HasElement("gaussianNoise"))
   {

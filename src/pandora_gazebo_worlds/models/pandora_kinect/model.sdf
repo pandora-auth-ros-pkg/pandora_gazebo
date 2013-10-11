@@ -44,7 +44,7 @@
 			<depthImageTopicName>depth/image</depthImageTopicName>
 			<depthImageCameraInfoTopicName>depth/image/info</depthImageCameraInfoTopicName>
 			<pointCloudCutoff>0.4</pointCloudCutoff>
-		<plugin>
+		</plugin>
         
       </sensor>
     </link>
