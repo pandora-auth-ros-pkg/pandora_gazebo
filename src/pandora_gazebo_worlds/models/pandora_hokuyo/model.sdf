@@ -2,7 +2,7 @@
 <sdf version="1.4">
   <model name="pandora_hokuyo">
     <pose>0 0 0.035 0 0 0</pose>
-    <link name="link">
+    <link name="laser">
       <inertial>
         <mass>0.1</mass>
       </inertial>

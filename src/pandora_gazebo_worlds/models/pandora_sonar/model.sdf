@@ -2,7 +2,7 @@
 <sdf version="1.4">
   <model name="pandora_sonar">
     <pose>0 0 0.036 0 0 0</pose>
-    <link name="link">
+    <link name="sonar">
       <inertial>
         <mass>0.001</mass>
       </inertial>
@@ -22,7 +22,7 @@
         </geometry>
       </visual>
       
-      <sensor name="laser" type="ray">
+      <sensor name="sonar" type="ray">
         <pose>0.01 0 0.0175 0 -0 0</pose>
         <ray>
           <scan>

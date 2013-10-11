@@ -225,7 +225,7 @@
 		<pose>0.2 0 0.13 0 0 0</pose>
 	</include>
 	<joint name="hokuyo_joint" type="revolute">
-	  <child>pandora_hokuyo::link</child>
+	  <child>pandora_hokuyo::laser</child>
 	  <parent>chassis</parent>
 	  <axis>
 	    <xyz>0 0 1</xyz>
@@ -260,7 +260,7 @@
 		<pose>-0.2 0.15 0.13 0 0 3.14</pose>
 	</include>
 	<joint name="left_rear_sonar_joint" type="revolute">
-	  <child>left_rear_sonar::link</child>
+	  <child>left_rear_sonar::sonar</child>
 	  <parent>chassis</parent>
 	  <axis>
 	    <xyz>0 0 1</xyz>
@@ -277,7 +277,7 @@
 		<pose>-0.2 -0.15 0.13 0 0 3.14</pose>
 	</include>
 	<joint name="right_rear_sonar_joint" type="revolute">
-	  <child>right_rear_sonar::link</child>
+	  <child>right_rear_sonar::sonar</child>
 	  <parent>chassis</parent>
 	  <axis>
 	    <xyz>0 0 1</xyz>
