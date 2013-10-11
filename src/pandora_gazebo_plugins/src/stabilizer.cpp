@@ -31,33 +31,33 @@ Stabilizer::Stabilizer()
 
 
 void Stabilizer::publishTrajectory(char** argv) {
-	
-	trajectory_msgs::JointTrajectory msg;
+long i=0;
+while(1){
+	i++;
+	trajectory_msgs::JointTrajectory msg,msg2,msg3;
 	
 	msg.header.stamp = ros::Time::now();
 	msg.header.frame_id = "chassis";
-	
-	msg.joint_names.push_back("hokuyo_joint");
-	
+	msg.joint_names.push_back("joint_h_hb");
 	trajectory_msgs::JointTrajectoryPoint point;
-	
-	point.positions.push_back(atof(argv[1]));
-	point.positions.push_back(atof(argv[2]));
-	point.positions.push_back(atof(argv[3]));
-	
-	point.velocities.push_back(atof(argv[4]));
-	point.velocities.push_back(atof(argv[5]));
-	point.velocities.push_back(atof(argv[6]));
-
-	point.accelerations.push_back(atof(argv[7]));
-	point.accelerations.push_back(atof(argv[8]));
-	point.accelerations.push_back(atof(argv[9]));
-	
+	point.positions.push_back(i*0.01);
 	point.time_from_start = ros::Duration(1);
-	
 	msg.points.push_back(point);
 	
 	_trajectoryPublisher.publish(msg);	
+	usleep(100000);
+	msg2.header.stamp = ros::Time::now();
+	msg2.header.frame_id = "chassis";
+	msg2.joint_names.push_back("joint_hb_ch");
+	trajectory_msgs::JointTrajectoryPoint point2;
+	point2.positions.push_back(i*0.01);
+	point2.time_from_start = ros::Duration(1);
+	msg2.points.push_back(point2);
+	
+	_trajectoryPublisher.publish(msg2);
+	
+	usleep(100000);
+}
 }
 	
 	

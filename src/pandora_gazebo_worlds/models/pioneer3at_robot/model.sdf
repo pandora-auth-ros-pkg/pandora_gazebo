@@ -6,6 +6,8 @@
   <pose>0 0 0.180 0 0 0</pose>
     <static>false</static>
 
+	
+
     <link name="chassis">
       <inertial>
         <mass>14.0</mass>
@@ -220,19 +222,26 @@
 	    <rpyOffset>0 0 0</rpyOffset>
 	</plugin>
   
+	<link name="hokuyo_base">
+		<pose>0.25 0 0.15 0 0 0</pose>
+	</link>
+  
 	<include>
 		<uri>model://pandora_hokuyo</uri>
-		<pose>0.2 0 0.13 0 0 0</pose>
+		<pose>0.25 0 0.15 0 0 0</pose>
 	</include>
-	<joint name="hokuyo_joint" type="revolute">
+	<joint name="joint_h_hb" type="revolute">
 	  <child>pandora_hokuyo::link</child>
+	  <parent>hokuyo_base</parent>
+	  <axis>
+	    <xyz>1 0 0</xyz>
+	  </axis>
+	</joint>
+	<joint name="joint_hb_ch" type="revolute">
+	  <child>hokuyo_base</child>
 	  <parent>chassis</parent>
 	  <axis>
-	    <xyz>1 0 1</xyz>
-	    <limit>
-	      <upper>100</upper>
-	      <lower>-100</lower>
-	    </limit>
+	    <xyz>0 1 0</xyz>
 	  </axis>
 	</joint>
 	

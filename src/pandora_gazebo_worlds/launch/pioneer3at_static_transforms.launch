@@ -1,5 +1,5 @@
 <launch>
-	<node pkg="tf" type="static_transform_publisher" name="baseLink2laser" args="0.2 0 0.13 0 0 0 base_link laser 100" />
+	<node pkg="tf" type="static_transform_publisher" name="baseLink2laser" args="0.25 0 0.15 0 0 0 base_link laser 100" />
 	
 	<!-- Kinect -->
 	<node pkg="tf" type="static_transform_publisher" name="baseLink2kinect" args="0.2 0 0.33 -1.57 0 -1.57 base_link kinect 100" />
