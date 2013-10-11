@@ -14,5 +14,8 @@
 	<!-- Sonars -->
 	<node pkg="tf" type="static_transform_publisher" name="baseLink2LeftRearSonar" args="-0.2 0.15 0.13 3.14 0 0 base_link left_rear_sonar 100" />
 	<node pkg="tf" type="static_transform_publisher" name="baseLink2RightRearSonar" args="-0.2 -0.15 0.13 3.14 0 0 base_link right_rear_sonar 100" />
+	
+	<!-- Thermal -->
+	<node pkg="tf" type="static_transform_publisher" name="baseLink2Thermal" args="0.2 -0.05 0.23 0 0 0 base_link thermal 100" />
 
 </launch>

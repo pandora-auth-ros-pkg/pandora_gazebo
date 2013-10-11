@@ -10,11 +10,13 @@ find_package(catkin REQUIRED roscpp
 							sensor_msgs
 							gazebo_ros
 							tf
+							cv_bridge
 							)
 							
 include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -24,7 +26,7 @@ find_package(Boost REQUIRED COMPONENTS thread)
 include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 
 link_directories(${GAZEBO_LIBRARY_DIRS} ${catkin_LIBRARY_DIRS})
-include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} )
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -112,7 +114,8 @@ target_link_libraries(twist_publisher ${catkin_LIBRARIES}
 add_executable(pandora_teleop_key src/pandora_teleop_key.cpp  )
 target_link_libraries(pandora_teleop_key ${catkin_LIBRARIES}
 										)
-
+add_library(pandora_thermal_plugin src/pandora_thermal_plugin.cpp)
+target_link_libraries(pandora_thermal_plugin ${GAZEBO_LIBRARIES}  ${catkin_LIBRARIES}  CameraPlugin)
 
 #############
 ## Install ##
