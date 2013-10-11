@@ -37,15 +37,11 @@
         <always_on>1</always_on>
         <update_rate>30</update_rate>
         <visualize>false</visualize>
+        <plugin name="thermal2ros" filename="libpandora_thermal_plugin.so">
+			<frameName>thermal</frameName>
+			<topicName>sensors/thermal</topicName>
+		</plugin>
       </sensor>
-      
-<!--
-	<plugin name="thermal2ros" filename="libpandora_thermal_plugin.so">
-		<frameName>thermal</frameName>
-		<topicName>sensors/thermal</topicName>
-	</plugin>
--->
-        
     </link>
   </model>
 </sdf>
