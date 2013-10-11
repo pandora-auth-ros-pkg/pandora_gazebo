@@ -38,8 +38,13 @@
         
         <plugin name="depth2ros" filename="libgazebo_ros_openni_kinect.so">
 			<pointCloudTopicName>/cloud_in</pointCloudTopicName>
-			<frameName>/kinect</frameName>
-		<plugin>
+			<frameName>kinect</frameName>
+			<cameraName>kinect</cameraName>
+			<imageTopicName>image</imageTopicName>
+			<depthImageTopicName>depth/image</depthImageTopicName>
+			<depthImageCameraInfoTopicName>depth/image/info</depthImageCameraInfoTopicName>
+			<pointCloudCutoff>0.4</pointCloudCutoff>
+		</plugin>
         
       </sensor>
     </link>
