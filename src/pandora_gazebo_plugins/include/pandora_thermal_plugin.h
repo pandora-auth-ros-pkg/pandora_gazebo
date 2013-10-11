@@ -1,23 +1,19 @@
-/*
- * Copyright 2012 Open Source Robotics Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
-*/
 
-#ifndef GAZEBO_ROS_CAMERA_UTILS_HH
-#define GAZEBO_ROS_CAMERA_UTILS_HH
+#ifndef PANDORA_THERMAL_PLUGIN_HH
+#define PANDORA_THERMAL_PLUGIN_HH
+#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
 
+#include <tf/tf.h>
+#include <sensor_msgs/Image.h>
+#include <sensor_msgs/fill_image.h>
+
+#include <gazebo/physics/World.hh>
+#include <gazebo/physics/HingeJoint.hh>
+#include <gazebo/sensors/Sensor.hh>
+#include <gazebo/common/Exception.hh>
+#include <gazebo/sensors/CameraSensor.hh>
+#include <gazebo/rendering/Camera.hh>
 #include <string>
 // boost stuff
 #include <boost/thread.hpp>
@@ -29,174 +25,85 @@
 #include <ros/advertise_options.h>
 
 // ros messages stuff
-#include <sensor_msgs/PointCloud.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <std_msgs/Float64.h>
-#include <image_transport/image_transport.h>
-
-// dynamic reconfigure stuff
-#include <gazebo_plugins/GazeboRosCameraConfig.h>
-#include <dynamic_reconfigure/server.h>
 
 // Gazebo
 #include <gazebo/physics/physics.hh>
-#include <gazebo/transport/TransportTypes.hh>
 #include <gazebo/msgs/MessageTypes.hh>
 #include <gazebo/common/Time.hh>
 #include <gazebo/sensors/SensorTypes.hh>
 #include <gazebo/plugins/CameraPlugin.hh>
+
+#include <gazebo/gazebo.hh>
+#include <gazebo/sensors/sensors.hh>
+
+#include "controllers_and_sensors_communications/tpaMsg.h"
 
 namespace gazebo
 {
 
   class PandoraThermalPlugin : public CameraPlugin
   {
-    /// \brief Constructor
-    /// \param parent The parent entity, must be a Model or a Sensor
-    public: PandoraThermalPlugin();
+	
+	public: 
+	
+	PandoraThermalPlugin(){}
+	
+	void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
+	
+	private: physics::WorldPtr world_;
+    /// \brief The parent sensor
+    private: sensors::SensorPtr parent_sensor_;
+    private: sensors::CameraSensorPtr parent_camera_sensor_;
 
-    /// \brief Destructor
-    public: ~PandoraThermalPlugin();
+    /// \brief pointer to ros node
+    private: ros::NodeHandle* rosnode_;
+    private: ros::Publisher pub_;
+    
+    /// \brief ros message
+    //~ private: sensor_msgs::PointCloud cloud_msg_;
+    //~ private: sensor_msgs::Range sonar_msg_;
+   
+    /// \brief topic name
+    private: std::string topic_name_;
 
-    /// \brief Load the plugin.
-    /// \param[in] _parent Take in SDF root element.
-    /// \param[in] _sdf SDF values.
-    public: void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
+    /// \brief frame transform name, should match link name
+    private: std::string frame_name_;
 
-    /// \brief Load the plugin.
-    /// \param[in] _parent Take in SDF root element.
-    /// \param[in] _sdf SDF values.
-    /// \param[in] _camera_name_suffix Suffix of the camera name.
-    /// \param[in] _hack_baseline Multiple camera baseline.
-    public: void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf,
-                      const std::string &_camera_name_suffix,
-                      double _hack_baseline);
+    /// \brief A mutex to lock access to fields that are used in message callbacks
+    private: boost::mutex lock;
 
-    public: event::ConnectionPtr OnLoad(const boost::function<void()>&);
-
-    private: void Init();
-
-    /// \brief Put camera data to the ROS topic
-    protected: void PutCameraData(const unsigned char *_src);
-    protected: void PutCameraData(const unsigned char *_src,
-      common::Time &last_update_time);
-
-    /// \brief Keep track of number of image connections
-    protected: boost::shared_ptr<int> image_connect_count_;
-    /// \brief A mutex to lock access to image_connect_count_
-    protected: boost::shared_ptr<boost::mutex> image_connect_count_lock_;
-    protected: void ImageConnect();
-    protected: void ImageDisconnect();
-
-    /// \brief Keep track when we activate this camera through ros
-    /// subscription, was it already active?  resume state when
-    /// unsubscribed.
-    protected: boost::shared_ptr<bool> was_active_;
-
-    /// \brief: Camera modification functions
-    private: void SetHFOV(const std_msgs::Float64::ConstPtr& hfov);
-    private: void SetUpdateRate(const std_msgs::Float64::ConstPtr& update_rate);
-
-    /// \brief A pointer to the ROS node.
-    ///  A node will be instantiated if it does not exist.
-    protected: ros::NodeHandle* rosnode_;
-    protected: image_transport::Publisher image_pub_;
-    private: image_transport::ImageTransport* itnode_;
-
-    /// \brief ROS image message
-    protected: sensor_msgs::Image image_msg_;
+    /// update rate of this sensor
+    private: double update_rate_;
+    
+    private: int camera_connect_count_;
+    private: void CameraConnect();
+    private: void CameraDisconnect();
 
     /// \brief for setting ROS name space
     private: std::string robot_namespace_;
+    
+    private: common::Time last_update_time_;
+    
+    private: ros::CallbackQueue camera_queue_;
+    private: void CameraQueueThread();
+    private: boost::thread callback_camera_queue_thread_;
+    
+    private: transport::NodePtr node_;
+    private: common::Time sim_time_;
+    public: void OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
 
-    /// \brief ROS camera name
-    private: std::string camera_name_;
+	protected: virtual void OnNewFrame(const unsigned char *_image,
+                   unsigned int _width, unsigned int _height,
+                   unsigned int _depth, const std::string &_format);
+                   
+    private: void PutThermalData(common::Time &_updateTime);
+    
+    controllers_and_sensors_communications::tpaMsg tmsg;
 
-    /// \brief ROS image topic name
-    protected: std::string image_topic_name_;
-
-    /// \brief Publish CameraInfo to the ROS topic
-    protected: void PublishCameraInfo(ros::Publisher camera_info_publisher);
-    protected: void PublishCameraInfo(common::Time &last_update_time);
-    protected: void PublishCameraInfo();
-    /// \brief Keep track of number of connctions for CameraInfo
-    private: void InfoConnect();
-    private: void InfoDisconnect();
-    /// \brief camera info
-    protected: ros::Publisher camera_info_pub_;
-    protected: std::string camera_info_topic_name_;
-    protected: common::Time last_info_update_time_;
-
-    /// \brief ROS frame transform name to use in the image message header.
-    ///        This should typically match the link name the sensor is attached.
-    protected: std::string frame_name_;
-    /// update rate of this sensor
-    protected: double update_rate_;
-    protected: double update_period_;
-    protected: common::Time last_update_time_;
-
-    protected: double cx_prime_;
-    protected: double cx_;
-    protected: double cy_;
-    protected: double focal_length_;
-    protected: double hack_baseline_;
-    protected: double distortion_k1_;
-    protected: double distortion_k2_;
-    protected: double distortion_k3_;
-    protected: double distortion_t1_;
-    protected: double distortion_t2_;
-
-    /// \brief A mutex to lock access to fields
-    /// that are used in ROS message callbacks
-    protected: boost::mutex lock_;
-
-    /// \brief size of image buffer
-    protected: std::string type_;
-    protected: int skip_;
-
-    private: ros::Subscriber cameraHFOVSubscriber_;
-    private: ros::Subscriber cameraUpdateRateSubscriber_;
-
-    // Time last published, refrain from publish unless new image has
-    // been rendered
-    // Allow dynamic reconfiguration of camera params
-    dynamic_reconfigure::Server<gazebo_plugins::GazeboRosCameraConfig>
-      *dyn_srv_;
-    void configCallback(gazebo_plugins::GazeboRosCameraConfig &config,
-      uint32_t level);
-
-    protected: ros::CallbackQueue camera_queue_;
-    protected: void CameraQueueThread();
-    protected: boost::thread callback_queue_thread_;
-
-
-    // copied from CameraPlugin
-    protected: unsigned int width_, height_, depth_;
-    protected: std::string format_;
-
-    protected: sensors::SensorPtr parentSensor_;
-    protected: rendering::CameraPtr camera_;
-
-    // Pointer to the world
-    protected: physics::WorldPtr world_;
-
-    private: event::ConnectionPtr newFrameConnection_;
-
-    protected: common::Time sensor_update_time_;
-
-    // maintain for one more release for backwards compatibility
-    protected: physics::WorldPtr world;
-
-    // deferred load in case ros is blocking
-    private: sdf::ElementPtr sdf;
-    private: void LoadThread();
-    private: boost::thread deferred_load_thread_;
-    private: event::EventT<void()> load_event_;
-
-    /// \brief True if camera util is initialized
-    protected: bool initialized_;
-
-  };
+	};
+  GZ_REGISTER_SENSOR_PLUGIN(PandoraThermalPlugin)
 }
 #endif

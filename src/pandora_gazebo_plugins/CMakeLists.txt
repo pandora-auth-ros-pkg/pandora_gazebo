@@ -17,30 +17,16 @@ include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
 
-include (FindPkgConfig)
-if (PKG_CONFIG_FOUND)
-  pkg_check_modules(XML libxml-2.0)
-  pkg_check_modules(OGRE OGRE)
-  pkg_check_modules(OGRE-Terrain OGRE-Terrain)
-else()
-  message(FATAL_ERROR "pkg-config is required; please install it")
-endif()
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 find_package(gazebo REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
 
-execute_process(COMMAND
-  pkg-config --variable=plugindir OGRE
-  OUTPUT_VARIABLE OGRE_PLUGIN_PATH
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
 include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 
 link_directories(${GAZEBO_LIBRARY_DIRS} ${catkin_LIBRARY_DIRS})
-include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} ${OGRE_INCLUDE_DIRS} ${OGRE-Terrain_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} )
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -129,7 +115,7 @@ add_executable(pandora_teleop_key src/pandora_teleop_key.cpp  )
 target_link_libraries(pandora_teleop_key ${catkin_LIBRARIES}
 										)
 add_library(pandora_thermal_plugin src/pandora_thermal_plugin.cpp)
-target_link_libraries(pandora_thermal_plugin ${GAZEBO_LIBRARIES}  ${catkin_LIBRARIES} ${OGRE_LIBRARIES})
+target_link_libraries(pandora_thermal_plugin ${GAZEBO_LIBRARIES}  ${catkin_LIBRARIES}  CameraPlugin)
 
 #############
 ## Install ##
