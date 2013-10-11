@@ -164,23 +164,24 @@ void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){
 	int height=this->parent_camera_sensor_->GetImageHeight();
 	const unsigned char * data=this->parent_camera_sensor_->GetImageData();
 	
-	int * red;
-	red=new int[width];
+	long * red;
+	red=new long[width];
 	for(unsigned int i=0;i<width;i++){
 		red[i]=0;
 	}
 	
 	for(unsigned int i=0;i<width;i++){
 		for(unsigned int j=0;j<height;j++){
-			red[i]+=data[(j*width+i)*3];
+			red[i]+=pow(data[(j*width+i)*3]-data[(j*width+i)*3+1],2);
+			red[i]+=pow(data[(j*width+i)*3]-data[(j*width+i)*3+2],2);
 		}
-		red[i]/=width;
+		red[i]/=width/2;
 	}
 	
 	tmsg.header.stamp = ros::Time::now();
 	tmsg.ambientTemp = data[0];
 	for (int i=0;i<8;i++)	
-		tmsg.pixelTemp[i] = red[i];
+		tmsg.pixelTemp[i] = 15.0+sqrt(red[i]*0.1)/120.0*21.0;
 	this->pub_.publish(this->tmsg);
 }
 }
