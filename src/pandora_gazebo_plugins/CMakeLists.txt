@@ -19,10 +19,9 @@ include_directories(include
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 find_package(gazebo REQUIRED)
-find_package(SDFormat REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
 
-include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} ${OGRE_INCLUDE_DIRS} ${SDFormat_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 
 link_directories(${GAZEBO_LIBRARY_DIRS} ${catkin_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
@@ -104,7 +103,7 @@ target_link_libraries(motion_plugin ${catkin_LIBRARIES}
 										
 				
 add_library(pandora_sonar_plugin src/pandora_sonar_plugin.cpp)
-target_link_libraries(pandora_sonar_plugin gazebo_ros_camera_utils ${GAZEBO_LIBRARIES} ${SDFormat_LIBRARIES} RayPlugin ${catkin_LIBRARIES})
+target_link_libraries(pandora_sonar_plugin gazebo_ros_camera_utils ${GAZEBO_LIBRARIES} RayPlugin ${catkin_LIBRARIES})
 										
 add_executable(twist_publisher src/twist_publisher.cpp  )
 target_link_libraries(twist_publisher ${catkin_LIBRARIES}
