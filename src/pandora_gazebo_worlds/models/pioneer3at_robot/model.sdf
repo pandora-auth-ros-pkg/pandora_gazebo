@@ -228,10 +228,10 @@
 	  <child>pandora_hokuyo::link</child>
 	  <parent>chassis</parent>
 	  <axis>
-	    <xyz>0 0 1</xyz>
+	    <xyz>1 0 1</xyz>
 	    <limit>
-	      <upper>0</upper>
-	      <lower>0</lower>
+	      <upper>100</upper>
+	      <lower>-100</lower>
 	    </limit>
 	  </axis>
 	</joint>
@@ -287,6 +287,12 @@
 	    </limit>
 	  </axis>
 	</joint>
+	
+	<plugin name="moveJoints" filename="libgazebo_ros_joint_pose_trajectory.so">
+		<robotNamespace></robotNamespace>
+		<topicName>joints</topicName>
+		<updateRate>10</updateRate>
+	</plugin>
   
   </model>
 </sdf>
