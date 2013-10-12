@@ -3,12 +3,12 @@
 	<arg name="gui" default="true"/>
 	
 	<include file="$(find pandora_gazebo_worlds)/launch/start.launch">
-	<arg name="world" value="simple_test_world"/>
+	<arg name="world" value="go_2013_arena"/>
 	<arg name="gui" value="$(arg gui)"/> 
 	</include>
 	
 	<include file="$(find pandora_gazebo_worlds)/launch/pioneer3at_static_transforms.launch" />
 	
-	<node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" args="-file $(find pandora_gazebo_worlds)/models/pioneer3at_robot/model.sdf -sdf -y -2 -x -1 -z 0.5 -model pioneer3at_robot" />
+	<node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" args="-file $(find pandora_gazebo_worlds)/models/pioneer3at_robot/model.sdf -sdf -x 0 -y 0 -z 0.5 -model pioneer3at_robot" />
 	
 </launch>
