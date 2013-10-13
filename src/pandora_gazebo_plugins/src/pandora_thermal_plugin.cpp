@@ -99,6 +99,20 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
       boost::bind( &PandoraThermalPlugin::CameraConnect,this),
       boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_ = this->rosnode_->advertise(ao);
+    
+    ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
+      (this->topic_name_+"/viz/image"),1,
+      boost::bind( &PandoraThermalPlugin::CameraConnect,this),
+      boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+    this->pub_viz = this->rosnode_->advertise(ao2);
+    
+    ros::AdvertiseOptions cio =
+		ros::AdvertiseOptions::create<sensor_msgs::CameraInfo>(
+		(this->topic_name_+"/viz/camera_info"), 2,
+		boost::bind(&PandoraThermalPlugin::CameraConnect, this),
+		boost::bind(&PandoraThermalPlugin::CameraDisconnect, this),
+		ros::VoidPtr(), &this->camera_queue_);
+	  this->camera_info_pub_ = this->rosnode_->advertise(cio);
   }
 
 
@@ -108,9 +122,6 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   this->parent_camera_sensor_->SetActive(false);
   // start custom queue for laser
   this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraThermalPlugin::CameraQueueThread,this ) );
-  
-  std::cout<<"SLSLSLSLS\n";
-
 }
 
 // Increment count
@@ -159,6 +170,7 @@ void PandoraThermalPlugin::OnNewFrame(const unsigned char *_image,
 }
 
 void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){	
+	
 	double hfov = this->parent_camera_sensor_->GetCamera()->GetHFOV().Radian();
 	int width=this->parent_camera_sensor_->GetImageWidth();
 	int height=this->parent_camera_sensor_->GetImageHeight();
@@ -183,5 +195,40 @@ void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){
 	for (int i=0;i<8;i++)	
 		tmsg.pixelTemp[i] = 15.0+sqrt(red[i]*0.1)/120.0*21.0;
 	this->pub_.publish(this->tmsg);
+	
+	//--------------------------------------------------------------------
+	
+	sensor_msgs::Image imgviz;
+	imgviz.header.stamp = ros::Time::now();
+	imgviz.header.frame_id = this->frame_name_;
+	imgviz.height=8;
+	imgviz.width=8;
+	imgviz.step=8*3;
+	imgviz.encoding="bgr8";
+	float temp;
+	
+	for(unsigned int i=0;i<width;i++){
+		for(unsigned int j=0;j<height;j++){
+			temp=pow(data[(i*height+j)*3]-data[(i*height+j)*3+1],2);
+			temp+=pow(data[(i*height+j)*3]-data[(i*height+j)*3+2],2);
+			temp=sqrt(temp)/361.0; // 361=sqrt(255.0^2+255^2)
+			
+			imgviz.data.push_back((char)(temp*255.0));
+			imgviz.data.push_back((char)(temp*255.0));
+			imgviz.data.push_back((char)(temp*255.0));
+		}
+	}
+
+	this->pub_viz.publish(imgviz);
+	
+	  sensor_msgs::CameraInfo camera_info_msg;
+  // fill CameraInfo
+  camera_info_msg.header.frame_id = this->frame_name_;
+
+  camera_info_msg.header.stamp = ros::Time::now();
+  camera_info_msg.height = 8;
+  camera_info_msg.width  = 8;
+
+  camera_info_pub_.publish(camera_info_msg);
 }
 }
