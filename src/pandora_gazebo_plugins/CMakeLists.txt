@@ -106,6 +106,9 @@ target_link_libraries(motion_plugin ${catkin_LIBRARIES}
 				
 add_library(pandora_sonar_plugin src/pandora_sonar_plugin.cpp)
 target_link_libraries(pandora_sonar_plugin gazebo_ros_camera_utils ${GAZEBO_LIBRARIES} RayPlugin ${catkin_LIBRARIES})
+
+add_library(pandora_imu_stabilizer_plugin src/pandora_imu_stabilizer_plugin.cpp)
+target_link_libraries(pandora_imu_stabilizer_plugin ${GAZEBO_LIBRARIES} ${SDFormat_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 										
 add_executable(twist_publisher src/twist_publisher.cpp  )
 target_link_libraries(twist_publisher ${catkin_LIBRARIES}

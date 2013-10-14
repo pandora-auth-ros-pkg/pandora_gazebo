@@ -211,7 +211,7 @@
 	    <odometryFrame>odom</odometryFrame>
 	</plugin>
 	
-	<plugin name="RosImuPlugin" filename="libgazebo_ros_imu.so">
+	<plugin name="RosImuPlugin" filename="libpandora_imu_stabilizer_plugin.so">
 		<topicName>/sensors/imu</topicName>
 		<bodyName>chassis</bodyName>
 		<updateRate>50.0</updateRate>
@@ -220,6 +220,8 @@
 	    <gaussianNoise>0.0</gaussianNoise>
 	    <xyzOffset>0 0 0</xyzOffset>
 	    <rpyOffset>0 0 0</rpyOffset>
+	    <rollCorrectionJoint>joint_h_hb</rollCorrectionJoint>
+	    <pitchCorrectionJoint>joint_hb_ch</pitchCorrectionJoint>
 	</plugin>
   
 	<link name="hokuyo_base">
@@ -230,8 +232,15 @@
 		<uri>model://pandora_hokuyo</uri>
 		<pose>0.25 0 0.15 0 0 0</pose>
 	</include>
-	<joint name="hokuyo_joint" type="revolute">
+	<joint name="joint_h_hb" type="revolute">
 	  <child>pandora_hokuyo::laser</child>
+	  <parent>hokuyo_base</parent>
+	  <axis>
+	    <xyz>1 0 0</xyz>
+	  </axis>
+	</joint>
+	<joint name="joint_hb_ch" type="revolute">
+	  <child>hokuyo_base</child>
 	  <parent>chassis</parent>
 	  <axis>
 	    <xyz>0 1 0</xyz>
@@ -306,11 +315,13 @@
 	  </axis>
 	</joint>
 	
+<!--
 	<plugin name="moveJoints" filename="libgazebo_ros_joint_pose_trajectory.so">
 		<robotNamespace></robotNamespace>
 		<topicName>joints</topicName>
 		<updateRate>10</updateRate>
 	</plugin>
+-->
   
   </model>
 </sdf>
