@@ -176,27 +176,14 @@ void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){
 	int height=this->parent_camera_sensor_->GetImageHeight();
 	const unsigned char * data=this->parent_camera_sensor_->GetImageData();
 	
+	//--------------------------------------------------------------------
+	
 	long * red;
 	red=new long[width];
 	for(unsigned int i=0;i<width;i++){
 		red[i]=0;
 	}
-	
-	for(unsigned int i=0;i<width;i++){
-		for(unsigned int j=0;j<height;j++){
-			red[i]+=pow(data[(j*width+i)*3]-data[(j*width+i)*3+1],2);
-			red[i]+=pow(data[(j*width+i)*3]-data[(j*width+i)*3+2],2);
-		}
-		red[i]/=width/2;
-	}
-	
-	tmsg.header.stamp = ros::Time::now();
-	tmsg.ambientTemp = data[0];
-	for (int i=0;i<8;i++)	
-		tmsg.pixelTemp[i] = 15.0+sqrt(red[i]*0.1)/120.0*21.0;
-	this->pub_.publish(this->tmsg);
-	
-	//--------------------------------------------------------------------
+	float maxtemp=0;
 	
 	sensor_msgs::Image imgviz;
 	imgviz.header.stamp = ros::Time::now();
@@ -208,7 +195,9 @@ void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){
 	float temp;
 	
 	for(unsigned int i=0;i<width;i++){
+		float maxtemp=0;
 		for(unsigned int j=0;j<height;j++){
+			
 			temp=pow(data[(i*height+j)*3]-data[(i*height+j)*3+1],2);
 			temp+=pow(data[(i*height+j)*3]-data[(i*height+j)*3+2],2);
 			temp=sqrt(temp)/361.0; // 361=sqrt(255.0^2+255^2)
@@ -216,19 +205,42 @@ void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){
 			imgviz.data.push_back((char)(temp*255.0));
 			imgviz.data.push_back((char)(temp*255.0));
 			imgviz.data.push_back((char)(temp*255.0));
+			
+			
 		}
+		
+	}
+	for(unsigned int i=0;i<width;i++){
+		float maxtemp=0;
+		for(unsigned int j=0;j<height;j++){
+			temp=pow(data[(j*width+i)*3]-data[(j*width+i)*3+1],2);
+			temp+=pow(data[(j*width+i)*3]-data[(j*width+i)*3+2],2);
+			temp=sqrt(temp)/361.0;
+			if(maxtemp<temp)
+				maxtemp=temp;
+		}
+		red[i]=15.0+maxtemp*25.0;
 	}
 
 	this->pub_viz.publish(imgviz);
+	//-----------------------------------------------------------//
 	
-	  sensor_msgs::CameraInfo camera_info_msg;
-  // fill CameraInfo
-  camera_info_msg.header.frame_id = this->frame_name_;
+	tmsg.header.stamp = ros::Time::now();
+	tmsg.ambientTemp = 25.0;
+	for (int i=0;i<width;i++)	
+		tmsg.pixelTemp[i] = red[i];
+		
+	this->pub_.publish(this->tmsg);
+	
+	//---------------------------------------------------------------//
+	sensor_msgs::CameraInfo camera_info_msg;
+	// fill CameraInfo
+	camera_info_msg.header.frame_id = this->frame_name_;
 
-  camera_info_msg.header.stamp = ros::Time::now();
-  camera_info_msg.height = 8;
-  camera_info_msg.width  = 8;
+	camera_info_msg.header.stamp = ros::Time::now();
+	camera_info_msg.height = 8;
+	camera_info_msg.width  = 8;
 
-  camera_info_pub_.publish(camera_info_msg);
+	camera_info_pub_.publish(camera_info_msg);
 }
 }
