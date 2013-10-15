@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="pandora_co2">
+    <pose>0 0 0.036 0 0 0</pose>
+      
+      <link name="co2">
+        <inertial>
+			<mass>0.1</mass>
+		</inertial>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+				<uri>model://pandora_co2/meshes/co2_small.dae</uri>
+			</mesh>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+	            <size>0.01 0.01 0.01</size>
+	        </box>
+          </geometry>
+        </collision>
+      
+      <sensor name="co2" type="camera">
+        <camera>
+          <horizontal_fov>1.5</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>0.8</far>
+          </clip>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>5</update_rate>
+        <visualize>false</visualize>
+        <plugin name="co2ros" filename="libpandora_co2_plugin.so">
+			<frameName>co2</frameName>
+			<topicName>sensors/co2</topicName>
+		</plugin>
+      </sensor>
+    </link>
+  </model>
+</sdf>

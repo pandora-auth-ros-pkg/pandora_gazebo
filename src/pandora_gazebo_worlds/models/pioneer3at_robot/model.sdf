@@ -315,6 +315,39 @@
 	  </axis>
 	</joint>
 	
+	
+	<include>
+		<uri>model://pandora_co2</uri>
+		<pose>0.2 0 0.36 0 0 0</pose>
+	</include>
+	<joint name="co2_joint" type="revolute">
+	  <child>pandora_co2::co2</child>
+	  <parent>chassis</parent>
+	  <axis>
+	    <xyz>0 0 1</xyz>
+	    <limit>
+	      <upper>0</upper>
+	      <lower>0</lower>
+	    </limit>
+	  </axis>
+	</joint>
+	
+	<include>
+		<uri>model://pandora_microphone</uri>
+		<pose>0.2 0 0.38 0 0 0</pose>
+	</include>
+	<joint name="microphone_joint" type="revolute">
+	  <child>pandora_microphone::microphone</child>
+	  <parent>chassis</parent>
+	  <axis>
+	    <xyz>0 0 1</xyz>
+	    <limit>
+	      <upper>0</upper>
+	      <lower>0</lower>
+	    </limit>
+	  </axis>
+	</joint>
+	
 <!--
 	<plugin name="moveJoints" filename="libgazebo_ros_joint_pose_trajectory.so">
 		<robotNamespace></robotNamespace>
