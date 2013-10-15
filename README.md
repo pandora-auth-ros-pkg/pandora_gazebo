@@ -2,5 +2,5 @@
 
 Provides packages for robot simulation with gazebo (plugins, worlds).
 
-### Documetation and tutorials
+### Documentation and tutorials
 On pandora_gazebo [wiki](https://github.com/pandora-auth-ros-pkg/pandora_gazebo/wiki)  
