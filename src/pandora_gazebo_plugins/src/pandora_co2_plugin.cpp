@@ -161,31 +161,28 @@ void PandoraCo2Plugin::PutCo2Data(common::Time &_updateTime){
 	const unsigned char * data=this->parent_camera_sensor_->GetImageData();
 	
 	//--------------------------------------------------------------------
-	
-	long * red;
-	red=new long[width];
-	for(unsigned int i=0;i<width;i++){
-		red[i]=0;
-	}
+//-------------------------------------------------------------------
 	float maxtemp=0;
 
 	float temp;
 
 	temp=0;
-	float sumPpm=0;
+	float maxPpm=0;
 	for(unsigned int i=0;i<width;i++){
 		for(unsigned int j=0;j<height;j++){
 			temp=pow(data[(j*width+i)*3+1]-data[(j*width+i)*3],2);
 			temp+=pow(data[(j*width+i)*3+1]-data[(j*width+i)*3+2],2);
 			temp=sqrt(temp)/361.0;
-			sumPpm+=temp;
+			if(maxPpm<temp){
+				maxPpm=temp;
+			}
 		}
 	}
-	sumPpm/=width*height;
 	//-----------------------------------------------------------//
-	
+
+	this->pub_.publish(this->tmsg);
 	tmsg.header.stamp = ros::Time::now();
-	tmsg.ppm = 2000*sumPpm;
+	tmsg.ppm = 1000+700*maxPpm;
 		
 	this->pub_.publish(this->tmsg);
 }

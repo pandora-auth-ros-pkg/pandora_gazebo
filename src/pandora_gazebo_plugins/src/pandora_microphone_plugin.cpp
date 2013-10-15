@@ -160,36 +160,31 @@ void PandoraMicrophonePlugin::PutMicrophoneData(common::Time &_updateTime){
 	int height=this->parent_camera_sensor_->GetImageHeight();
 	const unsigned char * data=this->parent_camera_sensor_->GetImageData();
 	
-	//--------------------------------------------------------------------
-	
-	long * red;
-	red=new long[width];
-	for(unsigned int i=0;i<width;i++){
-		red[i]=0;
-	}
+	//-------------------------------------------------------------------
 	float maxtemp=0;
 
 	float temp;
 
 	temp=0;
-	float sumPpm=0;
+	float maxPpm=0;
 	for(unsigned int i=0;i<width;i++){
 		for(unsigned int j=0;j<height;j++){
 			temp=pow(data[(j*width+i)*3+2]-data[(j*width+i)*3],2);
 			temp+=pow(data[(j*width+i)*3+2]-data[(j*width+i)*3+1],2);
 			temp=sqrt(temp)/361.0;
-			sumPpm+=temp;
+			if(maxPpm<temp){
+				maxPpm=temp;
+			}
 		}
 	}
-	sumPpm/=width*height;
 	//-----------------------------------------------------------//
-	if(sumPpm>0.1)
+	if(maxPpm>0.9)
 		tmsg.soundExists=true;
 	else
 		tmsg.soundExists=false;
 		
 	tmsg.header.stamp = ros::Time::now();
-	tmsg.certainty = sumPpm;
+	tmsg.certainty = maxPpm;
 		
 	this->pub_.publish(this->tmsg);
 }
