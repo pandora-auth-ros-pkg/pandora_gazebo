@@ -99,6 +99,12 @@ void PandoraMicrophonePlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _
       boost::bind( &PandoraMicrophonePlugin::CameraConnect,this),
       boost::bind( &PandoraMicrophonePlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_ = this->rosnode_->advertise(ao);
+    
+    ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
+      (this->topic_name_+"/viz/image"),1,
+      boost::bind( &PandoraMicrophonePlugin::CameraConnect,this),
+      boost::bind( &PandoraMicrophonePlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+    this->pub_viz = this->rosnode_->advertise(ao2);
   // Initialize the controller
 	}
 
@@ -187,5 +193,31 @@ void PandoraMicrophonePlugin::PutMicrophoneData(common::Time &_updateTime){
 	tmsg.certainty = maxPpm;
 		
 	this->pub_.publish(this->tmsg);
+	
+	//----------------------------------------------------------------//
+	
+	sensor_msgs::Image imgviz;
+	imgviz.header.stamp = ros::Time::now();
+	imgviz.header.frame_id = this->frame_name_;
+	imgviz.height=height;
+	imgviz.width=width;
+	imgviz.step=width*3;
+	imgviz.encoding="bgr8";
+	
+	for(unsigned int i=0;i<width;i++){
+		float maxtemp=0;
+		for(unsigned int j=0;j<height;j++){
+			temp=pow(data[(i*height+j)*3+2]-data[(i*height+j)*3],2);
+			temp+=pow(data[(i*height+j)*3+2]-data[(i*height+j)*3+1],2);
+			temp=sqrt(temp)/361.0;
+			imgviz.data.push_back((char)(temp*255.0));
+			imgviz.data.push_back((char)(temp*255.0));
+			imgviz.data.push_back((char)(temp*255.0));
+		}
+	}
+	this->pub_viz.publish(imgviz);
+	
+	usleep(100000);
+
 }
 }

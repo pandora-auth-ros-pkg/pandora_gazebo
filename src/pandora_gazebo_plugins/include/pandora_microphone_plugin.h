@@ -61,6 +61,8 @@ namespace gazebo
     /// \brief pointer to ros node
     private: ros::NodeHandle* rosnode_;
     private: ros::Publisher pub_;
+    private: ros::Publisher pub_viz;
+    private: ros::Publisher camera_info_pub_;
    
     /// \brief topic name
     private: std::string topic_name_;

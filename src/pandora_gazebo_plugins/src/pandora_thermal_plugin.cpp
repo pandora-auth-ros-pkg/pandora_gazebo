@@ -242,5 +242,7 @@ void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){
 	camera_info_msg.width  = 8;
 
 	camera_info_pub_.publish(camera_info_msg);
+	
+	usleep(100000);
 }
 }

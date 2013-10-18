@@ -92,29 +92,29 @@ void TeleopTurtle::keyLoop()
       exit(-1);
     }
 
-    linear_=angular_=0;
+    //~ linear_=angular_=0;
     ROS_DEBUG("value: 0x%02X\n", c);
   
     switch(c)
     {
       case KEYCODE_L:
         ROS_DEBUG("LEFT");
-        angular_ = 0.5;
+        angular_ += 0.25;
         dirty = true;
         break;
       case KEYCODE_R:
         ROS_DEBUG("RIGHT");
-        angular_ = -0.5;
+        angular_ += -0.25;
         dirty = true;
         break;
       case KEYCODE_U:
         ROS_DEBUG("UP");
-        linear_ = 0.5;
+        linear_ += 0.25;
         dirty = true;
         break;
       case KEYCODE_D:
         ROS_DEBUG("DOWN");
-        linear_ = -0.5;
+        linear_ += -0.25;
         dirty = true;
         break;
       case KEYCODE_H:
