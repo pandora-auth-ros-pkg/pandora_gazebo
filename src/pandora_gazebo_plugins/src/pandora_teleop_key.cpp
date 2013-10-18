@@ -10,6 +10,7 @@
 #define KEYCODE_U 0x41
 #define KEYCODE_D 0x42
 #define KEYCODE_Q 0x71
+#define KEYCODE_H 'h'
 
 class TeleopTurtle
 {
@@ -98,22 +99,28 @@ void TeleopTurtle::keyLoop()
     {
       case KEYCODE_L:
         ROS_DEBUG("LEFT");
-        angular_ = 1.0;
+        angular_ = 0.5;
         dirty = true;
         break;
       case KEYCODE_R:
         ROS_DEBUG("RIGHT");
-        angular_ = -1.0;
+        angular_ = -0.5;
         dirty = true;
         break;
       case KEYCODE_U:
         ROS_DEBUG("UP");
-        linear_ = 1.0;
+        linear_ = 0.5;
         dirty = true;
         break;
       case KEYCODE_D:
         ROS_DEBUG("DOWN");
-        linear_ = -1.0;
+        linear_ = -0.5;
+        dirty = true;
+        break;
+      case KEYCODE_H:
+        ROS_DEBUG("HALT");
+        linear_ = 0.0;
+        angular_= 0.0;
         dirty = true;
         break;
       default:
