@@ -121,7 +121,11 @@ target_link_libraries(pandora_teleop_key ${catkin_LIBRARIES}
 add_library(pandora_thermal_plugin src/pandora_thermal_plugin.cpp)
 target_link_libraries(pandora_thermal_plugin ${GAZEBO_LIBRARIES}  ${catkin_LIBRARIES}  CameraPlugin)
 
+add_library(pandora_co2_plugin src/pandora_co2_plugin.cpp)
+target_link_libraries(pandora_co2_plugin ${GAZEBO_LIBRARIES}  ${catkin_LIBRARIES}  CameraPlugin)
 
+add_library(pandora_microphone_plugin src/pandora_microphone_plugin.cpp)
+target_link_libraries(pandora_microphone_plugin ${GAZEBO_LIBRARIES}  ${catkin_LIBRARIES}  CameraPlugin)
 #############
 ## Install ##
 #############

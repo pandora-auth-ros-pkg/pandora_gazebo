@@ -17,13 +17,13 @@
 
 
 
-#include "pandora_thermal_plugin.h"
+#include "pandora_co2_plugin.h"
 
 namespace gazebo
 {
 ////////////////////////////////////////////////////////////////////////////////
 // Load the controller
-void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
+void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
 {
   // load plugin
   CameraPlugin::Load(_parent, _sdf);
@@ -43,7 +43,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   this->parent_camera_sensor_ = boost::dynamic_pointer_cast<sensors::CameraSensor>(this->parent_sensor_);
 
   if (!this->parent_camera_sensor_)
-    gzthrow("PandoraThermalPlugin controller requires a Camera Sensor as its parent");
+    gzthrow("PandoraCo2Plugin controller requires a Camera Sensor as its parent");
 
   this->robot_namespace_ = "";
   if (_sdf->HasElement("robotNamespace"))
@@ -51,7 +51,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
 
   if (!_sdf->HasElement("frameName"))
   {
-    ROS_INFO("Thermal plugin missing <frameName>, defaults to /world");
+    ROS_INFO("Co2 plugin missing <frameName>, defaults to /world");
     this->frame_name_ = "/world";
   }
   else
@@ -61,7 +61,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
 
   if (!_sdf->HasElement("topicName"))
   {
-    ROS_INFO("Thermal plugin missing <topicName>, defaults to /world");
+    ROS_INFO("Co2 plugin missing <topicName>, defaults to /world");
     this->topic_name_ = "/world";
   }
   else
@@ -94,45 +94,36 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   if (this->topic_name_ != "")
   {
     // Custom Callback Queue
-    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<controllers_and_sensors_communications::tpaMsg>(
+    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<controllers_and_sensors_communications::co2Msg>(
       this->topic_name_,1,
-      boost::bind( &PandoraThermalPlugin::CameraConnect,this),
-      boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+      boost::bind( &PandoraCo2Plugin::CameraConnect,this),
+      boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_ = this->rosnode_->advertise(ao);
+    
     
     ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
       (this->topic_name_+"/viz/image"),1,
-      boost::bind( &PandoraThermalPlugin::CameraConnect,this),
-      boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+      boost::bind( &PandoraCo2Plugin::CameraConnect,this),
+      boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_viz = this->rosnode_->advertise(ao2);
-    
-    ros::AdvertiseOptions cio =
-		ros::AdvertiseOptions::create<sensor_msgs::CameraInfo>(
-		(this->topic_name_+"/viz/camera_info"), 2,
-		boost::bind(&PandoraThermalPlugin::CameraConnect, this),
-		boost::bind(&PandoraThermalPlugin::CameraDisconnect, this),
-		ros::VoidPtr(), &this->camera_queue_);
-	  this->camera_info_pub_ = this->rosnode_->advertise(cio);
-  }
-
-
   // Initialize the controller
+	}
 
   // sensor generation off by default
   this->parent_camera_sensor_->SetActive(false);
   // start custom queue for laser
-  this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraThermalPlugin::CameraQueueThread,this ) );
+  this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraCo2Plugin::CameraQueueThread,this ) );
 }
 
 // Increment count
-void PandoraThermalPlugin::CameraConnect()
+void PandoraCo2Plugin::CameraConnect()
 {
   this->camera_connect_count_++;
   this->parent_camera_sensor_->SetActive(true);
 }
 ////////////////////////////////////////////////////////////////////////////////
 // Decrement count
-void PandoraThermalPlugin::CameraDisconnect()
+void PandoraCo2Plugin::CameraDisconnect()
 {
   this->camera_connect_count_--;
 
@@ -140,7 +131,7 @@ void PandoraThermalPlugin::CameraDisconnect()
     this->parent_camera_sensor_->SetActive(false);
 }
 
-void PandoraThermalPlugin::CameraQueueThread()
+void PandoraCo2Plugin::CameraQueueThread()
 {
   static const double timeout = 0.01;
 
@@ -150,7 +141,7 @@ void PandoraThermalPlugin::CameraQueueThread()
   }
 }
 
-void PandoraThermalPlugin::OnNewFrame(const unsigned char *_image,
+void PandoraCo2Plugin::OnNewFrame(const unsigned char *_image,
                    unsigned int _width, unsigned int _height,
                    unsigned int _depth, const std::string &_format)
 {
@@ -159,17 +150,17 @@ void PandoraThermalPlugin::OnNewFrame(const unsigned char *_image,
     common::Time sensor_update_time = this->parent_sensor_->GetLastUpdateTime();
     if (last_update_time_ < sensor_update_time)
     {
-      this->PutThermalData(sensor_update_time);
+      this->PutCo2Data(sensor_update_time);
       last_update_time_ = sensor_update_time;
     }
   }
   else
   {
-    ROS_INFO("gazebo_ros_thermal topic name not set");
+    ROS_INFO("gazebo_ros_co2 topic name not set");
   }
 }
 
-void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){	
+void PandoraCo2Plugin::PutCo2Data(common::Time &_updateTime){	
 	
 	double hfov = this->parent_camera_sensor_->GetCamera()->GetHFOV().Radian();
 	int width=this->parent_camera_sensor_->GetImageWidth();
@@ -177,71 +168,54 @@ void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){
 	const unsigned char * data=this->parent_camera_sensor_->GetImageData();
 	
 	//--------------------------------------------------------------------
-	
-	long * red;
-	red=new long[width];
-	for(unsigned int i=0;i<width;i++){
-		red[i]=0;
-	}
+//-------------------------------------------------------------------
 	float maxtemp=0;
-	
-	sensor_msgs::Image imgviz;
-	imgviz.header.stamp = ros::Time::now();
-	imgviz.header.frame_id = this->frame_name_;
-	imgviz.height=8;
-	imgviz.width=8;
-	imgviz.step=8*3;
-	imgviz.encoding="bgr8";
-	float temp;
-	
-	for(unsigned int i=0;i<width;i++){
-		float maxtemp=0;
-		for(unsigned int j=0;j<height;j++){
-			
-			temp=pow(data[(i*height+j)*3]-data[(i*height+j)*3+1],2);
-			temp+=pow(data[(i*height+j)*3]-data[(i*height+j)*3+2],2);
-			temp=sqrt(temp)/361.0; // 361=sqrt(255.0^2+255^2)
-			
-			imgviz.data.push_back((char)(temp*255.0));
-			imgviz.data.push_back((char)(temp*255.0));
-			imgviz.data.push_back((char)(temp*255.0));
-			
-			
-		}
-		
-	}
-	for(unsigned int i=0;i<width;i++){
-		float maxtemp=0;
-		for(unsigned int j=0;j<height;j++){
-			temp=pow(data[(j*width+i)*3]-data[(j*width+i)*3+1],2);
-			temp+=pow(data[(j*width+i)*3]-data[(j*width+i)*3+2],2);
-			temp=sqrt(temp)/361.0;
-			if(maxtemp<temp)
-				maxtemp=temp;
-		}
-		red[i]=15.0+maxtemp*25.0;
-	}
 
-	this->pub_viz.publish(imgviz);
+	float temp;
+
+	temp=0;
+	float maxPpm=0;
+	for(unsigned int i=0;i<width;i++){
+		for(unsigned int j=0;j<height;j++){
+			temp=pow(data[(j*width+i)*3+1]-data[(j*width+i)*3],2);
+			temp+=pow(data[(j*width+i)*3+1]-data[(j*width+i)*3+2],2);
+			temp=sqrt(temp)/361.0;
+			if(maxPpm<temp){
+				maxPpm=temp;
+			}
+		}
+	}
 	//-----------------------------------------------------------//
-	
+
+	this->pub_.publish(this->tmsg);
 	tmsg.header.stamp = ros::Time::now();
-	tmsg.ambientTemp = 25.0;
-	for (int i=0;i<width;i++)	
-		tmsg.pixelTemp[i] = red[i];
+	tmsg.ppm = 1000+700*maxPpm;
 		
 	this->pub_.publish(this->tmsg);
 	
-	//---------------------------------------------------------------//
-	sensor_msgs::CameraInfo camera_info_msg;
-	// fill CameraInfo
-	camera_info_msg.header.frame_id = this->frame_name_;
-
-	camera_info_msg.header.stamp = ros::Time::now();
-	camera_info_msg.height = 8;
-	camera_info_msg.width  = 8;
-
-	camera_info_pub_.publish(camera_info_msg);
+	//----------------------------------------------------------//
+	sensor_msgs::Image imgviz;
+	imgviz.header.stamp = ros::Time::now();
+	imgviz.header.frame_id = this->frame_name_;
+	imgviz.height=height;
+	imgviz.width=width;
+	imgviz.step=width*3;
+	imgviz.encoding="bgr8";
+	
+	for(unsigned int i=0;i<width;i++){
+		float maxtemp=0;
+		for(unsigned int j=0;j<height;j++){
+			temp=pow(data[(i*height+j)*3+1]-data[(i*height+j)*3],2);
+			temp+=pow(data[(i*height+j)*3+1]-data[(i*height+j)*3+2],2);
+			temp=sqrt(temp)/361.0;
+			imgviz.data.push_back((char)(temp*255.0));
+			imgviz.data.push_back((char)(temp*255.0));
+			imgviz.data.push_back((char)(temp*255.0));
+		}
+	}
+	this->pub_viz.publish(imgviz);
+	
+	//------------------------------------------------------------//
 	
 	usleep(100000);
 }
