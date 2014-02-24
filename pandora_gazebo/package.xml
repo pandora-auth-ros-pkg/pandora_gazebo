@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <name>pandora_gazebo</name> <!-- This is a meta package! -->
+  <version>0.1.0</version>
+  <description>Packages used for creating a simulated environment for PANDORA ugv.</description>
+
+  <maintainer email="zalidis@gmail.com">Chris Zalidis</maintainer>
+
+  <license>BSD</license>
+
+  <author>Manos Tsardoulias, Chris Zalidis</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <run_depend>pandora_gazebo_plugins</run_depend>
+  <run_depend>pandora_gazebo_worlds</run_depend>
+ 
+
+  <export>
+    <metapackage/>
+  </export>
+</package>
