@@ -210,22 +210,21 @@ bool GazeboRosIMU::ServiceCallback(std_srvs::Empty::Request &req,
 // Update the controller
 void GazeboRosIMU::UpdateChild()
 {
+  math::Pose pose;
+  math::Quaternion rot;
+  math::Vector3 pos;
+
+  // Get Pose/Orientation ///@todo: verify correctness
+  pose = this->link->GetWorldPose();
+  // apply xyz offsets and get position and rotation components
+  pos = pose.pos + this->offset_.pos;
+  rot = pose.rot;
+
+  // apply rpy offsets
+  rot = this->offset_.rot*rot;
+  rot.Normalize();
   if ((this->pub_.getNumSubscribers() > 0 && this->topic_name_ != ""))
   {
-    math::Pose pose;
-    math::Quaternion rot;
-    math::Vector3 pos;
-
-    // Get Pose/Orientation ///@todo: verify correctness
-    pose = this->link->GetWorldPose();
-    // apply xyz offsets and get position and rotation components
-    pos = pose.pos + this->offset_.pos;
-    rot = pose.rot;
-
-    // apply rpy offsets
-    rot = this->offset_.rot*rot;
-    rot.Normalize();
-
     common::Time cur_time = this->world_->GetSimTime();
 
     // get Rates
@@ -305,12 +304,12 @@ void GazeboRosIMU::UpdateChild()
           this->pub_Queue->push(this->imu_msg_, this->pub_);
     }
     
-    jointRoll_->SetAngle(0,-rot.GetRoll()); 	
-    jointPitch_->SetAngle(0,-rot.GetPitch()); 	
-
     // save last time stamp
     this->last_time_ = cur_time;
   }
+  
+  jointRoll_->SetAngle(0,-rot.GetRoll());
+  jointPitch_->SetAngle(0,-rot.GetPitch());
 }
 
 
