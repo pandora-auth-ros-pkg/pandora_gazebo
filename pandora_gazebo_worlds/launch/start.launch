@@ -1,10 +1,20 @@
 <launch>
-  <arg name="world"/>
+  <arg name="world" default="empty"/>
+  <arg name="robot" default="pioneer3at"/>
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="z" default="0"/>
+  <arg name="Y" default="0"/>
   <arg name="gui" default="true"/>
   
   <param name="/use_sim_time" value="true" />
 
   <node name="gazebo" pkg="gazebo_ros" type="gzserver" args="$(find pandora_gazebo_worlds)/worlds/$(arg world)/$(arg world).world" respawn="false" output="screen"/>
+  
+  <include file="$(find pandora_robots_description)/launch/$(arg robot)_description.launch" />
+  
+  <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" 
+      args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y) -model $(arg robot)_robot -param robot_description" />
   
     <!-- start gui -->
   <group if="$(arg gui)">
