@@ -87,6 +87,7 @@ target_link_libraries(pandora_co2_plugin
 )
 
 add_library(pandora_microphone_plugin src/pandora_microphone_plugin.cpp)
+add_dependencies(pandora_microphone_plugin controllers_and_sensors_communications_gencpp)
 target_link_libraries(pandora_microphone_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}
