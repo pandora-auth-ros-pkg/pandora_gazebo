@@ -26,6 +26,7 @@
 #include <ros/callback_queue.h>
 #include <ros/advertise_options.h>
 #include <sensor_msgs/Imu.h>
+#include <sensor_msgs/JointState.h>
 #include <std_srvs/Empty.h>
 
 #include <gazebo/physics/physics.hh>
@@ -60,10 +61,15 @@ namespace gazebo
     /// \brief pointer to ros node
     private: ros::NodeHandle* rosnode_;
     private: ros::Publisher pub_;
+    private: ros::Publisher joint_state_pub_;
     private: PubQueue<sensor_msgs::Imu>::Ptr pub_Queue;
+    private: PubQueue<sensor_msgs::JointState>::Ptr joint_state_pub_Queue;
 
-    /// \brief ros message
+    /// \brief ros Imu message
     private: sensor_msgs::Imu imu_msg_;
+    
+    /// \brief ros JointState message
+    private: sensor_msgs::JointState joint_state_msg_;
 
     /// \brief store link name
     private: std::string link_name_;
@@ -123,6 +129,7 @@ namespace gazebo
     private: gazebo::physics::JointPtr jointRoll_;
     private: gazebo::physics::JointPtr jointPitch_;
     private: gazebo::physics::ModelPtr model_;
+    
     
   };
 }

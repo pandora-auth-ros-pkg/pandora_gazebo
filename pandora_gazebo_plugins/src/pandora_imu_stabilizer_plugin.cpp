@@ -126,6 +126,7 @@ void GazeboRosIMU::LoadThread()
   else
   {
     this->jointRoll_ = this->model_->GetJoint(this->sdf->Get<std::string>("rollCorrectionJoint"));
+    joint_state_msg_.name.push_back(this->sdf->Get<std::string>("rollCorrectionJoint"));
   }
     
   if (!this->sdf->HasElement("pitchCorrectionJoint"))
@@ -136,6 +137,7 @@ void GazeboRosIMU::LoadThread()
   else
   {
     this->jointPitch_  = this->model_->GetJoint(this->sdf->Get<std::string>("pitchCorrectionJoint"));
+    joint_state_msg_.name.push_back(this->sdf->Get<std::string>("pitchCorrectionJoint"));
   }
     
 
@@ -168,6 +170,9 @@ void GazeboRosIMU::LoadThread()
     this->pub_Queue = this->pmq.addPub<sensor_msgs::Imu>();
     this->pub_ = this->rosnode_->advertise<sensor_msgs::Imu>(
       this->topic_name_, 1);
+    this->joint_state_pub_Queue = this->pmq.addPub<sensor_msgs::JointState>();
+    this->joint_state_pub_ = this->rosnode_->advertise<sensor_msgs::JointState>(
+      "stabilizer_joint_states", 1);
 
     // advertise services on the custom queue
     ros::AdvertiseServiceOptions aso =
@@ -307,9 +312,20 @@ void GazeboRosIMU::UpdateChild()
     // save last time stamp
     this->last_time_ = cur_time;
   }
+	joint_state_msg_.position.clear();
+	joint_state_msg_.header.stamp = ros::Time::now();
   
-  jointRoll_->SetAngle(0,-rot.GetRoll());
-  jointPitch_->SetAngle(0,-rot.GetPitch());
+	jointRoll_->SetAngle(0,-rot.GetRoll());
+	joint_state_msg_.position.push_back(-rot.GetRoll());
+	
+	jointPitch_->SetAngle(0,-rot.GetPitch());
+	joint_state_msg_.position.push_back(-rot.GetPitch());
+	{
+      boost::mutex::scoped_lock lock(this->lock_);
+      // publish to ros
+      this->joint_state_pub_Queue->push(this->joint_state_msg_, this->joint_state_pub_);
+    }
+  
 }
 
 
