@@ -169,80 +169,130 @@ void PandoraThermalPlugin::OnNewFrame(const unsigned char *_image,
   }
 }
 
-void PandoraThermalPlugin::PutThermalData(common::Time &_updateTime){	
+void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) { 	
 	
-	double hfov = this->parent_camera_sensor_->GetCamera()->GetHFOV().Radian();
-	int width=this->parent_camera_sensor_->GetImageWidth();
-	int height=this->parent_camera_sensor_->GetImageHeight();
-	const unsigned char * data=this->parent_camera_sensor_->GetImageData();
+	double hfov = this 
+		       ->parent_camera_sensor_ 
+		        ->GetCamera ( ) 
+			 ->GetHFOV ( ) 
+			  .Radian ( ) ; 
+
+	int width = this 
+		     ->parent_camera_sensor_ 
+		      ->GetImageWidth ( ) ; 
+
+	int height = this 
+		      ->parent_camera_sensor_ 
+		       ->GetImageHeight ( ) ; 
+
+	const unsigned char * data = this 
+				      ->parent_camera_sensor_ 
+				       ->GetImageData ( ) ; 
 	
-	//--------------------------------------------------------------------
+	//----------------------------------------------------------------------
 	
-	long * red;
-	red=new long[width];
-	for(unsigned int i=0;i<width;i++){
-		red[i]=0;
-	}
-	float maxtemp=0;
+	sensor_msgs:: Image imgviz ; 
+
+	imgviz .header .stamp = ros:: Time:: now ( ) ; 
+	imgviz .header .frame_id = this ->frame_name_ ; 
+
+	imgviz .height = height ; 
+	imgviz .width = width ; 
+	imgviz .step = width * 3 ; 
+	imgviz .encoding = "bgr8" ; 
 	
-	sensor_msgs::Image imgviz;
-	imgviz.header.stamp = ros::Time::now();
-	imgviz.header.frame_id = this->frame_name_;
-	imgviz.height=8;
-	imgviz.width=8;
-	imgviz.step=8*3;
-	imgviz.encoding="bgr8";
-	float temp;
+	long * pixelTemp ; 
+
+	pixelTemp = new long [ width ] ; 
+
+	for ( unsigned int i = 0 ; i < width ; i++ ) 
+
+		pixelTemp [ i ] = 0 ; 
+
+	int ambientTemp = 25.0 ; 
 	
-	for(unsigned int i=0;i<width;i++){
-		float maxtemp=0;
-		for(unsigned int j=0;j<height;j++){
+	for ( unsigned int i = 0 ; i < width ; i++ ) { 
+
+		float maxTemp = 0 ; 
+
+		for ( unsigned int j = 0 ; j < height ; j++ ) { 
 			
-			temp=pow(data[(i*height+j)*3]-data[(i*height+j)*3+1],2);
-			temp+=pow(data[(i*height+j)*3]-data[(i*height+j)*3+2],2);
-			temp=sqrt(temp)/361.0; // 361=sqrt(255.0^2+255^2)
+			float currentTemp = 0 ; 
+
+			float R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+			float G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+			float B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+
+			// temperature is represented by red
+			float R1 = ( R - G ) ; 
+			float R2 = ( R - B ) ; 
+
+			float positiveDiff = 0 ; 
+
+			if ( R1 > 0 ) { 
+
+				currentTemp += pow ( R1 , 2 ) ; 
+
+				++ positiveDiff ; 
 			
-			imgviz.data.push_back((char)(temp*255.0));
-			imgviz.data.push_back((char)(temp*255.0));
-			imgviz.data.push_back((char)(temp*255.0));
+			}
+
+			if ( R2 > 0 ) { 
+
+				currentTemp += pow ( R2 , 2 ) ; 
+
+				++ positiveDiff ; 
+
+			}
+			
+			currentTemp = sqrt ( currentTemp ) ; 
+
+			if ( positiveDiff == 1 ) 
+
+				currentTemp /= 255.0 ; 
+
+			else if ( positiveDiff == 2 ) 		
+
+				currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
+					              + pow ( 255.0 , 2 ) ) ; 
+
+			for ( unsigned int k = 0 ; k < 3 ; k++ ) 
+
+				imgviz 
+				 .data 
+				  .push_back ( ( char ) ( currentTemp 
+							  * 255.0 ) ) ; 
+
+			if ( maxTemp < currentTemp ) 
+
+				maxTemp = currentTemp ; 
 			
 			
 		}
-		
-	}
-	for(unsigned int i=0;i<width;i++){
-		float maxtemp=0;
-		for(unsigned int j=0;j<height;j++){
-			temp=pow(data[(j*width+i)*3]-data[(j*width+i)*3+1],2);
-			temp+=pow(data[(j*width+i)*3]-data[(j*width+i)*3+2],2);
-			temp=sqrt(temp)/361.0;
-			if(maxtemp<temp)
-				maxtemp=temp;
-		}
-		red[i]=15.0+maxtemp*25.0;
+
+		// min temperature = ambient = 25
+		// max temperature = ambient + 15 = 40
+		pixelTemp [ i ] = ambientTemp + ( maxTemp * 15.0 ) ; 
+
 	}
 
-	this->pub_viz.publish(imgviz);
-	//-----------------------------------------------------------//
+	this -> pub_viz .publish ( imgviz ) ; 
+
+	//----------------------------------------------------------------------
 	
-	tmsg.header.stamp = ros::Time::now();
-	tmsg.ambientTemp = 25.0;
-	for (int i=0;i<width;i++)	
-		tmsg.pixelTemp[i] = red[i];
+	tmsg .header .stamp = ros:: Time:: now ( ) ; 
+	tmsg .ambientTemp = ambientTemp ; 
+
+	for ( int i = 0 ; i < width ; i++ ) 
+	
+		tmsg .pixelTemp [ i ] = pixelTemp [ i ] ; 
 		
-	this->pub_.publish(this->tmsg);
+	this ->pub_ .publish ( this ->tmsg ) ; 
 	
-	//---------------------------------------------------------------//
-	sensor_msgs::CameraInfo camera_info_msg;
-	// fill CameraInfo
-	camera_info_msg.header.frame_id = this->frame_name_;
-
-	camera_info_msg.header.stamp = ros::Time::now();
-	camera_info_msg.height = 8;
-	camera_info_msg.width  = 8;
-
-	camera_info_pub_.publish(camera_info_msg);
+	//----------------------------------------------------------------------
 	
-	usleep(100000);
+	usleep ( 100000 ) ; 
+
 }
+
 }
