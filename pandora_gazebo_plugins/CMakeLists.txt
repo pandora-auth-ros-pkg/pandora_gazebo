@@ -70,6 +70,14 @@ target_link_libraries(pandora_imu_stabilizer_plugin
     ${Boost_LIBRARIES}
 )
 
+add_library(pandora_differential_skeleton_plugin src/pandora_differential_skeleton_plugin.cpp)
+target_link_libraries(pandora_differential_skeleton_plugin 
+    ${GAZEBO_LIBRARIES} 
+    ${SDFormat_LIBRARIES} 
+    ${catkin_LIBRARIES} 
+    ${Boost_LIBRARIES}
+)
+
 add_library(pandora_thermal_plugin src/pandora_thermal_plugin.cpp)
 add_dependencies(pandora_thermal_plugin controllers_and_sensors_communications_gencpp)
 target_link_libraries(pandora_thermal_plugin
