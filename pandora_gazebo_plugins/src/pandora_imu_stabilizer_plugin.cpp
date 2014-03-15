@@ -312,19 +312,20 @@ void GazeboRosIMU::UpdateChild()
     // save last time stamp
     this->last_time_ = cur_time;
   }
-	joint_state_msg_.position.clear();
-	joint_state_msg_.header.stamp = ros::Time::now();
-  
-	jointRoll_->SetAngle(0,-rot.GetRoll());
-	joint_state_msg_.position.push_back(-rot.GetRoll());
-	
-	jointPitch_->SetAngle(0,-rot.GetPitch());
-	joint_state_msg_.position.push_back(-rot.GetPitch());
-	{
-      boost::mutex::scoped_lock lock(this->lock_);
-      // publish to ros
-      this->joint_state_pub_Queue->push(this->joint_state_msg_, this->joint_state_pub_);
-    }
+  joint_state_msg_.position.clear();
+  joint_state_msg_.header.stamp = ros::Time::now();
+
+  jointRoll_->SetAngle(0,-rot.GetRoll());
+  joint_state_msg_.position.push_back(-rot.GetRoll());
+
+  jointPitch_->SetAngle(0,-rot.GetPitch());
+  joint_state_msg_.position.push_back(-rot.GetPitch());
+
+  {
+    boost::mutex::scoped_lock lock(this->lock_);
+    // publish to ros
+    this->joint_state_pub_Queue->push(this->joint_state_msg_, this->joint_state_pub_);
+  }
   
 }
 
