@@ -20,7 +20,7 @@
  * Date: 1 June 2008
  */
 
-#include "pandora_differential_skeleton_plugin.h"
+#include "pandora_gazebo_plugins/pandora_differential_skeleton_plugin.h"
 
 namespace gazebo
 {

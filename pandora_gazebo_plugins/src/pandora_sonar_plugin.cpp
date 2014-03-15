@@ -23,8 +23,6 @@
 #include <algorithm>
 #include <assert.h>
 
-#include <pandora_sonar_plugin.h>
-
 #include <gazebo/physics/World.hh>
 #include <gazebo/physics/HingeJoint.hh>
 #include <gazebo/sensors/Sensor.hh>
@@ -39,6 +37,8 @@
 #include <sensor_msgs/ChannelFloat32.h>
 
 #include <tf/tf.h>
+
+#include <pandora_gazebo_plugins/pandora_sonar_plugin.h>
 
 namespace gazebo
 {
