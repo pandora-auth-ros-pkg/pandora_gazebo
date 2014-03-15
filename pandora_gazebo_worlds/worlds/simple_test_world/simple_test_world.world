@@ -6,6 +6,10 @@
       <background>0.5 0.5 0.5 1</background>
       <shadows>false</shadows>
     </scene>
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
     <!--
         <physics type="ode">
             <gravity>0 0 -9.81</gravity>
@@ -49,6 +53,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
+              <size>100 100</size>
             </plane>
           </geometry>
           <surface>
@@ -82,6 +87,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
+              <size>100 100</size>
             </plane>
           </geometry>
           <material>
