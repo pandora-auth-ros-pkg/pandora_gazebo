@@ -163,22 +163,22 @@ void PandoraCo2Plugin::OnNewFrame(const unsigned char *_image,
 void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) { 
 
 	double hfov = this 
-		       ->parent_camera_sensor_ 
-		        ->GetCamera ( ) 
-			 ->GetHFOV ( ) 
-			  .Radian ( ) ; 
+		      			 ->parent_camera_sensor_ 
+		    			    ->GetCamera ( ) 
+		 							 ->GetHFOV ( ) 
+			  						.Radian ( ) ; 
 
 	int width = this 
-		     ->parent_camera_sensor_ 
-		      ->GetImageWidth ( ) ; 
+		   			   ->parent_camera_sensor_ 
+		      			->GetImageWidth ( ) ; 
 
 	int height = this 
-		      ->parent_camera_sensor_ 
-		       ->GetImageHeight ( ) ; 
+		     			  ->parent_camera_sensor_ 
+		     			   ->GetImageHeight ( ) ; 
 
 	const unsigned char * data = this 
-				      ->parent_camera_sensor_ 
-				       ->GetImageData ( ) ; 
+				   									    ->parent_camera_sensor_ 
+				   									     ->GetImageData ( ) ; 
 	
 	//----------------------------------------------------------------------
 	
@@ -239,19 +239,17 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
 			else if ( positiveDiff == 2 ) 		
 
 				currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
-					              + pow ( 255.0 , 2 ) ) ;
+					             			 + pow ( 255.0 , 2 ) ) ;
 
 			for ( unsigned int k = 0 ; k < 3 ; k++ ) 
 
 				imgviz 
 				 .data 
-				  .push_back ( ( char ) ( currentPpm 
-							  * 255.0 ) ) ; 
+				  .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
 
 			if ( maxPpm < currentPpm ) 
 
 				maxPpm = currentPpm ; 
-			
 			
 		}
 

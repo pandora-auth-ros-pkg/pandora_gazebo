@@ -172,22 +172,22 @@ void PandoraThermalPlugin::OnNewFrame(const unsigned char *_image,
 void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) { 	
 	
 	double hfov = this 
-		       ->parent_camera_sensor_ 
-		        ->GetCamera ( ) 
-			 ->GetHFOV ( ) 
-			  .Radian ( ) ; 
+		       		   ->parent_camera_sensor_ 
+		       		    ->GetCamera ( ) 
+			 						 ->GetHFOV ( ) 
+			 					    .Radian ( ) ; 
 
 	int width = this 
-		     ->parent_camera_sensor_ 
-		      ->GetImageWidth ( ) ; 
+		   			   ->parent_camera_sensor_ 
+		    			  ->GetImageWidth ( ) ; 
 
 	int height = this 
-		      ->parent_camera_sensor_ 
-		       ->GetImageHeight ( ) ; 
+	     				  ->parent_camera_sensor_ 
+		      			 ->GetImageHeight ( ) ; 
 
 	const unsigned char * data = this 
-				      ->parent_camera_sensor_ 
-				       ->GetImageData ( ) ; 
+				    									  ->parent_camera_sensor_ 
+				      									 ->GetImageData ( ) ; 
 	
 	//----------------------------------------------------------------------
 	
@@ -199,21 +199,9 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
 	imgviz .height = height ; 
 	imgviz .width = width ; 
 	imgviz .step = width * 3 ; 
-	imgviz .encoding = "bgr8" ; 
-	
-	long * pixelTemp ; 
-
-	pixelTemp = new long [ width ] ; 
-
-	for ( unsigned int i = 0 ; i < width ; i++ ) 
-
-		pixelTemp [ i ] = 0 ; 
-
-	int ambientTemp = 25.0 ; 
+	imgviz .encoding = "bgr8" ;  
 	
 	for ( unsigned int i = 0 ; i < width ; i++ ) { 
-
-		float maxTemp = 0 ; 
 
 		for ( unsigned int j = 0 ; j < height ; j++ ) { 
 			
@@ -254,19 +242,84 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
 			else if ( positiveDiff == 2 ) 		
 
 				currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
-					              + pow ( 255.0 , 2 ) ) ; 
+					              			+ pow ( 255.0 , 2 ) ) ; 
 
 			for ( unsigned int k = 0 ; k < 3 ; k++ ) 
 
 				imgviz 
 				 .data 
-				  .push_back ( ( char ) ( currentTemp 
-							  * 255.0 ) ) ; 
+				  .push_back ( ( char ) ( currentTemp * 255.0 ) ) ; 
+			
+		}
+
+	}
+
+	this -> pub_viz .publish ( imgviz ) ; 
+
+	//----------------------------------------------------------------------
+	
+	int msgWidth = 8 ; 
+
+	int msgHeight = 8 ; 
+
+	int ambientTemp = 25.0 ; 
+
+	long * pixelTemp ; 
+
+	pixelTemp = new long [ msgWidth ] ; 
+
+	for ( unsigned int i = 0 ; i < msgWidth ; i++ ) 
+
+		pixelTemp [ i ] = 0 ;
+	
+	for ( unsigned int i = 0 ; i < msgWidth ; i++ ) { 
+
+		float maxTemp = 0 ; 
+
+		for ( unsigned int j = 0 ; j < msgHeight ; j++ ) { 
+			
+			float currentTemp = 0 ; 
+
+			float R = data [ ( ( i * msgHeight ) + j ) * 3 + 0 ] ; 
+			float G = data [ ( ( i * msgHeight ) + j ) * 3 + 1 ] ; 
+			float B = data [ ( ( i * msgHeight ) + j ) * 3 + 2 ] ; 
+
+			// temperature is represented by red
+			float R1 = ( R - G ) ; 
+			float R2 = ( R - B ) ; 
+
+			float positiveDiff = 0 ; 
+
+			if ( R1 > 0 ) { 
+
+				currentTemp += pow ( R1 , 2 ) ; 
+
+				++ positiveDiff ; 
+			
+			}
+
+			if ( R2 > 0 ) { 
+
+				currentTemp += pow ( R2 , 2 ) ; 
+
+				++ positiveDiff ; 
+
+			}
+			
+			currentTemp = sqrt ( currentTemp ) ; 
+
+			if ( positiveDiff == 1 ) 
+
+				currentTemp /= 255.0 ; 
+
+			else if ( positiveDiff == 2 ) 		
+
+				currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
+					             			  + pow ( 255.0 , 2 ) ) ; 
 
 			if ( maxTemp < currentTemp ) 
 
 				maxTemp = currentTemp ; 
-			
 			
 		}
 
@@ -276,14 +329,10 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
 
 	}
 
-	this -> pub_viz .publish ( imgviz ) ; 
-
-	//----------------------------------------------------------------------
-	
 	tmsg .header .stamp = ros:: Time:: now ( ) ; 
 	tmsg .ambientTemp = ambientTemp ; 
 
-	for ( int i = 0 ; i < width ; i++ ) 
+	for ( int i = 0 ; i < msgWidth ; i++ ) 
 	
 		tmsg .pixelTemp [ i ] = pixelTemp [ i ] ; 
 		
