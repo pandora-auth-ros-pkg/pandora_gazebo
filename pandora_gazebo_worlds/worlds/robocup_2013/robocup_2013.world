@@ -6,6 +6,10 @@
       <background>0.5 0.5 0.5 1</background>
       <shadows>false</shadows>
     </scene>
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
     <physics type="ode">
       <gravity>0 0 -9.81</gravity>
       <max_step_size>0.001</max_step_size>
@@ -520,52 +524,6 @@
           </geometry>
         </collision>
         <visual name="small_wall_10_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_11">
-      <static>true</static>
-      <link name="small_wall_11_link">
-        <pose>-2.4 -2.4 0 0 0 0</pose>
-        <collision name="small_wall_11_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_11_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_12">
-      <static>true</static>
-      <link name="small_wall_12_link">
-        <pose>-3.6 -2.4 0 0 0 0</pose>
-        <collision name="small_wall_12_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_12_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
@@ -1913,7 +1871,7 @@
     <model name="stepfield_red_diagonal_6">
       <static>true</static>
       <link name="stepfield_red_diagonal_6_link">
-        <pose>-3.6 -4.8 0 0 0 -1.5708</pose>
+        <pose>-3.6 -4.8 0 0 0 0</pose>
         <collision name="stepfield_red_diagonal_6_collision">
           <geometry>
             <mesh>
@@ -2005,7 +1963,7 @@
     <model name="stepfield_red_diagonal_10">
       <static>true</static>
       <link name="stepfield_red_diagonal_10_link">
-        <pose>-2.4 -4.8 0 0 0 0</pose>
+        <pose>-2.4 -4.8 0 0 0 -1.5708</pose>
         <collision name="stepfield_red_diagonal_10_collision">
           <geometry>
             <mesh>
@@ -4894,6 +4852,121 @@
           <geometry>
             <mesh>
               <uri>file://victim-with-box1.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="stepfield_red_diagonal_11">
+      <static>true</static>
+      <link name="stepfield_red_diagonal_11_link">
+        <pose>-6 -2.4 0 0 0 0</pose>
+        <collision name="stepfield_red_diagonal_11_collision">
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="stepfield_red_diagonal_11_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="stepfield_red_diagonal_12">
+      <static>true</static>
+      <link name="stepfield_red_diagonal_12_link">
+        <pose>-1.2 -2.4 0 0 0 0</pose>
+        <collision name="stepfield_red_diagonal_12_collision">
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="stepfield_red_diagonal_12_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="stepfield_red_diagonal_13">
+      <static>true</static>
+      <link name="stepfield_red_diagonal_13_link">
+        <pose>-4.8 -2.4 0 0 0 0</pose>
+        <collision name="stepfield_red_diagonal_13_collision">
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="stepfield_red_diagonal_13_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="stepfield_red_diagonal_14">
+      <static>true</static>
+      <link name="stepfield_red_diagonal_14_link">
+        <pose>-3.6 -2.4 0 0 0 -1.5708</pose>
+        <collision name="stepfield_red_diagonal_14_collision">
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="stepfield_red_diagonal_14_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="stepfield_red_diagonal_15">
+      <static>true</static>
+      <link name="stepfield_red_diagonal_15_link">
+        <pose>-2.4 -2.4 0 0 0 -3.14159</pose>
+        <collision name="stepfield_red_diagonal_15_collision">
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="stepfield_red_diagonal_15_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://stepfield_red_diagonal.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
