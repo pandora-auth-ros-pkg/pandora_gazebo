@@ -107,7 +107,7 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
       boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_viz = this->rosnode_->advertise(ao2);
   // Initialize the controller
-	}
+  }
 
   // sensor generation off by default
   this->parent_camera_sensor_->SetActive(false);
@@ -162,115 +162,111 @@ void PandoraCo2Plugin::OnNewFrame(const unsigned char *_image,
 
 void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) { 
 
-	double hfov = this 
-		      			 ->parent_camera_sensor_ 
-		    			    ->GetCamera ( ) 
-		 							 ->GetHFOV ( ) 
-			  						.Radian ( ) ; 
+  double hfov = this ->parent_camera_sensor_ 
+                      ->GetCamera ( ) 
+                       ->GetHFOV ( ) 
+                        .Radian ( ) ; 
 
-	int width = this 
-		   			   ->parent_camera_sensor_ 
-		      			->GetImageWidth ( ) ; 
+  int width = this ->parent_camera_sensor_ 
+                    ->GetImageWidth ( ) ; 
 
-	int height = this 
-		     			  ->parent_camera_sensor_ 
-		     			   ->GetImageHeight ( ) ; 
+  int height = this ->parent_camera_sensor_ 
+                     ->GetImageHeight ( ) ; 
 
-	const unsigned char * data = this 
-				   									    ->parent_camera_sensor_ 
-				   									     ->GetImageData ( ) ; 
-	
-	//----------------------------------------------------------------------
-	
-	sensor_msgs:: Image imgviz ; 
+  const unsigned char * data = this ->parent_camera_sensor_ 
+                                     ->GetImageData ( ) ; 
+  
+  //----------------------------------------------------------------------
+  
+  sensor_msgs:: Image imgviz ; 
 
-	imgviz .header .stamp = ros:: Time:: now ( ) ; 
-	imgviz .header .frame_id = this ->frame_name_ ; 
+  imgviz .header .stamp = ros:: Time:: now ( ) ; 
+  imgviz .header .frame_id = this ->frame_name_ ; 
 
-	imgviz .height = height ; 
-	imgviz .width = width ; 
-	imgviz .step = width * 3 ; 
-	imgviz .encoding = "bgr8" ; 
+  imgviz .height = height ; 
+  imgviz .width = width ; 
+  imgviz .step = width * 3 ; 
+  imgviz .encoding = "bgr8" ; 
 
-	int ppm ; 
+  int ppm ; 
 
-	int ambientPpm = 1000 ; 
+  int ambientPpm = 1000 ; 
 
-	int maxPpm = 0 ; 
-	
-	for ( unsigned int i = 0 ; i < width ; i++ ) { 
+  int maxPpm = 0 ; 
+  
+  for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
-		for ( unsigned int j = 0 ; j < height ; j++ ) { 
-			
-			float currentPpm = 0 ; 
+    for ( unsigned int j = 0 ; j < height ; j++ ) { 
+      
+      float currentPpm = 0 ; 
 
-			float R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
-			float G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
-			float B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+      float R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+      float G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+      float B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
 
-			// co2 is represented by green
-			float G1 = ( G - R ) ; 
-			float G2 = ( G - B ) ; 
+      // co2 is represented by green
+      float G1 = ( G - R ) ; 
+      float G2 = ( G - B ) ; 
 
-			float positiveDiff = 0 ; 
+      float positiveDiff = 0 ; 
 
-			if ( G1 > 0 ) { 
+      if ( G1 > 0 ) { 
 
-				currentPpm += pow ( G1 , 2 ) ; 
+        currentPpm += pow ( G1 , 2 ) ; 
 
-				++ positiveDiff ; 
-			
-			}
+        ++ positiveDiff ; 
+      
+      }
 
-			if ( G2 > 0 ) { 
+      if ( G2 > 0 ) { 
 
-				currentPpm += pow ( G2 , 2 ) ; 
+        currentPpm += pow ( G2 , 2 ) ; 
 
-				++ positiveDiff ; 
+        ++ positiveDiff ; 
 
-			}
-			
-			currentPpm = sqrt ( currentPpm ) ; 
+      }
+      
+      currentPpm = sqrt ( currentPpm ) ; 
 
-			if ( positiveDiff == 1 ) 
+      if ( positiveDiff == 1 ) 
 
-				currentPpm /= 255.0 ; 
+        currentPpm /= 255.0 ; 
 
-			else if ( positiveDiff == 2 ) 		
+      else if ( positiveDiff == 2 )     
 
-				currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
-					             			 + pow ( 255.0 , 2 ) ) ;
+        currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
+                             + pow ( 255.0 , 2 ) ) ;
 
-			for ( unsigned int k = 0 ; k < 3 ; k++ ) 
+      for ( unsigned int k = 0 ; k < 3 ; k++ ) 
 
-				imgviz 
-				 .data 
-				  .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
+        imgviz 
+         .data 
+          .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
 
-			if ( maxPpm < currentPpm ) 
+      if ( maxPpm < currentPpm ) 
 
-				maxPpm = currentPpm ; 
-			
-		}
+        maxPpm = currentPpm ; 
+      
+    }
 
-	}
+  }
 
-	// min ppm = ambient = 1000
-	// max ppm = ambient + 700 = 1700
-	ppm = ambientPpm + ( maxPpm * 700.0 ) ; 
+  // min ppm = ambient = 1000
+  // max ppm = ambient + 700 = 1700
+  ppm = ambientPpm + ( maxPpm * 700.0 ) ; 
 
-	this ->pub_viz .publish ( imgviz ) ; 
+  this ->pub_viz .publish ( imgviz ) ; 
 
-	//----------------------------------------------------------------------
+  //----------------------------------------------------------------------
 
-	tmsg .header .stamp = ros:: Time:: now ( ) ; 
-	tmsg .ppm = ppm ; 
-		
-	this ->pub_ .publish ( this ->tmsg ) ; 
-	
-	//----------------------------------------------------------------------
-	
-	usleep ( 100000 ) ; 
+  tmsg .header .stamp = ros:: Time:: now ( ) ; 
+  tmsg .ppm = ppm ; 
+    
+  this ->pub_ .publish ( this ->tmsg ) ; 
+  
+  //----------------------------------------------------------------------
+  
+  usleep ( 100000 ) ; 
 
 }
 
