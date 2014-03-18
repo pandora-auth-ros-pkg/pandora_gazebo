@@ -46,6 +46,8 @@ catkin_package(
     pandora_thermal_plugin
     pandora_co2_plugin
     pandora_microphone_plugin
+    pandora_differential_skeleton_plugin
+    pandora_p3d_plugin
 )
 
 add_library(motion_plugin src/motion_plugin.cpp  )
@@ -65,7 +67,6 @@ target_link_libraries(pandora_sonar_plugin
 add_library(pandora_imu_stabilizer_plugin src/pandora_imu_stabilizer_plugin.cpp)
 target_link_libraries(pandora_imu_stabilizer_plugin 
     ${GAZEBO_LIBRARIES} 
-    ${SDFormat_LIBRARIES} 
     ${catkin_LIBRARIES} 
     ${Boost_LIBRARIES}
 )
@@ -73,7 +74,13 @@ target_link_libraries(pandora_imu_stabilizer_plugin
 add_library(pandora_differential_skeleton_plugin src/pandora_differential_skeleton_plugin.cpp)
 target_link_libraries(pandora_differential_skeleton_plugin 
     ${GAZEBO_LIBRARIES} 
-    ${SDFormat_LIBRARIES} 
+    ${catkin_LIBRARIES} 
+    ${Boost_LIBRARIES}
+)
+
+add_library(pandora_p3d_plugin src/pandora_p3d_plugin.cpp)
+target_link_libraries(pandora_p3d_plugin 
+    ${GAZEBO_LIBRARIES} 
     ${catkin_LIBRARIES} 
     ${Boost_LIBRARIES}
 )

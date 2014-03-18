@@ -17,7 +17,7 @@
 
 
 
-#include "pandora_microphone_plugin.h"
+#include "pandora_gazebo_plugins/pandora_microphone_plugin.h"
 
 namespace gazebo
 {

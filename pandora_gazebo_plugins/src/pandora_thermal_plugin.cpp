@@ -17,7 +17,7 @@
 
 
 
-#include "pandora_thermal_plugin.h"
+#include "pandora_gazebo_plugins/pandora_thermal_plugin.h"
 
 namespace gazebo
 {

@@ -17,7 +17,7 @@
 
 
 
-#include "pandora_co2_plugin.h"
+#include "pandora_gazebo_plugins/pandora_co2_plugin.h"
 
 namespace gazebo
 {
