@@ -3367,7 +3367,7 @@
     <model name="victim_with_box_s_1_emission" >
       <static>true</static>
       <link name="victim_with_box_s_1_emission_link">
-        <pose>-2.11 -2.99 0.6 4.71 0 0</pose>
+        <pose>-2.09 -2.99 0.6 4.71 0 0</pose>
         <visual name="victim_with_box_s_1_emission_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
@@ -3405,7 +3405,7 @@
     <model name="victim_with_box_sc_1_emission" >
       <static>true</static>
       <link name="victim_with_box_sc_1_emission_link">
-        <pose>-0.91 -5.0 0.6 0 0 0</pose>
+        <pose>-0.89 -5.39 0.6 4.71 0 0</pose>
         <visual name="victim_with_box_sc_1_emission_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
@@ -3443,7 +3443,7 @@
     <model name="victim_with_box_ts_1_emission" >
       <static>true</static>
       <link name="victim_with_box_ts_1_emission_link">
-        <pose>-2.11 -8.99 0.6 4.71 0 0</pose>
+        <pose>-2.09 -8.99 0.6 4.71 0 0</pose>
         <visual name="victim_with_box_ts_1_emission_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
@@ -3481,7 +3481,7 @@
     <model name="victim_with_box_t_2_emission" >
       <static>true</static>
       <link name="victim_with_box_t_2_emission_link">
-        <pose>6.29 -8.99 0.6 4.71 0 0</pose>
+        <pose>6.31 -8.99 0.6 4.71 0 0</pose>
         <visual name="victim_with_box_t_2_emission_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
