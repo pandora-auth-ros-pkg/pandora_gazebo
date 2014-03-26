@@ -134,42 +134,90 @@ bool GazeboRosDifferentialSkeleton::ServiceCallback(std_srvs::Empty::Request &re
 
 ////////////////////////////////////////////////////////////////////////////////
 // Update the controller
-void GazeboRosDifferentialSkeleton::UpdateChild()
-{    
-  double left_angle = left_skeleton_joint_->GetAngle(0).Radian();
-  double right_angle = right_skeleton_joint_->GetAngle(0).Radian();
-  double angle_diff = fabs(left_angle) - fabs(right_angle);
+void GazeboRosDifferentialSkeleton ::UpdateChild ( ) { 
+    
+  double left_angle = left_skeleton_joint_ ->GetAngle ( 0 ) .Radian ( ) ; 
+  double right_angle = right_skeleton_joint_ ->GetAngle ( 0 ) .Radian ( ) ; 
+  
+  int right_angle_sign = copysign ( 1 , right_angle ) ; 
+  int left_angle_sign = copysign ( 1 , left_angle ) ; 
+  
+  double left_angle_abs = fabs ( left_angle) ; 
+  double right_angle_abs = fabs ( right_angle) ; 
+  
+  double angle_diff = left_angle_abs - right_angle_abs ; 
+  
+  double max_force = 20.0 ; 
+  double max_angle = 0.785 ; 
   
   //publish joint states
-  joint_state_msg_.header.stamp = ros::Time::now();
-  joint_state_msg_.position.clear();
-  joint_state_msg_.position.push_back(left_angle);
-  joint_state_msg_.position.push_back(right_angle);
+  joint_state_msg_ .header .stamp = ros ::Time ::now ( ) ; 
+  joint_state_msg_ .position .clear ( ) ; 
+  joint_state_msg_ .position .push_back ( left_angle ) ; 
+  joint_state_msg_ .position .push_back ( right_angle ) ; 
   
   {
-    boost::mutex::scoped_lock lock(this->lock_);
+  
+    boost ::mutex ::scoped_lock lock ( this ->lock_ ) ; 
+    
     // publish to ros
-    this->joint_state_pub_Queue->push(this->joint_state_msg_, this->joint_state_pub_);
+    this ->joint_state_pub_Queue
+          ->push ( this ->joint_state_msg_ , this ->joint_state_pub_ ) ; 
+    
   }
   
-  if( (left_angle * right_angle ) > 0 )
-  {
-    right_skeleton_joint_->SetForce(0,-copysign(20,right_angle));
-    left_skeleton_joint_->SetForce(0,-copysign(20,left_angle));
+  if ( ( left_angle * right_angle ) > 0 ) { 
+    
+    left_skeleton_joint_ 
+     ->SetForce ( 0 , ( -1 ) * 
+                      ( left_angle_abs / max_angle ) * 
+                        max_force * 
+                        left_angle_sign ) ; 
+  
+    right_skeleton_joint_ 
+     ->SetForce ( 0 , ( -1 ) * 
+                      ( right_angle_abs / max_angle ) * 
+                        max_force * 
+                        right_angle_sign ) ; 
+    
   }
-  else
-  {
-    if(angle_diff > 0)
-    {
-      right_skeleton_joint_->SetForce(0,-copysign(5,left_angle));
-      left_skeleton_joint_->SetForce(0,-copysign(1,right_angle));
+  
+  if ( ( left_angle * right_angle ) < 0 ) { 
+  
+    if ( angle_diff > 0 ) { 
+    
+     left_skeleton_joint_ 
+      ->SetForce ( 0 , ( -1 ) * ( 1.0 / 5.0 ) * 
+                       ( right_angle_abs / max_angle ) * 
+                         max_force * 
+                         right_angle_sign ) ; 
+    
+     right_skeleton_joint_ 
+      ->SetForce ( 0 , ( -1 ) * 
+                       ( left_angle_abs / max_angle ) * 
+                         max_force * 
+                         left_angle_sign ) ; 
+      
     }
-    else
-    {
-      left_skeleton_joint_->SetForce(0,-copysign(5,right_angle));
-      right_skeleton_joint_->SetForce(0,-copysign(1,left_angle));
+    
+    else { 
+    
+     left_skeleton_joint_ 
+      ->SetForce ( 0 , ( -1 ) * 
+                       ( right_angle_abs / max_angle ) * 
+                         max_force * 
+                         right_angle_sign ) ; 
+    
+     right_skeleton_joint_ 
+      ->SetForce ( 0 , ( -1 ) * ( 1.0 / 5.0 ) * 
+                       ( left_angle_abs / max_angle ) * 
+                         max_force * 
+                         left_angle_sign ) ; 
+      
     }
+    
   }
+  
 }
 
 }
