@@ -53,7 +53,7 @@ catkin_package(
 add_library(motion_plugin src/motion_plugin.cpp  )
 target_link_libraries(motion_plugin 
       ${catkin_LIBRARIES}
-      ${GAZEBO_LIBRARIES}	
+      ${GAZEBO_LIBRARIES}  
 )
 
 add_library(pandora_sonar_plugin src/pandora_sonar_plugin.cpp)

@@ -148,7 +148,7 @@ void TeleopTurtle::keyLoop()
         dirty = true;
         break;
       default:
-		std::cout <<std::hex <<  (int)c  << '\n';
+    std::cout <<std::hex <<  (int)c  << '\n';
         
         
     }

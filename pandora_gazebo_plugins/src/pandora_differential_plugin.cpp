@@ -58,8 +58,8 @@ namespace gazebo {
 
     // ROS callback queue for processing subscription
     this ->deferred_load_thread_ = 
-	  boost ::thread ( boost ::bind ( & GazeboRosDifferential ::LoadThread , 
-	                                  this ) ) ; 
+    boost ::thread ( boost ::bind ( & GazeboRosDifferential ::LoadThread , 
+                                    this ) ) ; 
     
     this ->model_ = _parent ; 
     
@@ -71,142 +71,142 @@ namespace gazebo {
   
     // Load parameters
     this ->robot_namespace_ = "" ; 
-	
+  
     if ( this ->sdf ->HasElement ( "robotNamespace" ) ) 
-	
+  
       this ->robot_namespace_ = this ->sdf ->Get < std ::string > 
-	                                         ( "robotNamespace" ) 
-			                          + "/" ; 
+                                           ( "robotNamespace" ) 
+                                + "/" ; 
   
     if ( ! this ->sdf ->HasElement ( "baseLink" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <baseLink>, exiting" ) ; 
-	  
+    
       return ; 
-	  
+    
     }
-	
+  
     else { 
     
       this ->base_link_ = this ->model_ 
                                 ->GetLink ( this ->sdf 
-											                            ->Get < std ::string > 
-												                            ( "baseLink" ) ) ; 
-	  
+                                                  ->Get < std ::string > 
+                                                    ( "baseLink" ) ) ; 
+    
     }
   
     if ( ! this ->sdf ->HasElement ( "leftFrontWheelLink" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <leftFrontWheelLink>, exiting" ) ; 
-	  
+    
       return ; 
-	  
+    
     }
-	
+  
     else { 
     
       this ->left_front_wheel_link_ = 
       this ->model_ ->GetLink ( this ->sdf ->Get < std ::string > 
                                              ( "leftFrontWheelLink" ) ) ; 
-	  
+    
     }
   
     if ( ! this ->sdf ->HasElement ( "leftRearWheelLink" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <leftRearWheelLink>, exiting" ) ; 
-	  
+    
       return ; 
-	  
+    
     }
-	
+  
     else { 
     
       this ->left_rear_wheel_link_ = 
       this ->model_ ->GetLink ( this ->sdf ->Get < std ::string > 
                                              ( "leftRearWheelLink" ) ) ; 
-	  
+    
     }
   
     if ( ! this ->sdf ->HasElement ( "rightFrontWheelLink" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <rightFrontWheelLink>, exiting" ) ; 
-	  
+    
       return ; 
-	  
+    
     }
-	
+  
     else { 
     
       this ->right_front_wheel_link_ = 
       this ->model_ ->GetLink ( this ->sdf ->Get < std ::string > 
                                              ( "rightFrontWheelLink" ) ) ; 
-	  
+    
     }
   
     if ( ! this ->sdf ->HasElement ( "rightRearWheelLink" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <rightRearWheelLink>, exiting" ) ; 
-	  
+    
       return ; 
-	  
+    
     }
-	
+  
     else { 
     
       this ->right_rear_wheel_link_ = 
       this ->model_ ->GetLink ( this ->sdf ->Get < std ::string > 
                                              ( "rightRearWheelLink" ) ) ; 
-	  
+    
     }
 
     if ( ! this ->sdf ->HasElement ( "leftSideJoint" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <leftSideJoint>, exiting" ) ; 
-	  
+    
       return ; 
-	  
+    
     }
-	
+  
     else { 
-	
+  
       this ->left_side_joint_ = 
-	    this ->model_ 
-	          ->GetJoint ( this ->sdf 
-			                         -> Get < std ::string > ( "leftSideJoint" ) ) ; 
-	  
+      this ->model_ 
+            ->GetJoint ( this ->sdf 
+                               -> Get < std ::string > ( "leftSideJoint" ) ) ; 
+    
       joint_state_msg_ 
-	     .name.push_back ( this ->sdf 
-	                             -> Get < std ::string > ( "leftSideJoint" ) ) ; 
-	  
+       .name.push_back ( this ->sdf 
+                               -> Get < std ::string > ( "leftSideJoint" ) ) ; 
+    
     }
 
     if ( ! this ->sdf ->HasElement ( "rightSideJoint" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <rightSideJoint>, exiting" ) ; 
-	  
+    
       return ; 
-	  
+    
     }
-	
+  
     else { 
-	
+  
       this ->right_side_joint_ = 
-	    this ->model_ 
-	          ->GetJoint ( this ->sdf 
-			                         -> Get < std ::string > ( "rightSideJoint" ) ) ; 
-	  
+      this ->model_ 
+            ->GetJoint ( this ->sdf 
+                               -> Get < std ::string > ( "rightSideJoint" ) ) ; 
+    
       joint_state_msg_ 
-	     .name.push_back ( this ->sdf 
-	                             -> Get < std ::string > ( "rightSideJoint" ) ) ; 
-	  
+       .name.push_back ( this ->sdf 
+                               -> Get < std ::string > ( "rightSideJoint" ) ) ; 
+    
     }
     
     if ( ! this ->sdf ->HasElement ( "maxAngle" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <maxAngle>, exiting" ) ; 
-	  
+    
       return ; 
-	  
+    
     }
     
     else { 
@@ -224,12 +224,12 @@ namespace gazebo {
     
     // Make sure the ROS node for Gazebo has already been initialized
     if ( ! ros ::isInitialized ( ) ) { 
-	
+  
       ROS_FATAL_STREAM ( "A ROS node for Gazebo has not been initialized, unable to load plugin. " 
                          << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)" ) ; 
-		
+    
       return ; 
-	  
+    
     }
 
     this ->rosnode_ = new ros ::NodeHandle ( this ->robot_namespace_ ) ; 
@@ -239,34 +239,34 @@ namespace gazebo {
 
     this ->joint_state_pub_Queue = 
     this ->pmq .addPub < sensor_msgs ::JointState > ( ) ; 
-										 
+                     
     this ->joint_state_pub_ = this ->rosnode_ 
-	                                  ->advertise < sensor_msgs ::JointState > 
-									                    ( "differential_side_joint_states" , 1 ) ; 
+                                    ->advertise < sensor_msgs ::JointState > 
+                                      ( "differential_side_joint_states" , 1 ) ; 
 
     // Advertise services on the custom queue
     ros ::AdvertiseServiceOptions aso =
     ros ::AdvertiseServiceOptions ::create < std_srvs ::Empty > 
-	                                ( "/differantial_side" , 
-									                  boost ::bind ( & GazeboRosDifferential 
-									                                    ::ServiceCallback , 
-									                                 this , 
-													                         _1 , 
-													                         _2 ) , 
-								                    ros ::VoidPtr ( ) , 
-									                  & this ->callback_queue_ ) ; 
-									  
+                                  ( "/differantial_side" , 
+                                    boost ::bind ( & GazeboRosDifferential 
+                                                      ::ServiceCallback , 
+                                                   this , 
+                                                   _1 , 
+                                                   _2 ) , 
+                                    ros ::VoidPtr ( ) , 
+                                    & this ->callback_queue_ ) ; 
+                    
     this ->srv_ = this ->rosnode_ ->advertiseService ( aso ) ; 
   
     // New Mechanism for Updating every World Cycle
     // Listen to the update event. This event is broadcast every
     // simulation iteration.
     this ->update_connection_ = event 
-	                               ::Events 
-								                  ::ConnectWorldUpdateBegin 
-	                                  ( boost ::bind ( & GazeboRosDifferential 
-										                                    ::UpdateChild , 
-											                               this ) ) ; 
+                                 ::Events 
+                                  ::ConnectWorldUpdateBegin 
+                                    ( boost ::bind ( & GazeboRosDifferential 
+                                                        ::UpdateChild , 
+                                                     this ) ) ; 
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -276,7 +276,7 @@ namespace gazebo {
                                  std_srvs ::Empty ::Response & res ) { 
                                  
     return true ; 
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -284,7 +284,7 @@ namespace gazebo {
   double GazeboRosDifferential ::GetUpdateRate ( void ) { 
                                  
     return ( this ->world_ ->GetPhysicsEngine ( ) ->GetRealTimeUpdateRate ( ) ) ; 
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -292,11 +292,11 @@ namespace gazebo {
   double GazeboRosDifferential ::GetMaxDownforce ( void ) { 
     
     if ( ! this ->sdf ->HasElement ( "maxDownforce" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <maxDownforce>" ) ; 
-	  
+    
       return ( - 1 ) ; 
-	  
+    
     }
     
     else { 
@@ -304,7 +304,7 @@ namespace gazebo {
       return ( this ->sdf ->Get < double > ( "maxDownforce" ) ) ; 
       
     }
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -312,11 +312,11 @@ namespace gazebo {
   double GazeboRosDifferential ::GetSideJointDamping ( void ) { 
     
     if ( ! this ->sdf ->HasElement ( "sideJointDamping" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <sideJointDamping>" ) ; 
-	  
+    
       return ( - 1 ) ; 
-	  
+    
     }
     
     else { 
@@ -324,7 +324,7 @@ namespace gazebo {
       return ( this ->sdf ->Get < double > ( "sideJointDamping" ) ) ; 
       
     }
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -332,11 +332,11 @@ namespace gazebo {
   double GazeboRosDifferential ::GetForceAdjustment ( void ) { 
     
     if ( ! this ->sdf ->HasElement ( "forceAdjustment" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <forceAdjustment>" ) ; 
-	  
+    
       return ( - 1 ) ; 
-	  
+    
     }
     
     else { 
@@ -344,7 +344,7 @@ namespace gazebo {
       return ( this ->sdf ->Get < double > ( "forceAdjustment" ) ) ; 
       
     }
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -352,11 +352,11 @@ namespace gazebo {
   double GazeboRosDifferential ::GetP ( void ) { 
     
     if ( ! this ->sdf ->HasElement ( "P" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <P>" ) ; 
-	  
+    
       return ( - 1 ) ; 
-	  
+    
     }
     
     else { 
@@ -364,7 +364,7 @@ namespace gazebo {
       return ( this ->sdf ->Get < double > ( "P" ) ) ; 
       
     }
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -372,11 +372,11 @@ namespace gazebo {
   double GazeboRosDifferential ::GetI ( void ) { 
     
     if ( ! this ->sdf ->HasElement ( "I" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <I>" ) ; 
-	  
+    
       return ( - 1 ) ; 
-	  
+    
     }
     
     else { 
@@ -384,7 +384,7 @@ namespace gazebo {
       return ( this ->sdf ->Get < double > ( "I" ) ) ; 
       
     }
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -392,11 +392,11 @@ namespace gazebo {
   double GazeboRosDifferential ::GetD ( void ) { 
     
     if ( ! this ->sdf ->HasElement ( "D" ) ) { 
-	
+  
       ROS_FATAL ( "Differential plugin missing <D>" ) ; 
-	  
+    
       return ( - 1 ) ; 
-	  
+    
     }
     
     else { 
@@ -404,7 +404,7 @@ namespace gazebo {
       return ( this ->sdf ->Get < double > ( "D" ) ) ; 
       
     }
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -413,7 +413,7 @@ namespace gazebo {
   
     this ->left_angle_ = this ->left_side_joint_ ->GetAngle ( 0 ) .Radian ( ) ; 
     this ->right_angle_ = this ->right_side_joint_ ->GetAngle ( 0 ) .Radian ( ) ; 
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -434,7 +434,7 @@ namespace gazebo {
             ->push ( this ->joint_state_msg_ , this ->joint_state_pub_ ) ; 
     
     }
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -442,51 +442,51 @@ namespace gazebo {
   void GazeboRosDifferential ::AddSideForces ( void ) {
   
     //TODO
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // Adds downforces at the wheels due to the side joint damping
   void GazeboRosDifferential ::AddDownforces ( void ) { 
-	
-	  // Get the linear velocity of each link in the z axis in ( mm / sec )
-    double left_front_z_vel = 1000.0 * left_front_wheel_link_ 
-	                                      ->GetWorldLinearVel ( ) 
-							                           .z ; 
-    double left_rear_z_vel = 1000.0 * left_rear_wheel_link_ 
-	                                     ->GetWorldLinearVel ( ) 
-							                          .z ; 
-    double right_front_z_vel = 1000.0 * right_front_wheel_link_ 
-	                                       ->GetWorldLinearVel ( ) 
-							                            .z ; 
-    double right_rear_z_vel = 1000.0 * right_rear_wheel_link_ 
-	                                      ->GetWorldLinearVel ( ) 
-							                           .z ; 
   
+    // Get the linear velocity of each link in the z axis in ( mm / sec )
+    double left_front_z_vel = 1000.0 * left_front_wheel_link_ 
+                                        ->GetWorldLinearVel ( ) 
+                                         .z ; 
+    double left_rear_z_vel = 1000.0 * left_rear_wheel_link_ 
+                                       ->GetWorldLinearVel ( ) 
+                                        .z ; 
+    double right_front_z_vel = 1000.0 * right_front_wheel_link_ 
+                                         ->GetWorldLinearVel ( ) 
+                                          .z ; 
+    double right_rear_z_vel = 1000.0 * right_rear_wheel_link_ 
+                                        ->GetWorldLinearVel ( ) 
+                                         .z ; 
+
     // Initialize the downforces to be set
     gazebo::math::Vector3 left_front_downforce ( 0 , 0 , 0 ) ; 
     gazebo::math::Vector3 left_rear_downforce ( 0 , 0 , 0 ) ; 
     gazebo::math::Vector3 right_front_downforce ( 0 , 0 , 0 ) ; 
     gazebo::math::Vector3 right_rear_downforce ( 0 , 0 , 0 ) ; 
-	
-	  // Calculate the downforce for each link
-	  if ( left_front_z_vel < 0 ) 
-	
+  
+    // Calculate the downforce for each link
+    if ( left_front_z_vel < 0 ) 
+  
       left_front_downforce .z = GazeboRosDifferential ::GetMaxDownforce ( ) * 
                                 left_front_z_vel ; 
-	  
-	  if ( left_rear_z_vel < 0 ) 
-	
+    
+    if ( left_rear_z_vel < 0 ) 
+  
       left_rear_downforce .z = GazeboRosDifferential ::GetMaxDownforce ( ) * 
                                left_rear_z_vel ; 
-	  
-	  if ( right_front_z_vel < 0 ) 
-	
+    
+    if ( right_front_z_vel < 0 ) 
+  
       right_front_downforce .z = GazeboRosDifferential ::GetMaxDownforce ( ) * 
                                  right_front_z_vel ; 
-	  
-	  if ( right_rear_z_vel < 0 ) 
-	
+    
+    if ( right_rear_z_vel < 0 ) 
+  
       right_rear_downforce .z = GazeboRosDifferential ::GetMaxDownforce ( ) * 
                                 right_rear_z_vel ; 
   
@@ -495,7 +495,7 @@ namespace gazebo {
     this ->left_rear_wheel_link_ ->AddForce ( left_rear_downforce ) ; 
     this ->right_front_wheel_link_ ->AddForce ( right_front_downforce ) ; 
     this ->right_rear_wheel_link_ ->AddForce ( right_rear_downforce ) ; 
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -504,33 +504,33 @@ namespace gazebo {
     
     // Calculate the error
     double error = ( ( this ->left_angle_ + this ->right_angle_ ) / 2 ) ; 
-	  //double error = ( left_angle_abs - right_angle_abs ) ; 
+    //double error = ( left_angle_abs - right_angle_abs ) ; 
   
     // Normalize the error
     error /= this ->max_angle_ ; 
-	
-	  double dt = ( 1.0 / GazeboRosDifferential ::GetUpdateRate ( ) ) ; 
-	
-	  this ->integral_ += ( error * dt ) ; 
-	
-	  double derivative = ( ( error - this ->previous_error_ ) / dt ) ; 
-	
-	  // Calculate the output
-	  double output = ( ( GazeboRosDifferential ::GetP ( ) * error ) + 
-	                    ( GazeboRosDifferential ::GetI ( ) * this ->integral_ ) + 
-	                    ( GazeboRosDifferential ::GetD ( ) * derivative ) ) ; 
-	  /*
-	  double output = ( error + this ->integral_ / t_i + t_d * derivative ) * 
-	                  GazeboRosDifferential ::GetP ( ) ; 
-	                  
-	  double output = ( error + this ->integral_ / t_i + t_d * derivative ) / 
-	                  GazeboRosDifferential ::GetP ( ) ; 
-	  */
-	  
-	  this ->previous_error_ = error ; 
+  
+    double dt = ( 1.0 / GazeboRosDifferential ::GetUpdateRate ( ) ) ; 
+  
+    this ->integral_ += ( error * dt ) ; 
+  
+    double derivative = ( ( error - this ->previous_error_ ) / dt ) ; 
+  
+    // Calculate the output
+    double output = ( ( GazeboRosDifferential ::GetP ( ) * error ) + 
+                      ( GazeboRosDifferential ::GetI ( ) * this ->integral_ ) + 
+                      ( GazeboRosDifferential ::GetD ( ) * derivative ) ) ; 
+    /*
+    double output = ( error + this ->integral_ / t_i + t_d * derivative ) * 
+                    GazeboRosDifferential ::GetP ( ) ; 
+                    
+    double output = ( error + this ->integral_ / t_i + t_d * derivative ) / 
+                    GazeboRosDifferential ::GetP ( ) ; 
+    */
+    
+    this ->previous_error_ = error ; 
     
     return output ; 
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -544,7 +544,7 @@ namespace gazebo {
     
     // Set the correction force to the base link
     this ->base_link_ ->AddForce ( this ->correction_force_ ) ; 
-	
+  
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -554,15 +554,15 @@ namespace gazebo {
     GazeboRosDifferential ::UpdateAngles ( ) ; 
     
     GazeboRosDifferential ::AddCorrectionForce ( ) ; 
-	
-	  //GazeboRosDifferential ::AddDownforces ( ) ; 
-	  
-	  //GazeboRosDifferential ::AddSideForces ( ) ; 
+  
+    //GazeboRosDifferential ::AddDownforces ( ) ; 
     
-    ROS_INFO ( "Error = %f" , this ->previous_error_ ) ; 
-    ROS_INFO ( "Correction force = %f" , this ->correction_force_ .x ) ; 
-    ROS_INFO ( "-----------------------" ) ; 
-	  
+    //GazeboRosDifferential ::AddSideForces ( ) ; 
+    
+    //ROS_INFO ( "Error = %f" , this ->previous_error_ ) ; 
+    //ROS_INFO ( "Correction force = %f" , this ->correction_force_ .x ) ; 
+    //ROS_INFO ( "-----------------------" ) ; 
+    
     GazeboRosDifferential ::PublishJointStates ( ) ; 
   
   }
