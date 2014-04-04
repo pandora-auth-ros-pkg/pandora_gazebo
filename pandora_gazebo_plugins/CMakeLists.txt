@@ -46,7 +46,7 @@ catkin_package(
     pandora_thermal_plugin
     pandora_co2_plugin
     pandora_microphone_plugin
-    pandora_differential_skeleton_plugin
+    pandora_differential_plugin
     pandora_p3d_plugin
 )
 
@@ -71,8 +71,8 @@ target_link_libraries(pandora_imu_stabilizer_plugin
     ${Boost_LIBRARIES}
 )
 
-add_library(pandora_differential_skeleton_plugin src/pandora_differential_skeleton_plugin.cpp)
-target_link_libraries(pandora_differential_skeleton_plugin 
+add_library(pandora_differential_plugin src/pandora_differential_plugin.cpp)
+target_link_libraries(pandora_differential_plugin 
     ${GAZEBO_LIBRARIES} 
     ${catkin_LIBRARIES} 
     ${Boost_LIBRARIES}
