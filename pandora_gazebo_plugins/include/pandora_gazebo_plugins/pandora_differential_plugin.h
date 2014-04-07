@@ -35,6 +35,9 @@
 
 #include <gazebo_plugins/PubQueue.h>
 
+#include <dynamic_reconfigure/server.h>
+#include <pandora_gazebo_plugins/DifferentialConfig.h>
+
 namespace gazebo { 
 
   class GazeboRosDifferential : public ModelPlugin { 
@@ -79,6 +82,9 @@ namespace gazebo {
                                   
     private: ros ::ServiceServer srv_ ; 
     private: ros ::CallbackQueue callback_queue_ ; 
+    
+    private: dynamic_reconfigure ::Server 
+             < pandora_gazebo_plugins ::DifferentialConfig > config_server_ ; 
 
     // Pointer to the update event connection
     private: event ::ConnectionPtr update_connection_ ; 
@@ -95,11 +101,12 @@ namespace gazebo {
     /// \brief Implements the PID Algorithm
     private: double PIDAlgorithm ( void ) ; 
     
-    // Get the PID parameters
-    private: double GetP ( void ) ; 
-    private: double GetI ( void ) ; 
-    private: double GetD ( void ) ; 
+    // PID parameters
+    private: double k_p_ ; 
+    private: double k_i_ ; 
+    private: double k_d_ ; 
     
+    // Stored variables of the PID algorithm
     private: double previous_error_ ; 
     private: double integral_ ; 
     
@@ -120,6 +127,7 @@ namespace gazebo {
     /// \brief Updates the angles of the side joints
     private: void UpdateAngles ( void ) ; 
     
+    // Joint angles and maximum angle
     private: double left_angle_ ; 
     private: double right_angle_ ; 
     private: double max_angle_ ; 
@@ -128,17 +136,17 @@ namespace gazebo {
     private: void AddDifferentialForces ( void ) ; 
     private: void AddDownforces ( void ) ; 
     
-    // Get the maximum manual forces and the side joint damping
-    private: double GetMaxDownforce ( void ) ; 
-    private: double GetMaxDifferentialForceZ ( void ) ; 
-    private: double GetMaxDifferentialForceY ( void ) ; 
-    private: double GetSideJointDamping ( void ) ; 
+    // Maximum manual forces and side joint damping
+    private: double max_downforce_ ; 
+    private: double max_differential_force_z_ ; 
+    private: double max_differential_force_y_ ; 
+    private: double side_joint_damping_ ; 
     
     /// \brief Adds force at the base link to correct its angle
     private: void AddCorrectionForce ( void ) ; 
     
-    // Get the force modifier
-    private: double GetCorrectionForceModifier ( void ) ; 
+    // Correction force modifier and correction force
+    private: double correction_force_modifier_ ; 
     private: math ::Vector3 correction_force_ ; 
     
     /// \brief Get the real time update rate of the physics engine

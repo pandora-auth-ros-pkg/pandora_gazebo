@@ -27,6 +27,10 @@ include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${GAZEB
 link_directories(${GAZEBO_LIBRARY_DIRS} ${catkin_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} )
 
+generate_dynamic_reconfigure_options(
+  cfg/Differential.cfg
+)
+
 catkin_package(
   INCLUDE_DIRS include
   CATKIN_DEPENDS
@@ -72,6 +76,7 @@ target_link_libraries(pandora_imu_stabilizer_plugin
 )
 
 add_library(pandora_differential_plugin src/pandora_differential_plugin.cpp)
+add_dependencies(pandora_differential_plugin pandora_gazebo_plugins_gencfg)
 target_link_libraries(pandora_differential_plugin 
     ${GAZEBO_LIBRARIES} 
     ${catkin_LIBRARIES} 
