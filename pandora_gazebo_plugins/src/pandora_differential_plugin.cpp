@@ -308,6 +308,46 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
+  // Returns the maximum downforce caused by the differential
+  double GazeboRosDifferential ::GetMaxDifferentialForceZ ( void ) { 
+    
+    if ( ! this ->sdf ->HasElement ( "maxDifferentialForceZ" ) ) { 
+  
+      ROS_FATAL ( "Differential plugin missing <maxDifferentialForceZ>" ) ; 
+    
+      return ( - 1 ) ; 
+    
+    }
+    
+    else { 
+                                 
+      return ( this ->sdf ->Get < double > ( "maxDifferentialForceZ" ) ) ; 
+      
+    }
+  
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Returns the maximum side caused by the differential
+  double GazeboRosDifferential ::GetMaxDifferentialForceY ( void ) { 
+    
+    if ( ! this ->sdf ->HasElement ( "maxDifferentialForceY" ) ) { 
+  
+      ROS_FATAL ( "Differential plugin missing <maxDifferentialForceY>" ) ; 
+    
+      return ( - 1 ) ; 
+    
+    }
+    
+    else { 
+                                 
+      return ( this ->sdf ->Get < double > ( "maxDifferentialForceY" ) ) ; 
+      
+    }
+  
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
   // Returns the side joint damping
   double GazeboRosDifferential ::GetSideJointDamping ( void ) { 
     
@@ -328,12 +368,12 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Returns the proportional parameter
-  double GazeboRosDifferential ::GetForceAdjustment ( void ) { 
+  // Returns the correction force modifier
+  double GazeboRosDifferential ::GetCorrectionForceModifier ( void ) { 
     
-    if ( ! this ->sdf ->HasElement ( "forceAdjustment" ) ) { 
+    if ( ! this ->sdf ->HasElement ( "correctionForceModifier" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <forceAdjustment>" ) ; 
+      ROS_FATAL ( "Differential plugin missing <correctionForceModifier>" ) ; 
     
       return ( - 1 ) ; 
     
@@ -341,7 +381,7 @@ namespace gazebo {
     
     else { 
                                  
-      return ( this ->sdf ->Get < double > ( "forceAdjustment" ) ) ; 
+      return ( this ->sdf ->Get < double > ( "correctionForceModifier" ) ) ; 
       
     }
   
@@ -368,7 +408,7 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Returns the proportional parameter
+  // Returns the integral parameter
   double GazeboRosDifferential ::GetI ( void ) { 
     
     if ( ! this ->sdf ->HasElement ( "I" ) ) { 
@@ -388,7 +428,7 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Returns the proportional parameter
+  // Returns the derivative parameter
   double GazeboRosDifferential ::GetD ( void ) { 
     
     if ( ! this ->sdf ->HasElement ( "D" ) ) { 
@@ -438,10 +478,51 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Adds forces at the rear wheels in y axis due to the differential
-  void GazeboRosDifferential ::AddSideForces ( void ) {
+  // Adds forces at the rear wheels in y and z axis due to differential activity
+  void GazeboRosDifferential ::AddDifferentialForces ( void ) { 
+
+    // Initialize the forces to be set
+    math ::Vector3 left_rear_force ( 0 , 0 , 0 ) ; 
+    math ::Vector3 right_rear_force ( 0 , 0 , 0 ) ; 
   
-    //TODO
+    // Calculate and normalize the positive angle difference
+    double angle_difference = fabs ( fabs ( this ->left_angle_ ) - 
+                                     fabs ( this ->right_angle_ ) ) ; 
+                                     
+    angle_difference /= this ->max_angle_ ; 
+  
+    // Calculate the forces for each link
+    // TODO: Test if the force are applied with the correct sign
+    if ( this ->left_angle_ > this ->right_angle_ ) { 
+  
+      left_rear_force .z = GazeboRosDifferential 
+                            ::GetMaxDifferentialForceZ ( ) * 
+                           angle_difference * 
+                           ( - 1 ) ; 
+  
+      left_rear_force .y = GazeboRosDifferential 
+                            ::GetMaxDifferentialForceY ( ) * 
+                           angle_difference ; 
+                                
+    }
+    
+    if ( this ->left_angle_ < this ->right_angle_ ) { 
+  
+      right_rear_force .z = GazeboRosDifferential 
+                             ::GetMaxDifferentialForceZ ( ) * 
+                            angle_difference * 
+                            ( - 1 ) ; 
+  
+      right_rear_force .y = GazeboRosDifferential 
+                             ::GetMaxDifferentialForceY ( ) * 
+                            angle_difference * 
+                            ( - 1 ) ; 
+    
+    }
+    
+    // Set the forces to the wheel links
+    this ->left_rear_wheel_link_ ->AddForce ( left_rear_force ) ; 
+    this ->right_rear_wheel_link_ ->AddForce ( right_rear_force ) ; 
   
   }
 
@@ -464,10 +545,10 @@ namespace gazebo {
                                          .z ; 
 
     // Initialize the downforces to be set
-    gazebo::math::Vector3 left_front_downforce ( 0 , 0 , 0 ) ; 
-    gazebo::math::Vector3 left_rear_downforce ( 0 , 0 , 0 ) ; 
-    gazebo::math::Vector3 right_front_downforce ( 0 , 0 , 0 ) ; 
-    gazebo::math::Vector3 right_rear_downforce ( 0 , 0 , 0 ) ; 
+    math ::Vector3 left_front_downforce ( 0 , 0 , 0 ) ; 
+    math ::Vector3 left_rear_downforce ( 0 , 0 , 0 ) ; 
+    math ::Vector3 right_front_downforce ( 0 , 0 , 0 ) ; 
+    math ::Vector3 right_rear_downforce ( 0 , 0 , 0 ) ; 
   
     // Calculate the downforce for each link
     if ( left_front_z_vel < 0 ) 
@@ -538,8 +619,8 @@ namespace gazebo {
   void GazeboRosDifferential ::AddCorrectionForce ( void ) { 
     
     // Calculate the force to be set
-    this ->correction_force_ .x = ( GazeboRosDifferential 
-                                     ::GetForceAdjustment ( ) * 
+    this ->correction_force_ .x = ( ( GazeboRosDifferential 
+                                       ::GetCorrectionForceModifier ( ) / 100 ) * 
                                     GazeboRosDifferential ::PIDAlgorithm ( ) ) ; 
     
     // Set the correction force to the base link
@@ -557,7 +638,7 @@ namespace gazebo {
   
     //GazeboRosDifferential ::AddDownforces ( ) ; 
     
-    //GazeboRosDifferential ::AddSideForces ( ) ; 
+    //GazeboRosDifferential ::AddDifferentialForces ( ) ; 
     
     //ROS_INFO ( "Error = %f" , this ->previous_error_ ) ; 
     //ROS_INFO ( "Correction force = %f" , this ->correction_force_ .x ) ; 

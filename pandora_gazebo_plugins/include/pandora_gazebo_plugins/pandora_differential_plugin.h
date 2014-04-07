@@ -104,18 +104,18 @@ namespace gazebo {
     private: double integral_ ; 
     
     // Robot's model
-    private: gazebo ::physics ::ModelPtr model_ ; 
+    private: physics ::ModelPtr model_ ; 
     
     // Robot's links
-    private: gazebo ::physics ::LinkPtr base_link_ ; 
-    private: gazebo ::physics ::LinkPtr left_front_wheel_link_ ; 
-    private: gazebo ::physics ::LinkPtr left_rear_wheel_link_ ; 
-    private: gazebo ::physics ::LinkPtr right_front_wheel_link_ ; 
-    private: gazebo ::physics ::LinkPtr right_rear_wheel_link_ ; 
+    private: physics ::LinkPtr base_link_ ; 
+    private: physics ::LinkPtr left_front_wheel_link_ ; 
+    private: physics ::LinkPtr left_rear_wheel_link_ ; 
+    private: physics ::LinkPtr right_front_wheel_link_ ; 
+    private: physics ::LinkPtr right_rear_wheel_link_ ; 
     
     // Robot's joints
-    private: gazebo ::physics ::JointPtr left_side_joint_ ; 
-    private: gazebo ::physics ::JointPtr right_side_joint_ ; 
+    private: physics ::JointPtr left_side_joint_ ; 
+    private: physics ::JointPtr right_side_joint_ ; 
     
     /// \brief Updates the angles of the side joints
     private: void UpdateAngles ( void ) ; 
@@ -125,19 +125,21 @@ namespace gazebo {
     private: double max_angle_ ; 
     
     // Add the forces manually
-    private: void AddSideForces ( void ) ; 
+    private: void AddDifferentialForces ( void ) ; 
     private: void AddDownforces ( void ) ; 
     
-    // Get the maximum downforce and the side joint damping
+    // Get the maximum manual forces and the side joint damping
     private: double GetMaxDownforce ( void ) ; 
+    private: double GetMaxDifferentialForceZ ( void ) ; 
+    private: double GetMaxDifferentialForceY ( void ) ; 
     private: double GetSideJointDamping ( void ) ; 
     
     /// \brief Adds force at the base link to correct its angle
     private: void AddCorrectionForce ( void ) ; 
     
-    // Get the force adjustment
-    private: double GetForceAdjustment ( void ) ; 
-    private: gazebo ::math ::Vector3 correction_force_ ; 
+    // Get the force modifier
+    private: double GetCorrectionForceModifier ( void ) ; 
+    private: math ::Vector3 correction_force_ ; 
     
     /// \brief Get the real time update rate of the physics engine
     private: double GetUpdateRate ( void ) ; 
