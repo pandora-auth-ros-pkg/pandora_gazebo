@@ -38,6 +38,11 @@ namespace gazebo {
   /////////////////////////////////////////////////////////////////////////////
   // Destructor
   GazeboRosDifferential ::~GazeboRosDifferential ( void ) { 
+    
+    // Differential Dynamic Reconfigure
+    this ->reconfigure_thread_ ->join ( ) ; 
+    ROS_DEBUG_STREAM_NAMED ( "pandora_differential_plugin" , 
+                             "differential reconfigure joined" ) ; 
   
     event ::Events ::DisconnectWorldUpdateBegin ( this ->update_connection_ ) ; 
   
@@ -48,7 +53,6 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Load the controller
   void GazeboRosDifferential ::Load ( physics ::ModelPtr _parent , 
                                       sdf ::ElementPtr _sdf ) { 
   
@@ -66,10 +70,82 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Load the controller
   void GazeboRosDifferential ::LoadThread ( void ) { 
   
-    // Load parameters
+    if ( ! GazeboRosDifferential ::LoadParameters ( ) ) { 
+    
+      ROS_FATAL ( "Unable to load important parameters, exiting..." ) ; 
+      
+      return ; 
+      
+    }
+  
+    // Initialize the variables used in the PID algorithm
+    this ->previous_error_ = 0.0 ; 
+    this ->integral_ = 0.0 ; 
+    
+    // Make sure the ROS node for Gazebo has already been initialized
+    if ( ! ros ::isInitialized ( ) ) { 
+  
+      ROS_FATAL_STREAM (    "A ROS node for Gazebo has not been initialized, "
+                         << "unable to load plugin. " 
+                         << "Load the Gazebo system plugin "
+                         << "'libgazebo_ros_api_plugin.so' in "
+                         << "the gazebo_ros package." ) ; 
+    
+      return ; 
+    
+    }
+
+    this ->rosnode_ = new ros ::NodeHandle ( this ->robot_namespace_ ) ; 
+
+    // Publish multi queue
+    this ->pmq .startServiceThread ( ) ; 
+    
+    
+    /// \brief Start a thread for the differential dynamic reconfigure node
+    // FIXME: Wait for the rest of the plugin to load
+    this ->reconfigure_thread_ 
+     .reset ( new boost ::thread ( boost ::bind ( & GazeboRosDifferential 
+                                                     ::LoadReconfigureThread , 
+                                                  this ) ) ) ; 
+
+    this ->joint_state_pub_Queue = 
+    this ->pmq .addPub < sensor_msgs ::JointState > ( ) ; 
+                     
+    this ->joint_state_pub_ = this ->rosnode_ 
+                                    ->advertise < sensor_msgs ::JointState > 
+                                      ( "differential_side_joint_states" , 1 ) ; 
+
+    // Advertise services on the custom queue
+    ros ::AdvertiseServiceOptions aso =
+    ros ::AdvertiseServiceOptions ::create < std_srvs ::Empty > 
+                                    ( "/differantial_side" , 
+                                      boost ::bind ( & GazeboRosDifferential 
+                                                      ::ServiceCallback , 
+                                                     this , 
+                                                     _1 , 
+                                                     _2 ) , 
+                                      ros ::VoidPtr ( ) , 
+                                      & this ->callback_queue_ ) ; 
+                    
+    this ->srv_ = this ->rosnode_ ->advertiseService ( aso ) ; 
+
+    // New Mechanism for Updating every World Cycle
+    // Listen to the update event. This event is broadcast every
+    // simulation iteration.
+    this ->update_connection_ = event 
+                                 ::Events 
+                                  ::ConnectWorldUpdateBegin 
+                                    ( boost ::bind ( & GazeboRosDifferential 
+                                                        ::UpdateChild , 
+                                                     this ) ) ; 
+                                                     
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  bool GazeboRosDifferential ::LoadParameters ( void ) { 
+  
     this ->robot_namespace_ = "" ; 
   
     if ( this ->sdf ->HasElement ( "robotNamespace" ) ) 
@@ -80,9 +156,9 @@ namespace gazebo {
   
     if ( ! this ->sdf ->HasElement ( "baseLink" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <baseLink>, exiting" ) ; 
+      ROS_FATAL ( "Differential plugin missing <baseLink>." ) ; 
     
-      return ; 
+      return false ; 
     
     }
   
@@ -97,9 +173,9 @@ namespace gazebo {
   
     if ( ! this ->sdf ->HasElement ( "leftFrontWheelLink" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <leftFrontWheelLink>, exiting" ) ; 
+      ROS_FATAL ( "Differential plugin missing <leftFrontWheelLink>." ) ; 
     
-      return ; 
+      return false ; 
     
     }
   
@@ -113,9 +189,9 @@ namespace gazebo {
   
     if ( ! this ->sdf ->HasElement ( "leftRearWheelLink" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <leftRearWheelLink>, exiting" ) ; 
+      ROS_FATAL ( "Differential plugin missing <leftRearWheelLink>." ) ; 
     
-      return ; 
+      return false ; 
     
     }
   
@@ -129,9 +205,9 @@ namespace gazebo {
   
     if ( ! this ->sdf ->HasElement ( "rightFrontWheelLink" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <rightFrontWheelLink>, exiting" ) ; 
+      ROS_FATAL ( "Differential plugin missing <rightFrontWheelLink>." ) ; 
     
-      return ; 
+      return false ; 
     
     }
   
@@ -145,9 +221,9 @@ namespace gazebo {
   
     if ( ! this ->sdf ->HasElement ( "rightRearWheelLink" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <rightRearWheelLink>, exiting" ) ; 
+      ROS_FATAL ( "Differential plugin missing <rightRearWheelLink>." ) ; 
     
-      return ; 
+      return false ; 
     
     }
   
@@ -161,9 +237,9 @@ namespace gazebo {
 
     if ( ! this ->sdf ->HasElement ( "leftSideJoint" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <leftSideJoint>, exiting" ) ; 
+      ROS_FATAL ( "Differential plugin missing <leftSideJoint>." ) ; 
     
-      return ; 
+      return false ; 
     
     }
   
@@ -182,9 +258,9 @@ namespace gazebo {
 
     if ( ! this ->sdf ->HasElement ( "rightSideJoint" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <rightSideJoint>, exiting" ) ; 
+      ROS_FATAL ( "Differential plugin missing <rightSideJoint>." ) ; 
     
-      return ; 
+      return false ; 
     
     }
   
@@ -203,9 +279,9 @@ namespace gazebo {
     
     if ( ! this ->sdf ->HasElement ( "maxAngle" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <maxAngle>, exiting" ) ; 
+      ROS_INFO ( "Differential plugin missing <maxAngle>, defaults to 0." ) ; 
     
-      return ; 
+      this ->max_angle_ = 0 ;  
     
     }
     
@@ -217,9 +293,10 @@ namespace gazebo {
     
     if ( ! this ->sdf ->HasElement ( "maxDownforce" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <maxDownforce>, exiting" ) ; 
+      ROS_INFO_STREAM (    "Differential plugin missing <maxDownforce>, "
+                        << "defaults to 0." ) ; 
     
-      return ; 
+      this ->max_downforce_ = 0 ;  
     
     }
     
@@ -231,9 +308,10 @@ namespace gazebo {
     
     if ( ! this ->sdf ->HasElement ( "maxDifferentialForceZ" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <maxDifferentialForceZ>, exiting" ) ; 
+      ROS_INFO_STREAM (    "Differential plugin missing "
+                        << "<maxDifferentialForceZ>, defaults to 0." ) ; 
     
-      return ; 
+      this ->max_differential_force_z_ = 0 ; 
     
     }
     
@@ -246,9 +324,10 @@ namespace gazebo {
     
     if ( ! this ->sdf ->HasElement ( "maxDifferentialForceY" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <maxDifferentialForceY>, exiting" ) ; 
+      ROS_INFO_STREAM (    "Differential plugin missing "
+                        << "<maxDifferentialForceY>, defaults to 0." ) ; 
     
-      return ; 
+      this ->max_differential_force_y_ = 0 ;  
     
     }
     
@@ -262,9 +341,10 @@ namespace gazebo {
     // TODO: Get the value directly from the joints.
     if ( ! this ->sdf ->HasElement ( "sideJointDamping" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <sideJointDamping>, exiting" ) ; 
+      ROS_INFO_STREAM (    "Differential plugin missing <sideJointDamping>, "
+                        << "defaults to 0." ) ; 
     
-      return ; 
+      this ->side_joint_damping_ = 0 ;  
     
     }
     
@@ -277,9 +357,10 @@ namespace gazebo {
     
     if ( ! this ->sdf ->HasElement ( "correctionForceModifier" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <correctionForceModifier>, exiting" ) ; 
+      ROS_INFO_STREAM (    "Differential plugin missing "
+                        << "<correctionForceModifier>, defaults to 0." ) ; 
     
-      return ; 
+      this ->correction_force_modifier_ = 0 ; 
     
     }
     
@@ -292,9 +373,9 @@ namespace gazebo {
     
     if ( ! this ->sdf ->HasElement ( "P" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <P>, exiting" ) ; 
+      ROS_INFO ( "Differential plugin missing <P>, defaults to 0." ) ; 
     
-      return ; 
+      this ->k_p_ = 0 ;  
     
     }
     
@@ -306,9 +387,9 @@ namespace gazebo {
     
     if ( ! this ->sdf ->HasElement ( "I" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <I>, exiting" ) ; 
+      ROS_INFO ( "Differential plugin missing <I>, defaults to 0." ) ; 
     
-      return ; 
+      this ->k_i_ = 0 ;  
     
     }
     
@@ -320,9 +401,9 @@ namespace gazebo {
     
     if ( ! this ->sdf ->HasElement ( "D" ) ) { 
   
-      ROS_FATAL ( "Differential plugin missing <D>, exiting" ) ; 
+      ROS_INFO ( "Differential plugin missing <D>, defaults to 0." ) ; 
     
-      return ; 
+      this ->k_d_ = 0 ;  
     
     }
     
@@ -332,68 +413,29 @@ namespace gazebo {
       
     }
     
-    // Initialize the correction force
-    this ->correction_force_ = gazebo ::math ::Vector3 ( 0 , 0 , 0 ) ; 
+    return true ; 
   
-    // Initialize the variables used in the PID algorithm
-    this ->previous_error_ = 0.0 ; 
-    this ->integral_ = 0.0 ; 
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  void GazeboRosDifferential ::LoadReconfigureThread ( void ) { 
     
-    // Make sure the ROS node for Gazebo has already been initialized
-    if ( ! ros ::isInitialized ( ) ) { 
+    this ->reconfigure_srv_ 
+     .reset ( new dynamic_reconfigure 
+                   ::Server 
+                    < pandora_gazebo_plugins ::DifferentialConfig > ( ) ) ; 
+      
+    this ->reconfigure_callback_ = boost ::bind ( & GazeboRosDifferential 
+                                                     ::ConfigCallback , 
+                                                  this , 
+                                                  _1 ,
+                                                  _2 ) ; 
+                                                             
+    this ->reconfigure_srv_ ->setCallback ( this ->reconfigure_callback_ ) ; 
+
+    // TODO: Test when callback is executed.
+    ROS_INFO ( "Differential reconfigure ready." ) ; 
   
-      ROS_FATAL_STREAM ( "A ROS node for Gazebo has not been initialized, unable to load plugin. " 
-                         << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)" ) ; 
-    
-      return ; 
-    
-    }
-
-    this ->rosnode_ = new ros ::NodeHandle ( this ->robot_namespace_ ) ; 
-
-    // Publish multi queue
-    this ->pmq .startServiceThread ( ) ; 
-
-    this ->joint_state_pub_Queue = 
-    this ->pmq .addPub < sensor_msgs ::JointState > ( ) ; 
-                     
-    this ->joint_state_pub_ = this ->rosnode_ 
-                                    ->advertise < sensor_msgs ::JointState > 
-                                      ( "differential_side_joint_states" , 1 ) ; 
-
-    // Advertise services on the custom queue
-    ros ::AdvertiseServiceOptions aso =
-    ros ::AdvertiseServiceOptions ::create < std_srvs ::Empty > 
-                                  ( "/differantial_side" , 
-                                    boost ::bind ( & GazeboRosDifferential 
-                                                      ::ServiceCallback , 
-                                                   this , 
-                                                   _1 , 
-                                                   _2 ) , 
-                                    ros ::VoidPtr ( ) , 
-                                    & this ->callback_queue_ ) ; 
-                    
-    this ->srv_ = this ->rosnode_ ->advertiseService ( aso ) ; 
-    
-    dynamic_reconfigure 
-     ::Server < pandora_gazebo_plugins ::DifferentialConfig > config_callback ; 
-     
-    config_callback = boost ::bind ( & GazeboRosDifferential ::ConfigCallback , 
-                                     _1 ,
-                                     _2 ) ; 
-                                   
-    this ->config_server_ .setCallback ( config_callback ) ;  
-  
-    // New Mechanism for Updating every World Cycle
-    // Listen to the update event. This event is broadcast every
-    // simulation iteration.
-    this ->update_connection_ = event 
-                                 ::Events 
-                                  ::ConnectWorldUpdateBegin 
-                                    ( boost ::bind ( & GazeboRosDifferential 
-                                                        ::UpdateChild , 
-                                                     this ) ) ; 
-                                                     
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -407,8 +449,6 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Reconfigures the variables when the dynamic_reconfigure 
-  // sents a new configuration
   void GazeboRosDifferential ::ConfigCallback 
                                ( pandora_gazebo_plugins 
                                   ::DifferentialConfig & config , 
@@ -423,28 +463,30 @@ namespace gazebo {
     this ->k_i_                       = config .I ; 
     this ->k_d_                       = config .D ; 
     this ->correction_force_modifier_ = config .correctionForceModifier ; 
+                                 
+    ROS_INFO ( "Differential dynamic reconfigure complete." ) ; 
   
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Returns the real time update rate of the physics engine
   double GazeboRosDifferential ::GetUpdateRate ( void ) { 
                                  
-    return ( this ->world_ ->GetPhysicsEngine ( ) ->GetRealTimeUpdateRate ( ) ) ; 
+    return this ->world_ ->GetPhysicsEngine ( ) ->GetRealTimeUpdateRate ( )  ; 
   
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Updates the angles of the side joints
   void GazeboRosDifferential ::UpdateAngles ( void ) { 
   
-    this ->left_angle_ = this ->left_side_joint_ ->GetAngle ( 0 ) .Radian ( ) ; 
-    this ->right_angle_ = this ->right_side_joint_ ->GetAngle ( 0 ) .Radian ( ) ; 
+    this ->left_angle_ = this ->left_side_joint_ ->GetAngle ( 0 ) 
+                                                    .Radian ( ) ; 
+                                                    
+    this ->right_angle_ = this ->right_side_joint_ ->GetAngle ( 0 ) 
+                                                      .Radian ( ) ; 
   
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Publishes joint states
   void GazeboRosDifferential ::PublishJointStates ( void ) { 
   
     this ->joint_state_msg_ .header .stamp = ros ::Time ::now ( ) ; 
@@ -465,7 +507,6 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Adds forces at the rear wheels in y and z axis due to differential activity
   void GazeboRosDifferential ::AddDifferentialForces ( void ) { 
 
     // Initialize the forces to be set
@@ -510,8 +551,8 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Adds downforces at the wheels due to the side joint damping
-  // TODO: Implement maximum side joint damping and normalize side joint damping.
+  // TODO: Implement maximum side joint damping 
+  //       and normalize side joint damping.
   void GazeboRosDifferential ::AddDownforces ( void ) { 
   
     // Get the linear velocity of each link in the z axis in ( mm / sec )
@@ -568,7 +609,6 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Calculates the output after the PID control
   double GazeboRosDifferential ::PIDAlgorithm ( void ) { 
     
     // Calculate the error
@@ -603,20 +643,22 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Calculates and sets the correction force to the base link
   void GazeboRosDifferential ::AddCorrectionForce ( void ) { 
+  
+    // Initialize the force to be applied
+    math ::Vector3 correction_force ( 0 , 0 , 0 ) ; 
     
-    // Calculate the force to be set
-    this ->correction_force_ .x = ( this ->correction_force_modifier_ / 100 ) * 
-                                    GazeboRosDifferential ::PIDAlgorithm ( ) ; 
+    // Calculate the force
+    correction_force .x = 
+    ( this ->correction_force_modifier_ / 100.0 ) * GazeboRosDifferential 
+                                                     ::PIDAlgorithm ( ) ; 
     
-    // Set the correction force to the base link
-    this ->base_link_ ->AddForce ( this ->correction_force_ ) ; 
+    // Apply the correction force at the base link
+    this ->base_link_ ->AddForce ( correction_force ) ; 
   
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Update the controller
   void GazeboRosDifferential ::UpdateChild ( void ) { 
   
     GazeboRosDifferential ::UpdateAngles ( ) ; 
@@ -626,10 +668,6 @@ namespace gazebo {
     //GazeboRosDifferential ::AddDownforces ( ) ; 
     
     //GazeboRosDifferential ::AddDifferentialForces ( ) ; 
-    
-    //ROS_INFO ( "Error = %f" , this ->previous_error_ ) ; 
-    //ROS_INFO ( "Correction force = %f" , this ->correction_force_ .x ) ; 
-    //ROS_INFO ( "-----------------------" ) ; 
     
     GazeboRosDifferential ::PublishJointStates ( ) ; 
   
