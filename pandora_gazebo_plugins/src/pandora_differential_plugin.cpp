@@ -105,10 +105,12 @@ namespace gazebo {
     
     /// \brief Start a thread for the differential dynamic reconfigure node
     // FIXME: Wait for the rest of the plugin to load
+    /*
     this ->reconfigure_thread_ 
      .reset ( new boost ::thread ( boost ::bind ( & GazeboRosDifferential 
                                                      ::LoadReconfigureThread , 
                                                   this ) ) ) ; 
+    */
 
     this ->joint_state_pub_Queue = 
     this ->pmq .addPub < sensor_msgs ::JointState > ( ) ; 
@@ -545,8 +547,8 @@ namespace gazebo {
     }
     
     // Set the forces to the wheel links
-    this ->left_rear_wheel_link_ ->AddForce ( left_rear_force ) ; 
-    this ->right_rear_wheel_link_ ->AddForce ( right_rear_force ) ; 
+    this ->left_rear_wheel_link_ ->AddRelativeForce ( left_rear_force ) ; 
+    this ->right_rear_wheel_link_ ->AddRelativeForce ( right_rear_force ) ; 
   
   }
 
@@ -557,16 +559,16 @@ namespace gazebo {
   
     // Get the linear velocity of each link in the z axis in ( mm / sec )
     double left_front_z_vel = 1000.0 * left_front_wheel_link_ 
-                                        ->GetWorldLinearVel ( ) 
+                                        ->GetRelativeLinearVel ( ) 
                                          .z ; 
     double left_rear_z_vel = 1000.0 * left_rear_wheel_link_ 
-                                       ->GetWorldLinearVel ( ) 
+                                       ->GetRelativeLinearVel ( ) 
                                         .z ; 
     double right_front_z_vel = 1000.0 * right_front_wheel_link_ 
-                                         ->GetWorldLinearVel ( ) 
+                                         ->GetRelativeLinearVel ( ) 
                                           .z ; 
     double right_rear_z_vel = 1000.0 * right_rear_wheel_link_ 
-                                        ->GetWorldLinearVel ( ) 
+                                        ->GetRelativeLinearVel ( ) 
                                          .z ; 
 
     // Initialize the downforces to be set
@@ -601,10 +603,14 @@ namespace gazebo {
                                 right_rear_z_vel ; 
   
     // Set the downforces to the wheel links
-    this ->left_front_wheel_link_ ->AddForce ( left_front_downforce ) ; 
-    this ->left_rear_wheel_link_ ->AddForce ( left_rear_downforce ) ; 
-    this ->right_front_wheel_link_ ->AddForce ( right_front_downforce ) ; 
-    this ->right_rear_wheel_link_ ->AddForce ( right_rear_downforce ) ; 
+    this ->left_front_wheel_link_ 
+          ->AddRelativeForce ( left_front_downforce ) ; 
+    this ->left_rear_wheel_link_ 
+          ->AddRelativeForce ( left_rear_downforce ) ; 
+    this ->right_front_wheel_link_ 
+          ->AddRelativeForce ( right_front_downforce ) ; 
+    this ->right_rear_wheel_link_ 
+          ->AddRelativeForce ( right_rear_downforce ) ; 
   
   }
 
@@ -654,7 +660,13 @@ namespace gazebo {
                                                      ::PIDAlgorithm ( ) ; 
     
     // Apply the correction force at the base link
-    this ->base_link_ ->AddForce ( correction_force ) ; 
+    this ->base_link_ ->AddRelativeForce ( correction_force ) ; 
+    // XXX
+    //this ->left_side_joint_ ->AddForce ( 0 , correction_force .x ) ; 
+    
+    ROS_INFO ( "Error = %f" , this ->previous_error_ ) ; 
+    ROS_INFO ( "Correction force = %f" , correction_force .x ) ; 
+    ROS_INFO ( "-----------------------" ) ; 
   
   }
 
