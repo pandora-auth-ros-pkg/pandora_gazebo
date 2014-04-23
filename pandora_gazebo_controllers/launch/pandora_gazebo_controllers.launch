@@ -1,5 +1,7 @@
 <launch>
 
+  <arg name="robot" default="pioneer3at"/>
+
   <!-- Load joint controller configurations from YAML files to parameter server -->
   
   <!-- Joint State -->
@@ -11,18 +13,11 @@
   <!-- Kinect -->
   <rosparam command="load" file="$(find pandora_gazebo_controllers)/config/pandora_kinect_controllers.yaml" />
   
-  <!-- Pioneer3at Wheels -->
-  <!--
-  <rosparam command="load" file="$(find pandora_gazebo_controllers)/config/pandora_pioneer3at_wheel_controllers.yaml" />
-  -->
-  
-  <!-- Gears Wheels -->
-  <rosparam command="load" file="$(find pandora_gazebo_controllers)/config/pandora_gears_wheel_controllers.yaml" />
+  <!-- Robot Wheels -->
+  <rosparam command="load" file="$(find pandora_gazebo_controllers)/config/pandora_$(arg robot)_wheel_controllers.yaml" />
   
   <!-- Load the controllers -->
   
-  <!--
-  
   <node name="controller_spawner" 
         pkg="controller_manager" type="spawner" respawn="false" output="screen" 
         args="joint_state_controller
@@ -30,23 +25,9 @@
               laser_pitch_controller
               kinect_pitch_controller
               kinect_yaw_controller
-              p3at_front_left_wheel_controller
-              p3at_front_right_wheel_controller
-              p3at_rear_left_wheel_controller
-              p3at_rear_right_wheel_controller" />
-              
-  -->
-  
-  <node name="controller_spawner" 
-        pkg="controller_manager" type="spawner" respawn="false" output="screen" 
-        args="joint_state_controller
-              laser_roll_controller
-              laser_pitch_controller
-              kinect_pitch_controller
-              kinect_yaw_controller
-              gears_left_front_wheel_controller
-              gears_left_rear_wheel_controller
-              gears_right_front_wheel_controller
-              gears_right_rear_wheel_controller" />
+              $(arg robot)_left_front_wheel_controller
+              $(arg robot)_left_rear_wheel_controller
+              $(arg robot)_right_front_wheel_controller
+              $(arg robot)_right_rear_wheel_controller" />
               
 </launch>
