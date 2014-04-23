@@ -1,0 +1,25 @@
+# Gears Velocity Controllers ---------------------------------------
+
+gears_left_front_wheel_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: left_front_wheel_joint
+  pid: &gears_wheel_velocity_gains
+    p: 0.0
+    i: 0.0
+    d: 0.0
+    i_clamp: 0.0
+
+gears_left_rear_wheel_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: left_rear_wheel_joint
+  pid: *gears_wheel_velocity_gains
+
+gears_right_front_wheel_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: right_front_wheel_joint
+  pid: *gears_wheel_velocity_gains
+
+gears_right_rear_wheel_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: right_rear_wheel_joint
+  pid: *gears_wheel_velocity_gains
