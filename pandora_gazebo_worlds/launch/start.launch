@@ -1,6 +1,8 @@
 <launch>
+
   <arg name="world" default="empty"/>
   <arg name="robot" default="pioneer3at"/>
+  <arg name="control" default="false"/>
   <arg name="x" default="0"/>
   <arg name="y" default="0"/>
   <arg name="z" default="0"/>
@@ -9,18 +11,21 @@
   
   <param name="/use_sim_time" value="true" />
 
-  <node name="gazebo" pkg="gazebo_ros" type="gzserver" args="$(find pandora_gazebo_worlds)/worlds/$(arg world)/$(arg world).world" respawn="false" output="screen"/>
+  <node name="gazebo" pkg="gazebo_ros" type="gzserver"
+        args="$(find pandora_gazebo_worlds)/worlds/$(arg world)/$(arg world).world"
+        respawn="false" output="screen"/>
   
-  <include file="$(find pandora_robots_description)/launch/$(arg robot)/$(arg robot)_description.launch" />
+  <include file="$(find pandora_robots_description)/launch/$(arg robot)/$(arg robot)_description.launch" >
+    <arg name="control" value="$(arg control)" />
+  </include>
   
   <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" 
-      args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y) -model $(arg robot)_robot -param robot_description" />
+        args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y) -model $(arg robot)_robot -param robot_description" />
   
     <!-- start gui -->
   <group if="$(arg gui)">
     <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen"/>
   </group>
-
 
 </launch>
 
