@@ -105,7 +105,8 @@ namespace gazebo {
     
     /// \brief Start a thread for the differential dynamic reconfigure node
     // FIXME: Wait for the rest of the plugin to load
-    /*
+    
+    /* Dynamic reconfigure DISABLED!
     this ->reconfigure_thread_ 
      .reset ( new boost ::thread ( boost ::bind ( & GazeboRosDifferential 
                                                      ::LoadReconfigureThread , 
@@ -616,40 +617,40 @@ namespace gazebo {
 
   /////////////////////////////////////////////////////////////////////////////
   double GazeboRosDifferential ::PIDAlgorithm ( void ) { 
+  
+    // Calculate the time between two engine iterations
+    double dt = ( 1.0 / GazeboRosDifferential ::GetUpdateRate ( ) ) ; 
     
-    // Calculate the error
+    // Calculate the error of the loop ( target - state )
     double error = ( ( this ->left_angle_ + this ->right_angle_ ) / 2 ) ; 
     //double error = ( left_angle_abs - right_angle_abs ) ; 
   
     // Normalize the error
     error /= this ->max_angle_ ; 
-  
-    double dt = ( 1.0 / GazeboRosDifferential ::GetUpdateRate ( ) ) ; 
-  
+    
+    // Calculate the proportional contribution to output
+    double p_term = ( this ->k_p_ * error ) ; 
+    
+    // Calculate the integral contribution to output
     this ->integral_ += ( error * dt ) ; 
+    double i_term = ( this ->k_i_ * this ->integral_ ) ; 
   
+    // Calculate the derivative error & update the previous error
     double derivative = ( ( error - this ->previous_error_ ) / dt ) ; 
+    this ->previous_error_ = error ; 
+    
+    // Calculate the derivative contribution to output
+    double d_term = ( this ->k_d_ * derivative ) ; 
   
     // Calculate the output
-    double output = ( ( this ->k_p_ * error ) + 
-                      ( this ->k_i_ * this ->integral_ ) + 
-                      ( this ->k_d_ * derivative ) ) ; 
-    /*
-    double output = ( error + this ->integral_ / t_i + t_d * derivative ) * 
-                    this ->k_p_ ; 
-                    
-    double output = ( error + this ->integral_ / t_i + t_d * derivative ) / 
-                    this ->k_p_ ; 
-    */
-    
-    this ->previous_error_ = error ; 
+    double output = ( p_term + i_term + d_term ) ; 
     
     return output ; 
   
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  void GazeboRosDifferential ::AddCorrectionForce ( void ) { 
+  void GazeboRosDifferential ::AddBaseCorrectionForce ( void ) { 
   
     // Initialize the force to be applied
     math ::Vector3 correction_force ( 0 , 0 , 0 ) ; 
@@ -661,26 +662,100 @@ namespace gazebo {
     
     // Apply the correction force at the base link
     this ->base_link_ ->AddRelativeForce ( correction_force ) ; 
-    // XXX
-    //this ->left_side_joint_ ->AddForce ( 0 , correction_force .x ) ; 
     
-    ROS_INFO ( "Error = %f" , this ->previous_error_ ) ; 
-    ROS_INFO ( "Correction force = %f" , correction_force .x ) ; 
-    ROS_INFO ( "-----------------------" ) ; 
+    //ROS_INFO ( "Error = %f" , this ->previous_error_ ) ; 
+    //ROS_INFO ( "Correction force = %f" , correction_force .x ) ; 
+    //ROS_INFO ( "-----------------------" ) ; 
+  
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////
+  void GazeboRosDifferential ::AddSideCorrectionForce ( void ) { 
+  
+    // Separate the sign and the value of the angles.
+    double left_angle_abs = fabs ( this ->left_angle_ ) ; 
+    double right_angle_abs = fabs ( this ->right_angle_ ) ; 
+    
+    int left_angle_sign = copysign ( 1 , this ->left_angle_ ) ; 
+    int right_angle_sign = copysign ( 1 , this ->right_angle_ ) ; 
+  
+    // Calculate the error
+    double angle_diff = left_angle_abs - right_angle_abs ; 
+  
+    // Maximum hardcoded force to be applied
+    double max_force = 20.0 ; 
+  
+    // Apply the correction forces at the side joints accordingly
+    if ( ( this ->left_angle_ * this ->right_angle_ ) > 0 ) { 
+    
+      this ->left_side_joint_ 
+            ->SetForce ( 0 , ( -1 ) * 
+                             max_force * 
+                             left_angle_sign ) ; 
+  
+      this ->right_side_joint_ 
+            ->SetForce ( 0 , ( -1 ) * 
+                             max_force * 
+                             right_angle_sign ) ; 
+    
+    }
+  
+    if ( ( this ->left_angle_ * this ->right_angle_ ) < 0 ) { 
+  
+      if ( angle_diff > 0 ) { 
+    
+       this ->left_side_joint_ 
+             ->SetForce ( 0 , ( -1 ) * ( 1.0 / 4.0 ) * 
+                              max_force * 
+                              right_angle_sign ) ; 
+    
+       this ->right_side_joint_ 
+             ->SetForce ( 0 , ( -1 ) * ( 1.0 / 4.0 ) * 
+                              max_force * 
+                              right_angle_sign ) ; 
+      
+      }
+    
+      else { 
+    
+       this ->left_side_joint_ 
+             ->SetForce ( 0 , ( -1 ) * ( 1.0 / 4.0 ) * 
+                              max_force * 
+                              left_angle_sign ) ; 
+    
+       this ->right_side_joint_ 
+             ->SetForce ( 0 , ( -1 ) * ( 1.0 / 4.0 ) * 
+                              max_force * 
+                              left_angle_sign ) ; 
+      
+      }
+    
+    }
+    
+    // TODO: Fix method to use PID control instead of hardcoded control.
+    //this ->left_side_joint_ ->AddForce ( 0 , correction_force .x ) ; 
   
   }
 
   /////////////////////////////////////////////////////////////////////////////
   void GazeboRosDifferential ::UpdateChild ( void ) { 
   
+    // Get the angles in the new iteration of the engine.
     GazeboRosDifferential ::UpdateAngles ( ) ; 
     
-    GazeboRosDifferential ::AddCorrectionForce ( ) ; 
+    // Add PID controlled forces (marginally stable)
+    //GazeboRosDifferential ::AddBaseCorrectionForce ( ) ; 
+    
+    // XXX: Add hardcoded forces (semi-control, working)
+    GazeboRosDifferential ::AddSideCorrectionForce ( ) ; 
   
+    // Add forces at z axis to overcome high side joint damping (virtual forces)
     //GazeboRosDifferential ::AddDownforces ( ) ; 
     
+    // Add forces at y / z axes (real forces, applied due to the differential)
     //GazeboRosDifferential ::AddDifferentialForces ( ) ; 
     
+    // Publish joint states to be used in RViz
     GazeboRosDifferential ::PublishJointStates ( ) ; 
   
   }

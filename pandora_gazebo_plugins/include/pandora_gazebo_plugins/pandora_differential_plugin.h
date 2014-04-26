@@ -94,7 +94,10 @@ namespace gazebo {
     private: void AddDownforces ( void ) ; 
     
     /// \brief Add force at the base link to correct its angle
-    private: void AddCorrectionForce ( void ) ; 
+    private: void AddBaseCorrectionForce ( void ) ; 
+    
+    /// \brief Add force at the side joints to correct base's angle
+    private: void AddSideCorrectionForce ( void ) ; 
 
     /// \brief Pointer to ros node
     private: ros ::NodeHandle * rosnode_ ; 
