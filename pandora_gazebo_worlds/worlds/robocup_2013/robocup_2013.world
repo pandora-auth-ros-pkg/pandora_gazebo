@@ -925,23 +925,23 @@
         </visual>
       </link>
     </model>
-    <model name="victim_with_box1_1">
+    <model name="victim_with_box_1">
       <static>true</static>
-      <link name="victim_with_box1_1_link">
+      <link name="victim_with_box_1_link">
         <pose>-4.8 -0.9 0.9 0 0 -1.5708</pose>
-        <collision name="victim_with_box1_1_collision">
+        <collision name="victim_with_box_1_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="victim_with_box1_1_visual">
+        <visual name="victim_with_box_1_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -1109,23 +1109,23 @@
         </visual>
       </link>
     </model>
-    <model name="victim_with_box1_2">
+    <model name="victim_with_box_2">
       <static>true</static>
-      <link name="victim_with_box1_2_link">
+      <link name="victim_with_box_2_link">
         <pose>-9.6 0 0 0 0 -4.71239</pose>
-        <collision name="victim_with_box1_2_collision">
+        <collision name="victim_with_box_2_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="victim_with_box1_2_visual">
+        <visual name="victim_with_box_2_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -3869,23 +3869,23 @@
         </visual>
       </link>
     </model>
-    <model name="victim_with_box1_3">
+    <model name="victim_with_box_3">
       <static>true</static>
-      <link name="victim_with_box1_3_link">
+      <link name="victim_with_box_3_link">
         <pose>-7.2 -1.2 0 0 0 -1.5708</pose>
-        <collision name="victim_with_box1_3_collision">
+        <collision name="victim_with_box_3_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="victim_with_box1_3_visual">
+        <visual name="victim_with_box_3_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -4007,23 +4007,23 @@
         </visual>
       </link>
     </model>
-    <model name="victim_with_box1_4">
+    <model name="victim_with_box_4">
       <static>true</static>
-      <link name="victim_with_box1_4_link">
+      <link name="victim_with_box_4_link">
         <pose>-9.6 0.3 0.9 0 0 -1.5708</pose>
-        <collision name="victim_with_box1_4_collision">
+        <collision name="victim_with_box_4_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="victim_with_box1_4_visual">
+        <visual name="victim_with_box_4_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -4835,23 +4835,23 @@
         </visual>
       </link>
     </model>
-    <model name="victim_with_box1_5">
+    <model name="victim_with_box_5">
       <static>true</static>
-      <link name="victim_with_box1_5_link">
+      <link name="victim_with_box_5_link">
         <pose>-4.8 -5.7 0.9 0 0 -1.5708</pose>
-        <collision name="victim_with_box1_5_collision">
+        <collision name="victim_with_box_5_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="victim_with_box1_5_visual">
+        <visual name="victim_with_box_5_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>

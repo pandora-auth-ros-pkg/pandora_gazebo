@@ -1177,14 +1177,14 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name="victim_with_box1_1">
+    <model name="victim_with_box_1">
       <static>1</static>
-      <link name="victim_with_box1_1_link">
+      <link name="victim_with_box_1_link">
         <pose>-4.800000 -0.900000 0.900000 0.000000 0.000000 -1.570800</pose>
-        <collision name="victim_with_box1_1_collision">
+        <collision name="victim_with_box_1_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>
@@ -1198,11 +1198,11 @@
             </contact>
           </surface>
         </collision>
-        <visual name="victim_with_box1_1_visual">
+        <visual name="victim_with_box_1_visual">
           <cast_shadows>0</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>
@@ -1216,14 +1216,14 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name="victim_with_box1_2">
+    <model name="victim_with_box_2">
       <static>1</static>
-      <link name="victim_with_box1_2_link">
+      <link name="victim_with_box_2_link">
         <pose>-9.600000 0.000000 0.000000 0.000000 0.000000 1.570795</pose>
-        <collision name="victim_with_box1_2_collision">
+        <collision name="victim_with_box_2_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>
@@ -1237,11 +1237,11 @@
             </contact>
           </surface>
         </collision>
-        <visual name="victim_with_box1_2_visual">
+        <visual name="victim_with_box_2_visual">
           <cast_shadows>0</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>
@@ -3868,14 +3868,14 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name="victim_with_box1_3">
+    <model name="victim_with_box_3">
       <static>1</static>
-      <link name="victim_with_box1_3_link">
+      <link name="victim_with_box_3_link">
         <pose>-7.200000 -1.200000 0.000000 0.000000 0.000000 -1.570800</pose>
-        <collision name="victim_with_box1_3_collision">
+        <collision name="victim_with_box_3_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>
@@ -3889,11 +3889,11 @@
             </contact>
           </surface>
         </collision>
-        <visual name="victim_with_box1_3_visual">
+        <visual name="victim_with_box_3_visual">
           <cast_shadows>0</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>
@@ -4102,14 +4102,14 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name="victim_with_box1_4">
+    <model name="victim_with_box_4">
       <static>1</static>
-      <link name="victim_with_box1_4_link">
+      <link name="victim_with_box_4_link">
         <pose>-9.600000 0.300000 0.900000 0.000000 0.000000 -1.570800</pose>
-        <collision name="victim_with_box1_4_collision">
+        <collision name="victim_with_box_4_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>
@@ -4123,11 +4123,11 @@
             </contact>
           </surface>
         </collision>
-        <visual name="victim_with_box1_4_visual">
+        <visual name="victim_with_box_4_visual">
           <cast_shadows>0</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>
@@ -5545,14 +5545,14 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name="victim_with_box1_6">
+    <model name="victim_with_box_6">
       <static>1</static>
-      <link name="victim_with_box1_6_link">
+      <link name="victim_with_box_6_link">
         <pose>-4.800000 -5.700000 0.900000 0.000000 0.000000 -1.570800</pose>
-        <collision name="victim_with_box1_6_collision">
+        <collision name="victim_with_box_6_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>
@@ -5566,11 +5566,11 @@
             </contact>
           </surface>
         </collision>
-        <visual name="victim_with_box1_6_visual">
+        <visual name="victim_with_box_6_visual">
           <cast_shadows>0</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file://victim_with_box_v.dae</uri>
               <scale>1.000000 1.000000 1.000000</scale>
             </mesh>
           </geometry>

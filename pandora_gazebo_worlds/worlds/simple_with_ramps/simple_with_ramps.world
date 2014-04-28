@@ -697,28 +697,5 @@
         </visual>
       </link>
     </model>
-    <model name="victim_with_box1_2">
-      <static>true</static>
-      <link name="victim_with_box1_2_link">
-        <pose>2.4 2.4 0 0 0 -3.14159</pose>
-        <collision name="victim_with_box1_2_collision">
-          <geometry>
-            <mesh>
-              <uri>file://victim-with-box1.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="victim_with_box1_2_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://victim-with-box1.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
   </world>
 </sdf>
