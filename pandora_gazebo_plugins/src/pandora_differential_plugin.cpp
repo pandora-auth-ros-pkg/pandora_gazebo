@@ -40,9 +40,13 @@ namespace gazebo {
   GazeboRosDifferential ::~GazeboRosDifferential ( void ) { 
     
     // Differential Dynamic Reconfigure
-    this ->reconfigure_thread_ ->join ( ) ; 
-    ROS_DEBUG_STREAM_NAMED ( "pandora_differential_plugin" , 
-                             "differential reconfigure joined" ) ; 
+    if ( this ->reconfigure_thread_ ) { 
+    
+      this ->reconfigure_thread_ ->join ( ) ; 
+      ROS_DEBUG_STREAM_NAMED ( "pandora_differential_plugin" , 
+                               "differential reconfigure joined" ) ; 
+                               
+    }
   
     event ::Events ::DisconnectWorldUpdateBegin ( this ->update_connection_ ) ; 
   

@@ -24,6 +24,7 @@
   <build_depend>gazebo_ros</build_depend>
   <build_depend>gazebo_plugins</build_depend>
   <build_depend>controllers_and_sensors_communications</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>
   
   <run_depend>roscpp</run_depend>
   <run_depend>tf</run_depend>
@@ -33,6 +34,7 @@
   <run_depend>gazebo_ros</run_depend>
   <run_depend>gazebo_plugins</run_depend>
   <run_depend>controllers_and_sensors_communications</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
 
   <export>
     <gazebo_ros plugin_path="${prefix}/lib" gazebo_media_path="${prefix}" />
