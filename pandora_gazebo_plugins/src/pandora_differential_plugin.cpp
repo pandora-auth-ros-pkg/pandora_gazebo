@@ -147,6 +147,9 @@ namespace gazebo {
                                     ( boost ::bind ( & GazeboRosDifferential 
                                                         ::UpdateChild , 
                                                      this ) ) ; 
+    
+    ROS_INFO ( "Starting PandoraDifferential Plugin (ns = %s)!" ,
+               this ->robot_namespace_ .c_str ( ) ) ; 
                                                      
   }
 
