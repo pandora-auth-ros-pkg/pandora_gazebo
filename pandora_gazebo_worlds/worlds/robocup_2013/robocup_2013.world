@@ -4467,23 +4467,161 @@
         </visual>
       </link>
     </model>
-    <model name="victim_1_1">
+    <model name="spectator_1">
       <static>true</static>
-      <link name="victim_1_1_link">
-        <pose>-16.8505 -5.30526 0 0 0 0</pose>
-        <collision name="victim_1_1_collision">
+      <link name="spectator_1_link">
+        <pose>-1.5 0.72 1.04 0 0 -1.57</pose>
+        <collision name="spectator_1_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-1.dae</uri>
+              <uri>file://spectator_red_tall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="victim_1_1_visual">
+        <visual name="spectator_1_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-1.dae</uri>
+              <uri>file://spectator_red_tall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="box_2">
+      <static>true</static>
+      <link name="box_2_link">
+        <pose>-2.0 0.8 0 0 0 0</pose>
+        <collision name="box_2_collision">
+          <geometry>
+            <mesh>
+              <uri>file://elevated_floor_120.dae</uri>
+              <scale>0.3 0.3 0.3</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="box_2_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://elevated_floor_120.dae</uri>
+              <scale>0.3 0.3 0.3</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="spectator_2">
+      <static>true</static>
+      <link name="spectator_2_link">
+        <pose>-2.0 0.72 1.04 0 0 -1.57</pose>
+        <collision name="spectator_2_collision">
+          <geometry>
+            <mesh>
+              <uri>file://spectator_green_short.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="spectator_2_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://spectator_green_short.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="spectator_3">
+      <static>true</static>
+      <link name="spectator_3_link">
+        <pose>-4.0 0.72 1.04 0 0 -1.57</pose>
+        <collision name="spectator_3_collision">
+          <geometry>
+            <mesh>
+              <uri>file://spectator_blue_tall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="spectator_3_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://spectator_blue_tall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="box_4">
+      <static>true</static>
+      <link name="box_4_link">
+        <pose>-4.5 0.8 0 0 0 0</pose>
+        <collision name="box_4_collision">
+          <geometry>
+            <mesh>
+              <uri>file://elevated_floor_120.dae</uri>
+              <scale>0.3 0.3 0.3</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="box_4_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://elevated_floor_120.dae</uri>
+              <scale>0.3 0.3 0.3</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="spectator_4">
+      <static>true</static>
+      <link name="spectator_4_link">
+        <pose>-4.5 0.72 1.04 0 0 -1.57</pose>
+        <collision name="spectator_4_collision">
+          <geometry>
+            <mesh>
+              <uri>file://spectator_black_short.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="spectator_4_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://spectator_black_short.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="spectator_5">
+      <static>true</static>
+      <link name="spectator_5_link">
+        <pose>-5.0 0.72 1.04 0 0 -1.57</pose>
+        <collision name="spectator_5_collision">
+          <geometry>
+            <mesh>
+              <uri>file://spectator_white_tall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="spectator_5_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file://spectator_white_tall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -4507,29 +4645,6 @@
           <geometry>
             <mesh>
               <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="victim_1_2">
-      <static>true</static>
-      <link name="victim_1_2_link">
-        <pose>-11.6968 -5.70947 0 0 0 -3.14159</pose>
-        <collision name="victim_1_2_collision">
-          <geometry>
-            <mesh>
-              <uri>file://victim-1.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="victim_1_2_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://victim-1.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
