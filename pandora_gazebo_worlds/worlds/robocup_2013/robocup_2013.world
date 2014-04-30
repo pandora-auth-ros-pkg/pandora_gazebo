@@ -33,6 +33,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
+              <size>40 40</size>
             </plane>
           </geometry>
           <surface>
@@ -66,6 +67,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
+              <size>40 40</size>
             </plane>
           </geometry>
           <material>
