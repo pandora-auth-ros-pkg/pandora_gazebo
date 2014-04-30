@@ -5,25 +5,25 @@
   <!-- Load joint controller configurations from YAML files to parameter server -->
   
   <!-- Joint State -->
-  <rosparam command="load" ns="gears"
+  <rosparam command="load" ns="control"
             file="$(find pandora_gazebo_controllers)/config/pandora_joint_state_controllers.yaml" />
   
   <!-- Hokuyo Laser -->
-  <rosparam command="load" ns="gears"
+  <rosparam command="load" ns="control"
             file="$(find pandora_gazebo_controllers)/config/pandora_laser_controllers.yaml" />
   
   <!-- Kinect -->
-  <rosparam command="load" ns="gears"
+  <rosparam command="load" ns="control"
             file="$(find pandora_gazebo_controllers)/config/pandora_kinect_controllers.yaml" />
   
   <!-- Robot Wheels -->
-  <rosparam command="load" ns="gears"
+  <rosparam command="load" ns="control"
             file="$(find pandora_gazebo_controllers)/config/pandora_$(arg robot)_wheel_controllers.yaml" />
   
   <!-- Load the controllers -->
   
   <node name="controller_spawner" 
-        pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="gears" 
+        pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="control" 
         args="joint_state_controller
               laser_roll_controller
               laser_pitch_controller
