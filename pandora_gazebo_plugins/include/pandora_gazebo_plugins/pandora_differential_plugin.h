@@ -81,6 +81,14 @@ namespace gazebo {
     private: double GetUpdateRate ( void ) ; 
     
     /// \brief Implements the PID Algorithm
+    private: double PIDAlgorithm ( double error , 
+                                   double & previous_error , 
+                                   double & integral , 
+                                   double k_p , 
+                                   double k_i = 0 , 
+                                   double k_d = 0 , 
+                                   double i_clamp_min = 0 , 
+                                   double i_clamp_max = 0 ) ; 
     private: double PIDAlgorithm ( void ) ; 
     
     /// \brief Update the angles of the side joints
@@ -98,6 +106,7 @@ namespace gazebo {
     
     /// \brief Add force at the side joints to correct base's angle
     private: void AddSideCorrectionForce ( void ) ; 
+    private: void AddSideCorrectionForce2 ( void ) ; 
 
     /// \brief Pointer to ros node
     private: ros ::NodeHandle * rosnode_ ; 

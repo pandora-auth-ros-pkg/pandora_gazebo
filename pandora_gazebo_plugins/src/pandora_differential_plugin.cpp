@@ -623,10 +623,43 @@ namespace gazebo {
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  double GazeboRosDifferential ::PIDAlgorithm ( void ) { 
+  double GazeboRosDifferential ::PIDAlgorithm ( double error , 
+                                                double & previous_error , 
+                                                double & integral , 
+                                                double k_p , 
+                                                double k_i = 0 , 
+                                                double k_d = 0 , 
+                                                double i_clamp_min = 0 , 
+                                                double i_clamp_max = 0 ) { 
+                                                
+    // TODO: Implement integral clamping.
   
     // Calculate the time between two engine iterations
     double dt = ( 1.0 / GazeboRosDifferential ::GetUpdateRate ( ) ) ; 
+    
+    // Calculate the proportional contribution to output
+    double p_term = ( k_p * error ) ; 
+    
+    // Calculate the integral contribution to output
+    integral += ( error * dt ) ; 
+    double i_term = ( k_i * integral ) ; 
+  
+    // Calculate the derivative error & update the previous error
+    double derivative = ( ( error - previous_error ) / dt ) ; 
+    previous_error = error ; 
+    
+    // Calculate the derivative contribution to output
+    double d_term = ( k_d * derivative ) ; 
+  
+    // Calculate the output
+    double output = ( p_term + i_term + d_term ) ; 
+    
+    return output ; 
+  
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  double GazeboRosDifferential ::PIDAlgorithm ( void ) { 
     
     // Calculate the error of the loop ( target - state )
     double error = ( ( this ->left_angle_ + this ->right_angle_ ) / 2 ) ; 
@@ -635,24 +668,12 @@ namespace gazebo {
     // Normalize the error
     error /= this ->max_angle_ ; 
     
-    // Calculate the proportional contribution to output
-    double p_term = ( this ->k_p_ * error ) ; 
-    
-    // Calculate the integral contribution to output
-    this ->integral_ += ( error * dt ) ; 
-    double i_term = ( this ->k_i_ * this ->integral_ ) ; 
-  
-    // Calculate the derivative error & update the previous error
-    double derivative = ( ( error - this ->previous_error_ ) / dt ) ; 
-    this ->previous_error_ = error ; 
-    
-    // Calculate the derivative contribution to output
-    double d_term = ( this ->k_d_ * derivative ) ; 
-  
-    // Calculate the output
-    double output = ( p_term + i_term + d_term ) ; 
-    
-    return output ; 
+    return GazeboRosDifferential ::PIDAlgorithm ( error , 
+                                                  this ->previous_error_ , 
+                                                  this ->integral_ , 
+                                                  this ->k_p_ , 
+                                                  this ->k_i_ , 
+                                                  this ->k_d_ ) ; 
   
   }
 
@@ -688,6 +709,8 @@ namespace gazebo {
   
     // Calculate the error
     double angle_diff = left_angle_abs - right_angle_abs ; 
+    // TODO: Test this error definition
+    // double angle_diff = ( ( left_angle_abs - right_angle_abs ) / 2 ) ; 
   
     // Maximum hardcoded force to be applied
     double max_force = 20.0 ; 
@@ -739,22 +762,68 @@ namespace gazebo {
     
     }
     
-    // TODO: Fix method to use PID control instead of hardcoded control.
-    //this ->left_side_joint_ ->AddForce ( 0 , correction_force .x ) ; 
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////
+  void GazeboRosDifferential ::AddSideCorrectionForce2 ( void ) { 
+  
+    // TODO: Test and merge this method with AddSideCorrectionForce
+    // TODO: Implement integral and derivative contribution to the control
+    
+    // Get the current state of the process variables
+    double right_state = this ->right_angle_ ; 
+    double left_state = this ->left_angle_ ; 
+    
+    // Define the set point
+    double set_point = ( ( right_state + left_state ) / 2 ) ; 
+    
+    // Calculate the errors of the control loop
+    //if ( right_state * left_state < 0 ) { 
+    
+      double right_error = ( set_point - right_state ) ; 
+      double left_error = ( set_point - left_state ) ; 
+      
+    //}
+    
+    //else { 
+    
+      //double right_error = set_point ; 
+      //double left_error = set_point ; 
+      
+    //}
+    
+    // Normalize the errors
+    right_error /= this ->max_angle_ ; 
+    left_error /= this ->max_angle_ ; 
+    
+    // Proportional value
+    double k_p = 20.0 ; 
+    
+    // Calculate the final commands
+    double right_cmd = ( - 1.0 ) * ( k_p * right_error ) ; 
+    double left_cmd = ( - 1.0 ) * ( k_p * left_error ) ; 
+    
+    // Apply the correction forces to the side joints
+    this ->right_side_joint_ ->SetForce ( 0 , right_cmd ) ; 
+    this ->left_side_joint_ ->SetForce ( 0 , left_cmd ) ; 
   
   }
 
   /////////////////////////////////////////////////////////////////////////////
   void GazeboRosDifferential ::UpdateChild ( void ) { 
   
-    // Get the angles in the new iteration of the engine.
+    // Get the angles in the current iteration of the engine.
     GazeboRosDifferential ::UpdateAngles ( ) ; 
     
-    // Add PID controlled forces (marginally stable)
+    // Add PID controlled force at base link (marginally stable)
     //GazeboRosDifferential ::AddBaseCorrectionForce ( ) ; 
     
-    // XXX: Add hardcoded forces (semi-control, working)
-    GazeboRosDifferential ::AddSideCorrectionForce ( ) ; 
+    // Add hardcoded forces (semi-control, working - error not well defined)
+    //GazeboRosDifferential ::AddSideCorrectionForce ( ) ; 
+    
+    // Add PID controlled forces at side joints
+    // XXX: Untested!
+    GazeboRosDifferential ::AddSideCorrectionForce2 ( ) ; 
   
     // Add forces at z axis to overcome high side joint damping (virtual forces)
     //GazeboRosDifferential ::AddDownforces ( ) ; 
