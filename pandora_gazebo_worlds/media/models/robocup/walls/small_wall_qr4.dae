@@ -12,7 +12,7 @@
   </asset>
   <library_images>
     <image id="plywood256x256_jpg" name="plywood256x256_jpg">
-      <init_from>qr3.jpg</init_from>
+      <init_from>../../images/qr3.jpg</init_from>
     </image>
   </library_images>
   <library_effects>
