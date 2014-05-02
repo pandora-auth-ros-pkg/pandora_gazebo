@@ -690,10 +690,6 @@ namespace gazebo {
     
     // Apply the correction force at the base link
     this ->base_link_ ->AddRelativeForce ( correction_force ) ; 
-    
-    //ROS_INFO ( "Error = %f" , this ->previous_error_ ) ; 
-    //ROS_INFO ( "Correction force = %f" , correction_force .x ) ; 
-    //ROS_INFO ( "-----------------------" ) ; 
   
   }
   
@@ -709,8 +705,6 @@ namespace gazebo {
   
     // Calculate the error
     double angle_diff = left_angle_abs - right_angle_abs ; 
-    // TODO: Test this error definition
-    // double angle_diff = ( ( left_angle_abs - right_angle_abs ) / 2 ) ; 
   
     // Maximum hardcoded force to be applied
     double max_force = 20.0 ; 
@@ -763,51 +757,6 @@ namespace gazebo {
     }
     
   }
-  
-  /////////////////////////////////////////////////////////////////////////////
-  void GazeboRosDifferential ::AddSideCorrectionForce2 ( void ) { 
-  
-    // TODO: Test and merge this method with AddSideCorrectionForce
-    // TODO: Implement integral and derivative contribution to the control
-    
-    // Get the current state of the process variables
-    double right_state = this ->right_angle_ ; 
-    double left_state = this ->left_angle_ ; 
-    
-    // Define the set point
-    double set_point = ( ( right_state + left_state ) / 2 ) ; 
-    
-    // Calculate the errors of the control loop
-    //if ( right_state * left_state < 0 ) { 
-    
-      double right_error = ( set_point - right_state ) ; 
-      double left_error = ( set_point - left_state ) ; 
-      
-    //}
-    
-    //else { 
-    
-      //double right_error = set_point ; 
-      //double left_error = set_point ; 
-      
-    //}
-    
-    // Normalize the errors
-    right_error /= this ->max_angle_ ; 
-    left_error /= this ->max_angle_ ; 
-    
-    // Proportional value
-    double k_p = 20.0 ; 
-    
-    // Calculate the final commands
-    double right_cmd = ( - 1.0 ) * ( k_p * right_error ) ; 
-    double left_cmd = ( - 1.0 ) * ( k_p * left_error ) ; 
-    
-    // Apply the correction forces to the side joints
-    this ->right_side_joint_ ->SetForce ( 0 , right_cmd ) ; 
-    this ->left_side_joint_ ->SetForce ( 0 , left_cmd ) ; 
-  
-  }
 
   /////////////////////////////////////////////////////////////////////////////
   void GazeboRosDifferential ::UpdateChild ( void ) { 
@@ -819,11 +768,7 @@ namespace gazebo {
     //GazeboRosDifferential ::AddBaseCorrectionForce ( ) ; 
     
     // Add hardcoded forces (semi-control, working - error not well defined)
-    //GazeboRosDifferential ::AddSideCorrectionForce ( ) ; 
-    
-    // Add PID controlled forces at side joints
-    // XXX: Untested!
-    GazeboRosDifferential ::AddSideCorrectionForce2 ( ) ; 
+    GazeboRosDifferential ::AddSideCorrectionForce ( ) ; 
   
     // Add forces at z axis to overcome high side joint damping (virtual forces)
     //GazeboRosDifferential ::AddDownforces ( ) ; 

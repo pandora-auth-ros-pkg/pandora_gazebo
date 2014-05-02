@@ -85,10 +85,10 @@ namespace gazebo {
                                    double & previous_error , 
                                    double & integral , 
                                    double k_p , 
-                                   double k_i = 0 , 
-                                   double k_d = 0 , 
-                                   double i_clamp_min = 0 , 
-                                   double i_clamp_max = 0 ) ; 
+                                   double k_i , 
+                                   double k_d , 
+                                   double i_clamp_min , 
+                                   double i_clamp_max ) ; 
     private: double PIDAlgorithm ( void ) ; 
     
     /// \brief Update the angles of the side joints
