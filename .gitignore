@@ -52,6 +52,7 @@ Thumbs.db
 
 
 # General #
+.blend
 .*.swp
 *.log
 core
