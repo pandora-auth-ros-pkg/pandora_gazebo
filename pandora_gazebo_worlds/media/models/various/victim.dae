@@ -148,6 +148,7 @@
             <technique_common>
               <instance_material symbol="victim_texture-material" target="#victim_texture-material">
                 <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
+			  </instance_material>
               <instance_material symbol="FrontColorNoCulling_001-material" target="#FrontColorNoCulling_001-material"/>
             </technique_common>
           </bind_material>
