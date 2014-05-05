@@ -14,6 +14,7 @@
   
   <run_depend>pandora_gazebo_plugins</run_depend>
   <run_depend>pandora_gazebo_worlds</run_depend>
+  <run_depend>pandora_gazebo_controllers</run_depend>
  
 
   <export>
