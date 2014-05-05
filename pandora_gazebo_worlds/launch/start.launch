@@ -1,7 +1,7 @@
 <launch>
 
   <arg name="world" default="empty"/>
-  <arg name="robot" default="pioneer3at"/>
+  <arg name="robot" default="gears"/>
   <arg name="control" default="false"/>
   <arg name="x" default="0"/>
   <arg name="y" default="0"/>
