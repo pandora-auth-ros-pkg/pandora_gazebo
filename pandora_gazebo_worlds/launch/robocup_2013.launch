@@ -1,7 +1,7 @@
 <launch>
   
   <arg name="gui" default="true"/>
-  <arg name="robot" default="pioneer3at"/>
+  <arg name="robot" default="gears"/>
   
   <include file="$(find pandora_gazebo_worlds)/launch/start.launch">
     <arg name="world" value="robocup_2013"/>
