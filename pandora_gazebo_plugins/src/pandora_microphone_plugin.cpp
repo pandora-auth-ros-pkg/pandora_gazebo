@@ -106,7 +106,7 @@ void PandoraMicrophonePlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _
       boost::bind( &PandoraMicrophonePlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_viz = this->rosnode_->advertise(ao2);
   // Initialize the controller
-	}
+  }
 
   // sensor generation off by default
   this->parent_camera_sensor_->SetActive(false);
@@ -159,65 +159,117 @@ void PandoraMicrophonePlugin::OnNewFrame(const unsigned char *_image,
   }
 }
 
-void PandoraMicrophonePlugin::PutMicrophoneData(common::Time &_updateTime){	
-	
-	double hfov = this->parent_camera_sensor_->GetCamera()->GetHFOV().Radian();
-	int width=this->parent_camera_sensor_->GetImageWidth();
-	int height=this->parent_camera_sensor_->GetImageHeight();
-	const unsigned char * data=this->parent_camera_sensor_->GetImageData();
-	
-	//-------------------------------------------------------------------
-	float maxtemp=0;
+void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime ) 
 
-	float temp;
+{ 
 
-	temp=0;
-	float maxPpm=0;
-	for(unsigned int i=0;i<width;i++){
-		for(unsigned int j=0;j<height;j++){
-			temp=pow(data[(j*width+i)*3+2]-data[(j*width+i)*3],2);
-			temp+=pow(data[(j*width+i)*3+2]-data[(j*width+i)*3+1],2);
-			temp=sqrt(temp)/361.0;
-			if(maxPpm<temp){
-				maxPpm=temp;
-			}
-		}
-	}
-	//-----------------------------------------------------------//
-	if(maxPpm>0.9)
-		tmsg.soundExists=true;
-	else
-		tmsg.soundExists=false;
-		
-	tmsg.header.stamp = ros::Time::now();
-	tmsg.certainty = maxPpm;
-		
-	this->pub_.publish(this->tmsg);
-	
-	//----------------------------------------------------------------//
-	
-	sensor_msgs::Image imgviz;
-	imgviz.header.stamp = ros::Time::now();
-	imgviz.header.frame_id = this->frame_name_;
-	imgviz.height=height;
-	imgviz.width=width;
-	imgviz.step=width*3;
-	imgviz.encoding="bgr8";
-	
-	for(unsigned int i=0;i<width;i++){
-		float maxtemp=0;
-		for(unsigned int j=0;j<height;j++){
-			temp=pow(data[(i*height+j)*3+2]-data[(i*height+j)*3],2);
-			temp+=pow(data[(i*height+j)*3+2]-data[(i*height+j)*3+1],2);
-			temp=sqrt(temp)/361.0;
-			imgviz.data.push_back((char)(temp*255.0));
-			imgviz.data.push_back((char)(temp*255.0));
-			imgviz.data.push_back((char)(temp*255.0));
-		}
-	}
-	this->pub_viz.publish(imgviz);
-	
-	usleep(100000);
+  double hfov = this ->parent_camera_sensor_ 
+                      ->GetCamera ( ) 
+                       ->GetHFOV ( ) 
+                        .Radian ( ) ; 
+
+  int width = this ->parent_camera_sensor_ 
+                    ->GetImageWidth ( ) ; 
+
+  int height = this ->parent_camera_sensor_ 
+                     ->GetImageHeight ( ) ; 
+
+  const unsigned char * data = this ->parent_camera_sensor_ 
+                                     ->GetImageData ( ) ; 
+  
+  //----------------------------------------------------------------------
+  
+  sensor_msgs:: Image imgviz ; 
+
+  imgviz .header .stamp = ros:: Time:: now ( ) ; 
+  imgviz .header .frame_id = this ->frame_name_ ; 
+
+  imgviz .height = height ; 
+  imgviz .width = width ; 
+  imgviz .step = width * 3 ; 
+  imgviz .encoding = "bgr8" ; 
+
+  int maxCert = 0 ; 
+  
+  for ( unsigned int i = 0 ; i < width ; i++ ) { 
+
+    for ( unsigned int j = 0 ; j < height ; j++ ) { 
+      
+      float currentCert = 0 ; 
+
+      float R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+      float G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+      float B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+
+      // sound is represented by blue
+      float B1 = ( B - R ) ; 
+      float B2 = ( B - G ) ; 
+
+      float positiveDiff = 0 ; 
+
+      if ( B1 > 0 ) { 
+
+        currentCert += pow ( B1 , 2 ) ; 
+
+        ++ positiveDiff ; 
+      
+      }
+
+      if ( B2 > 0 ) { 
+
+        currentCert += pow ( B2 , 2 ) ; 
+
+        ++ positiveDiff ; 
+
+      }
+      
+      currentCert = sqrt ( currentCert ) ; 
+
+      if ( positiveDiff == 1 ) 
+
+        currentCert /= 255.0 ; 
+
+      else if ( positiveDiff == 2 )     
+
+        currentCert /= sqrt ( pow ( 255.0 , 2 ) 
+                              + pow ( 255.0 , 2 ) ) ; 
+
+      for ( unsigned int k = 0 ; k < 3 ; k++ ) 
+
+        imgviz 
+         .data 
+          .push_back ( ( char ) ( currentCert  * 255.0 ) ) ; 
+
+      if ( maxCert < currentCert ) 
+
+        maxCert = currentCert ; 
+      
+    }
+
+  }
+
+  // sound detection condition
+  if ( maxCert > 0.9 ) 
+
+    tmsg .soundExists = true ; 
+
+  else 
+
+    tmsg .soundExists = false ; 
+
+  this ->pub_viz .publish ( imgviz ) ; 
+
+  //----------------------------------------------------------------------
+    
+  tmsg .header .stamp = ros:: Time:: now ( ) ; 
+  tmsg .certainty = maxCert ; 
+    
+  this ->pub_ .publish ( this ->tmsg ) ; 
+  
+  //----------------------------------------------------------------------
+  
+  usleep ( 100000 ) ; 
 
 }
+
 }
