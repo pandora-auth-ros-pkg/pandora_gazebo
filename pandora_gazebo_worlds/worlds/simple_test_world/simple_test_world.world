@@ -103,7 +103,7 @@
         <collision name="small_wall_2_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -112,7 +112,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -126,7 +126,7 @@
         <collision name="small_wall_3_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -135,7 +135,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -149,7 +149,7 @@
         <collision name="small_wall_4_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -158,7 +158,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -172,7 +172,7 @@
         <collision name="small_wall_5_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -181,7 +181,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -195,7 +195,7 @@
         <collision name="small_wall_6_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -204,7 +204,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -218,7 +218,7 @@
         <collision name="small_wall_8_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -227,7 +227,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -241,7 +241,7 @@
         <collision name="small_wall_9_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -250,7 +250,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -264,7 +264,7 @@
         <collision name="small_wall_10_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -273,7 +273,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -287,7 +287,7 @@
         <collision name="small_wall_11_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -296,7 +296,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -310,7 +310,7 @@
         <collision name="small_wall_12_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -319,7 +319,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -333,7 +333,7 @@
         <collision name="small_wall_13_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -342,7 +342,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -356,7 +356,7 @@
         <collision name="small_wall_14_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -365,7 +365,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -379,7 +379,7 @@
         <collision name="small_wall_15_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -388,7 +388,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -402,7 +402,7 @@
         <collision name="small_wall_16_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -411,7 +411,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -425,7 +425,7 @@
         <collision name="small_wall_17_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -434,7 +434,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -448,7 +448,7 @@
         <collision name="small_wall_18_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -457,7 +457,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -471,7 +471,7 @@
         <collision name="small_wall_19_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -480,7 +480,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -494,7 +494,7 @@
         <collision name="small_wall_20_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -503,7 +503,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -517,7 +517,7 @@
         <collision name="small_wall_21_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -526,7 +526,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -540,7 +540,7 @@
         <collision name="half_ramp_3_collision">
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -549,7 +549,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -563,7 +563,7 @@
         <collision name="half_ramp_4_collision">
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -572,7 +572,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -586,7 +586,7 @@
         <collision name="half_ramp_5_collision">
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -595,7 +595,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -609,7 +609,7 @@
         <collision name="half_ramp_6_collision">
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -618,7 +618,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>

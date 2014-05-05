@@ -76,14 +76,37 @@
         </visual>
       </link>
     </model>
+    <model name="small_wall_1">
+      <static>true</static>
+      <link name="small_wall_1_link">
+        <pose>0 2.4 0 0 0 -3.14159</pose>
+        <collision name="small_wall_1_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_1_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
     <model name="small_wall_2">
       <static>true</static>
       <link name="small_wall_2_link">
-        <pose>0 1.2 0 0 0 -4.71239</pose>
+        <pose>1.2 2.4 0 0 0 -3.14159</pose>
         <collision name="small_wall_2_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -92,7 +115,30 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="small_wall_3">
+      <static>true</static>
+      <link name="small_wall_3_link">
+        <pose>-1.2 1.2 0 0 0 -1.5708</pose>
+        <collision name="small_wall_3_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_3_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -102,11 +148,11 @@
     <model name="small_wall_4">
       <static>true</static>
       <link name="small_wall_4_link">
-        <pose>0 1.2 0 0 0 0</pose>
+        <pose>0 0 0 0 0 -4.71239</pose>
         <collision name="small_wall_4_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -115,7 +161,30 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="small_wall_5">
+      <static>true</static>
+      <link name="small_wall_5_link">
+        <pose>0 -1.2 0 0 0 -4.71239</pose>
+        <collision name="small_wall_5_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_5_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -125,11 +194,11 @@
     <model name="small_wall_6">
       <static>true</static>
       <link name="small_wall_6_link">
-        <pose>1.2 1.2 0 0 0 0</pose>
+        <pose>-1.2 -2.4 0 0 0 -1.5708</pose>
         <collision name="small_wall_6_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -138,7 +207,30 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="small_wall_7">
+      <static>true</static>
+      <link name="small_wall_7_link">
+        <pose>3.6 3.6 0 0 0 -3.14159</pose>
+        <collision name="small_wall_7_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_7_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -148,11 +240,11 @@
     <model name="small_wall_8">
       <static>true</static>
       <link name="small_wall_8_link">
-        <pose>0 2.4 0 0 0 -3.14159</pose>
+        <pose>4.8 3.6 0 0 0 -3.14159</pose>
         <collision name="small_wall_8_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -161,7 +253,30 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="small_wall_9">
+      <static>true</static>
+      <link name="small_wall_9_link">
+        <pose>6 2.4 0 0 0 -4.71239</pose>
+        <collision name="small_wall_9_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_9_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -171,11 +286,11 @@
     <model name="small_wall_10">
       <static>true</static>
       <link name="small_wall_10_link">
-        <pose>1.2 2.4 0 0 0 -3.14159</pose>
+        <pose>4.8 1.2 0 0 0 -1.5708</pose>
         <collision name="small_wall_10_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -184,7 +299,30 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="small_wall_11">
+      <static>true</static>
+      <link name="small_wall_11_link">
+        <pose>4.8 0 0 0 0 -1.5708</pose>
+        <collision name="small_wall_11_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_11_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -194,11 +332,11 @@
     <model name="small_wall_12">
       <static>true</static>
       <link name="small_wall_12_link">
-        <pose>-1.2 1.2 0 0 0 -1.5708</pose>
+        <pose>4.8 -1.2 0 0 0 -1.5708</pose>
         <collision name="small_wall_12_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -207,76 +345,30 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </visual>
       </link>
     </model>
-    <model name="half_ramp_2">
+    <model name="small_wall_13">
       <static>true</static>
-      <link name="half_ramp_2_link">
-        <pose>0 1.2 0 0 0 -4.71239</pose>
-        <collision name="half_ramp_2_collision">
+      <link name="small_wall_13_link">
+        <pose>0 -2.4 0 0 0 -3.14159</pose>
+        <collision name="small_wall_13_collision">
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="half_ramp_2_visual">
+        <visual name="small_wall_13_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://half_ramp.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="half_ramp_4">
-      <static>true</static>
-      <link name="half_ramp_4_link">
-        <pose>0 1.2 0 0 0 -1.5708</pose>
-        <collision name="half_ramp_4_collision">
-          <geometry>
-            <mesh>
-              <uri>file://half_ramp.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="half_ramp_4_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://half_ramp.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="full_ramp_2">
-      <static>true</static>
-      <link name="full_ramp_2_link">
-        <pose>0 -2.4 0 0 0 0</pose>
-        <collision name="full_ramp_2_collision">
-          <geometry>
-            <mesh>
-              <uri>file://full_ramp.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="full_ramp_2_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://full_ramp.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -286,11 +378,11 @@
     <model name="small_wall_14">
       <static>true</static>
       <link name="small_wall_14_link">
-        <pose>-1.2 0 0 0 0 -1.5708</pose>
+        <pose>1.2 -2.4 0 0 0 -3.14159</pose>
         <collision name="small_wall_14_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -299,7 +391,30 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="small_wall_15">
+      <static>true</static>
+      <link name="small_wall_15_link">
+        <pose>2.4 -3.6 0 0 0 0</pose>
+        <collision name="small_wall_15_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_15_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -309,11 +424,11 @@
     <model name="small_wall_16">
       <static>true</static>
       <link name="small_wall_16_link">
-        <pose>0 0 0 0 0 -4.71239</pose>
+        <pose>3.6 -2.4 0 0 0 -3.14159</pose>
         <collision name="small_wall_16_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -322,30 +437,99 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </visual>
       </link>
     </model>
-    <model name="victim_with_box1_2">
+    <model name="small_wall_17">
       <static>true</static>
-      <link name="victim_with_box1_2_link">
-        <pose>2.4 2.4 0 0 0 -3.14159</pose>
-        <collision name="victim_with_box1_2_collision">
+      <link name="small_wall_17_link">
+        <pose>4.8 -2.4 0 0 0 -3.14159</pose>
+        <collision name="small_wall_17_collision">
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="victim_with_box1_2_visual">
+        <visual name="small_wall_17_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://victim-with-box1.dae</uri>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="small_wall_18">
+      <static>true</static>
+      <link name="small_wall_18_link">
+        <pose>4.8 -1.2 0 0 0 0</pose>
+        <collision name="small_wall_18_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_18_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="small_wall_19">
+      <static>true</static>
+      <link name="small_wall_19_link">
+        <pose>3.6 -1.2 0 0 0 0</pose>
+        <collision name="small_wall_19_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_19_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <model name="small_wall_20">
+      <static>true</static>
+      <link name="small_wall_20_link">
+        <pose>2.4 0 0 0 0 -1.5708</pose>
+        <collision name="small_wall_20_collision">
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="small_wall_20_visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <mesh>
+              <uri>file:///robocup/walls/small_wall.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -359,7 +543,7 @@
         <collision name="wall_diag_120_1_collision">
           <geometry>
             <mesh>
-              <uri>file://wall_diag_120.dae</uri>
+              <uri>file:///robocup/walls/wall_diag_120.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -368,375 +552,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://wall_diag_120.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_18">
-      <static>true</static>
-      <link name="small_wall_18_link">
-        <pose>-1.2 -1.2 0 0 0 -1.5708</pose>
-        <collision name="small_wall_18_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_18_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_20">
-      <static>true</static>
-      <link name="small_wall_20_link">
-        <pose>0 -1.2 0 0 0 -4.71239</pose>
-        <collision name="small_wall_20_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_20_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_22">
-      <static>true</static>
-      <link name="small_wall_22_link">
-        <pose>0 -2.4 0 0 0 -4.71239</pose>
-        <collision name="small_wall_22_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_22_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_24">
-      <static>true</static>
-      <link name="small_wall_24_link">
-        <pose>-1.2 -2.4 0 0 0 -1.5708</pose>
-        <collision name="small_wall_24_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_24_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_26">
-      <static>true</static>
-      <link name="small_wall_26_link">
-        <pose>3.6 2.4 0 0 0 0</pose>
-        <collision name="small_wall_26_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_26_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_28">
-      <static>true</static>
-      <link name="small_wall_28_link">
-        <pose>3.6 3.6 0 0 0 -3.14159</pose>
-        <collision name="small_wall_28_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_28_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_30">
-      <static>true</static>
-      <link name="small_wall_30_link">
-        <pose>4.8 2.4 0 0 0 0</pose>
-        <collision name="small_wall_30_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_30_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_32">
-      <static>true</static>
-      <link name="small_wall_32_link">
-        <pose>4.8 3.6 0 0 0 -3.14159</pose>
-        <collision name="small_wall_32_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_32_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_34">
-      <static>true</static>
-      <link name="small_wall_34_link">
-        <pose>4.8 2.4 0 0 0 -1.5708</pose>
-        <collision name="small_wall_34_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_34_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_36">
-      <static>true</static>
-      <link name="small_wall_36_link">
-        <pose>6 2.4 0 0 0 -4.71239</pose>
-        <collision name="small_wall_36_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_36_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_38">
-      <static>true</static>
-      <link name="small_wall_38_link">
-        <pose>6 1.2 0 0 0 -4.71239</pose>
-        <collision name="small_wall_38_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_38_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_40">
-      <static>true</static>
-      <link name="small_wall_40_link">
-        <pose>4.8 1.2 0 0 0 -1.5708</pose>
-        <collision name="small_wall_40_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_40_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_42">
-      <static>true</static>
-      <link name="small_wall_42_link">
-        <pose>6 0 0 0 0 -4.71239</pose>
-        <collision name="small_wall_42_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_42_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_44">
-      <static>true</static>
-      <link name="small_wall_44_link">
-        <pose>4.8 0 0 0 0 -1.5708</pose>
-        <collision name="small_wall_44_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_44_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_46">
-      <static>true</static>
-      <link name="small_wall_46_link">
-        <pose>6 -1.2 0 0 0 -4.71239</pose>
-        <collision name="small_wall_46_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_46_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_47">
-      <static>true</static>
-      <link name="small_wall_47_link">
-        <pose>4.8 -1.2 0 0 0 -1.5708</pose>
-        <collision name="small_wall_47_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_47_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/walls/wall_diag_120.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -750,7 +566,7 @@
         <collision name="wall_holes1_1_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall_holes1.dae</uri>
+              <uri>file:///robocup/walls/small_wall_holes1.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -759,375 +575,99 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall_holes1.dae</uri>
+              <uri>file:///robocup/walls/small_wall_holes1.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </visual>
       </link>
     </model>
-    <model name="small_wall_49">
+    <model name="half_ramp_1">
       <static>true</static>
-      <link name="small_wall_49_link">
-        <pose>0 -3.6 0 0 0 0</pose>
-        <collision name="small_wall_49_collision">
+      <link name="half_ramp_1_link">
+        <pose>0 1.2 0 0 0 -4.71239</pose>
+        <collision name="half_ramp_1_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="small_wall_49_visual">
+        <visual name="half_ramp_1_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </visual>
       </link>
     </model>
-    <model name="small_wall_51">
+    <model name="half_ramp_2">
       <static>true</static>
-      <link name="small_wall_51_link">
-        <pose>0 -2.4 0 0 0 -3.14159</pose>
-        <collision name="small_wall_51_collision">
+      <link name="half_ramp_2_link">
+        <pose>0 1.2 0 0 0 -1.5708</pose>
+        <collision name="half_ramp_2_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="small_wall_51_visual">
+        <visual name="half_ramp_2_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/ramps/half_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </visual>
       </link>
     </model>
-    <model name="small_wall_53">
+    <model name="full_ramp_1">
       <static>true</static>
-      <link name="small_wall_53_link">
-        <pose>1.2 -3.6 0 0 0 0</pose>
-        <collision name="small_wall_53_collision">
+      <link name="full_ramp_1_link">
+        <pose>4.8 -2.4 0 0 0 -4.71239</pose>
+        <collision name="full_ramp_1_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/ramps/full_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="small_wall_53_visual">
+        <visual name="full_ramp_1_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/ramps/full_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </visual>
       </link>
     </model>
-    <model name="small_wall_55">
+    <model name="full_ramp_2">
       <static>true</static>
-      <link name="small_wall_55_link">
-        <pose>1.2 -2.4 0 0 0 -3.14159</pose>
-        <collision name="small_wall_55_collision">
+      <link name="full_ramp_2_link">
+        <pose>0 -2.4 0 0 0 0</pose>
+        <collision name="full_ramp_2_collision">
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/ramps/full_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="small_wall_55_visual">
+        <visual name="full_ramp_2_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_57">
-      <static>true</static>
-      <link name="small_wall_57_link">
-        <pose>2.4 -2.4 0 0 0 -3.14159</pose>
-        <collision name="small_wall_57_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_57_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_59">
-      <static>true</static>
-      <link name="small_wall_59_link">
-        <pose>2.4 -3.6 0 0 0 0</pose>
-        <collision name="small_wall_59_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_59_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_61">
-      <static>true</static>
-      <link name="small_wall_61_link">
-        <pose>3.6 -3.6 0 0 0 0</pose>
-        <collision name="small_wall_61_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_61_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_63">
-      <static>true</static>
-      <link name="small_wall_63_link">
-        <pose>3.6 -2.4 0 0 0 -3.14159</pose>
-        <collision name="small_wall_63_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_63_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_65">
-      <static>true</static>
-      <link name="small_wall_65_link">
-        <pose>4.8 -3.6 0 0 0 0</pose>
-        <collision name="small_wall_65_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_65_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_67">
-      <static>true</static>
-      <link name="small_wall_67_link">
-        <pose>4.8 -2.4 0 0 0 -3.14159</pose>
-        <collision name="small_wall_67_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_67_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_69">
-      <static>true</static>
-      <link name="small_wall_69_link">
-        <pose>4.8 0 0 0 0 -3.14159</pose>
-        <collision name="small_wall_69_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_69_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_71">
-      <static>true</static>
-      <link name="small_wall_71_link">
-        <pose>4.8 -1.2 0 0 0 0</pose>
-        <collision name="small_wall_71_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_71_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_72">
-      <static>true</static>
-      <link name="small_wall_72_link">
-        <pose>3.6 0 0 0 0 -3.14159</pose>
-        <collision name="small_wall_72_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_72_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_74">
-      <static>true</static>
-      <link name="small_wall_74_link">
-        <pose>3.6 -1.2 0 0 0 0</pose>
-        <collision name="small_wall_74_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_74_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_76">
-      <static>true</static>
-      <link name="small_wall_76_link">
-        <pose>3.6 0 0 0 0 -4.71239</pose>
-        <collision name="small_wall_76_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_76_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="small_wall_78">
-      <static>true</static>
-      <link name="small_wall_78_link">
-        <pose>2.4 0 0 0 0 -1.5708</pose>
-        <collision name="small_wall_78_collision">
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="small_wall_78_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://small_wall.dae</uri>
+              <uri>file:///robocup/ramps/full_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -1141,7 +681,7 @@
         <collision name="full_ramp_3_collision">
           <geometry>
             <mesh>
-              <uri>file://full_ramp.dae</uri>
+              <uri>file:///robocup/ramps/full_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -1150,30 +690,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://full_ramp.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-    </model>
-    <model name="full_ramp_5">
-      <static>true</static>
-      <link name="full_ramp_5_link">
-        <pose>4.8 -2.4 0 0 0 -4.71239</pose>
-        <collision name="full_ramp_5_collision">
-          <geometry>
-            <mesh>
-              <uri>file://full_ramp.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name="full_ramp_5_visual">
-          <cast_shadows>false</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file://full_ramp.dae</uri>
+              <uri>file:///robocup/ramps/full_ramp.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>

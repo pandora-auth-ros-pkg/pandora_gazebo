@@ -22,7 +22,7 @@
   <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" 
         args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y) -model $(arg robot)_robot -param robot_description" />
   
-    <!-- start gui -->
+  <!-- Start GUI -->
   <group if="$(arg gui)">
     <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen"/>
   </group>
