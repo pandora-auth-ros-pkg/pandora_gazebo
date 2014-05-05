@@ -5,12 +5,16 @@
 #include <stdio.h>
 #include <iostream>
 
-#define KEYCODE_R 0x43 
-#define KEYCODE_L 0x44
-#define KEYCODE_U 0x41
-#define KEYCODE_D 0x42
+#define KEYCODE_RIGHT 0x43 
+#define KEYCODE_LEFT 0x44
+#define KEYCODE_UP 0x41
+#define KEYCODE_DOWN 0x42
 #define KEYCODE_Q 0x71
 #define KEYCODE_H 'h'
+#define KEYCODE_W 'w'
+#define KEYCODE_A 'a'
+#define KEYCODE_S 's'
+#define KEYCODE_D 'd'
 
 class TeleopTurtle
 {
@@ -94,27 +98,47 @@ void TeleopTurtle::keyLoop()
 
     //~ linear_=angular_=0;
     ROS_DEBUG("value: 0x%02X\n", c);
-  
+    
     switch(c)
     {
-      case KEYCODE_L:
+      case KEYCODE_LEFT:
         ROS_DEBUG("LEFT");
         angular_ += 0.25;
         dirty = true;
         break;
-      case KEYCODE_R:
+      case KEYCODE_A:
+        ROS_DEBUG("MAX_LEFT");
+        angular_ = 2.0;
+        dirty = true;
+        break;
+      case KEYCODE_RIGHT:
         ROS_DEBUG("RIGHT");
         angular_ += -0.25;
         dirty = true;
         break;
-      case KEYCODE_U:
+      case KEYCODE_D:
+        ROS_DEBUG("MAX_RIGHT");
+        angular_ = -2.0;
+        dirty = true;
+        break;
+      case KEYCODE_UP:
         ROS_DEBUG("UP");
         linear_ += 0.25;
         dirty = true;
         break;
-      case KEYCODE_D:
+      case KEYCODE_W:
+        ROS_DEBUG("MAX_UP");
+        linear_ = 2.0;
+        dirty = true;
+        break;
+      case KEYCODE_DOWN:
         ROS_DEBUG("DOWN");
         linear_ += -0.25;
+        dirty = true;
+        break;
+      case KEYCODE_S:
+        ROS_DEBUG("MAX_DOWN");
+        linear_ = -2.0;
         dirty = true;
         break;
       case KEYCODE_H:
@@ -124,7 +148,7 @@ void TeleopTurtle::keyLoop()
         dirty = true;
         break;
       default:
-		std::cout <<std::hex <<  (int)c  << '\n';
+    std::cout <<std::hex <<  (int)c  << '\n';
         
         
     }
