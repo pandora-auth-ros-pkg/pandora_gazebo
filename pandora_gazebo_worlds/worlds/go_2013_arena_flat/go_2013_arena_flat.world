@@ -4921,45 +4921,6 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name="victim_1_2">
-      <static>1</static>
-      <link name="victim_1_2_link">
-        <pose>-11.696800 -5.709470 0.000000 0.000000 0.000000 -3.141590</pose>
-        <collision name="victim_1_2_collision">
-          <geometry>
-            <mesh>
-              <uri>file:///robocup/victims/victim-1.dae</uri>
-              <scale>1.000000 1.000000 1.000000</scale>
-            </mesh>
-          </geometry>
-          <surface>
-            <bounce />
-            <friction>
-              <ode />
-            </friction>
-            <contact>
-              <ode />
-            </contact>
-          </surface>
-        </collision>
-        <visual name="victim_1_2_visual">
-          <cast_shadows>0</cast_shadows>
-          <geometry>
-            <mesh>
-              <uri>file:///robocup/victims/victim-1.dae</uri>
-              <scale>1.000000 1.000000 1.000000</scale>
-            </mesh>
-          </geometry>
-        </visual>
-        <velocity_decay>
-          <linear>0.000000</linear>
-          <angular>0.000000</angular>
-        </velocity_decay>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-    </model>
     <model name="fiducial_barrel_11">
       <static>1</static>
       <link name="fiducial_barrel_11_link">
