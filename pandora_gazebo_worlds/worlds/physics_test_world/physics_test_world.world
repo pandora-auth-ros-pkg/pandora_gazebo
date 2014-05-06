@@ -28,12 +28,12 @@
     <model name="simple_floor">
       <static>true</static>
       <link name="simple_floor_link">
-        <pose>10 10 0 0 0 0</pose>
+        <pose>5 5 0 0 0 0</pose>
         <collision name="simple_floor_collision">
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>20 20</size>
+              <size>10 10</size>
             </plane>
           </geometry>
           <surface>
@@ -67,7 +67,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>20 20</size>
+              <size>10 10</size>
             </plane>
           </geometry>
           <material>
@@ -79,12 +79,12 @@
     <model name="plywood_floor">
       <static>true</static>
       <link name="plywood_floor_link">
-        <pose>10 -10 0 0 0 0</pose>
+        <pose>5 -5 0 0 0 0</pose>
         <collision name="plywood_floor_collision">
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>20 20</size>
+              <size>10 10</size>
             </plane>
           </geometry>
           <surface>
@@ -117,8 +117,8 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file:///floors/plywood_floor.dae</uri>
-              <scale>20 20 1</scale>
+              <uri>file://floors/plywood_floor.dae</uri>
+              <scale>10 10 1</scale>
             </mesh>
           </geometry>
         </visual>
@@ -127,12 +127,12 @@
     <model name="marble_floor">
       <static>true</static>
       <link name="marble_floor_link">
-        <pose>-10 10 0 0 0 0</pose>
+        <pose>-5 5 0 0 0 0</pose>
         <collision name="marble_floor_collision">
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>20 20</size>
+              <size>10 10</size>
             </plane>
           </geometry>
           <surface>
@@ -165,8 +165,8 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file:///floors/marble_floor.dae</uri>
-              <scale>20 20 1</scale>
+              <uri>file://floors/marble_floor.dae</uri>
+              <scale>10 10 1</scale>
             </mesh>
           </geometry>
         </visual>
@@ -175,12 +175,12 @@
     <model name="rubber_floor">
       <static>true</static>
       <link name="rubber_floor_link">
-        <pose>-10 -10 0 0 0 0</pose>
+        <pose>-5 -5 0 0 0 0</pose>
         <collision name="plywood_floor_collision">
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>20 20</size>
+              <size>10 10</size>
             </plane>
           </geometry>
           <surface>
@@ -213,8 +213,8 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file:///floors/rubber_floor.dae</uri>
-              <scale>20 20 1</scale>
+              <uri>file://floors/rubber_floor.dae</uri>
+              <scale>10 10 1</scale>
             </mesh>
           </geometry>
         </visual>
