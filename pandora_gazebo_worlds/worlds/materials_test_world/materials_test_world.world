@@ -78,7 +78,7 @@
     <model name="elevated_floor_120">
       <static>true</static>
       <link name="elevated_floor_120_link">
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0 0 1.5 0 0 0</pose>
         <collision name="elevated_floor_120_collision">
           <geometry>
             <mesh>
@@ -101,7 +101,7 @@
     <model name="semi_elevated_floor">
       <static>true</static>
       <link name="semi_elevated_floor_link">
-        <pose>0 5 0 0 0 0</pose>
+        <pose>0 5 1.5 0 0 0</pose>
         <collision name="semi_elevated_floor_collision">
           <geometry>
             <mesh>
@@ -124,7 +124,7 @@
     <model name="box">
       <static>true</static>
       <link name="box_link">
-        <pose>0 10 0 0 0 0</pose>
+        <pose>0 10 1.5 0 0 0</pose>
         <collision name="box_collision">
           <geometry>
             <mesh>
@@ -147,7 +147,7 @@
     <model name="cylinder">
       <static>true</static>
       <link name="cylinder_link">
-        <pose>0 15 0 0 0 0</pose>
+        <pose>0 15 1.5 0 0 0</pose>
         <collision name="cylinder_collision">
           <geometry>
             <mesh>
@@ -170,7 +170,7 @@
     <model name="pipe">
       <static>true</static>
       <link name="pipe_link">
-        <pose>0 20 0 0 0 0</pose>
+        <pose>0 20 1.5 0 0 0</pose>
         <collision name="pipe_collision">
           <geometry>
             <mesh>
@@ -193,7 +193,7 @@
     <model name="manip_storage">
       <static>true</static>
       <link name="manip_storage_link">
-        <pose>0 25 0 0 0 0</pose>
+        <pose>0 25 1.5 0 0 0</pose>
         <collision name="manip_storage_collision">
           <geometry>
             <mesh>
@@ -216,7 +216,7 @@
     <model name="victim">
       <static>true</static>
       <link name="victim_link">
-        <pose>0 30 0 0 0 0</pose>
+        <pose>0 30 1.5 0 0 0</pose>
         <collision name="victim_collision">
           <geometry>
             <mesh>
@@ -239,7 +239,7 @@
     <model name="victim_inside_box">
       <static>true</static>
       <link name="victim_inside_box_link">
-        <pose>0 35 0 0 0 0</pose>
+        <pose>0 35 1.5 0 0 0</pose>
         <collision name="victim_inside_box_collision">
           <geometry>
             <mesh>
@@ -262,7 +262,7 @@
     <model name="fiducial_barrel">
       <static>true</static>
       <link name="fiducial_barrel_link">
-        <pose>0 40 0 0 0 0</pose>
+        <pose>0 40 1.5 0 0 0</pose>
         <collision name="fiducial_barrel_collision">
           <geometry>
             <mesh>
@@ -285,7 +285,7 @@
     <model name="fiducial_barrel_high">
       <static>true</static>
       <link name="fiducial_barrel_high_link">
-        <pose>5 5 0 0 0 0</pose>
+        <pose>5 5 1.5 0 0 0</pose>
         <collision name="fiducial_barrel_high_collision">
           <geometry>
             <mesh>
@@ -308,7 +308,7 @@
     <model name="stairs_120">
       <static>true</static>
       <link name="stairs_120_link">
-        <pose>10 5 0 0 0 0</pose>
+        <pose>10 5 1.5 0 0 0</pose>
         <collision name="stairs_120_collision">
           <geometry>
             <mesh>
@@ -331,7 +331,7 @@
     <model name="stepfield">
       <static>true</static>
       <link name="stepfield_link">
-        <pose>15 5 0 0 0 0</pose>
+        <pose>15 5 1.5 0 0 0</pose>
         <collision name="stepfield_collision">
           <geometry>
             <mesh>
@@ -354,7 +354,7 @@
     <model name="stepfield_red_diagonal">
       <static>true</static>
       <link name="stepfield_red_diagonal_link">
-        <pose>20 5 0 0 0 0</pose>
+        <pose>20 5 1.5 0 0 0</pose>
         <collision name="stepfield_red_diagonal_collision">
           <geometry>
             <mesh>
@@ -377,7 +377,7 @@
     <model name="full_ramp">
       <static>true</static>
       <link name="full_ramp_link">
-        <pose>25 5 0 0 0 0</pose>
+        <pose>25 5 1.5 0 0 0</pose>
         <collision name="full_ramp_collision">
           <geometry>
             <mesh>
@@ -400,7 +400,7 @@
     <model name="full_ramp_elevated_1">
       <static>true</static>
       <link name="full_ramp_elevated_1_link">
-        <pose>30 5 0 0 0 0</pose>
+        <pose>30 5 1.5 0 0 0</pose>
         <collision name="full_ramp_elevated_1_collision">
           <geometry>
             <mesh>
@@ -423,7 +423,7 @@
     <model name="full_ramp_elevated_2">
       <static>true</static>
       <link name="full_ramp_elevated_2_link">
-        <pose>35 5 0 0 0 0</pose>
+        <pose>35 5 1.5 0 0 0</pose>
         <collision name="full_ramp_elevated_2_collision">
           <geometry>
             <mesh>
@@ -446,7 +446,7 @@
     <model name="full_ramp_full_elevated">
       <static>true</static>
       <link name="full_ramp_full_elevated_link">
-        <pose>40 5 0 0 0 0</pose>
+        <pose>40 5 1.5 0 0 0</pose>
         <collision name="full_ramp_full_elevated_collision">
           <geometry>
             <mesh>
@@ -469,7 +469,7 @@
     <model name="full_ramp_semi_elevated">
       <static>true</static>
       <link name="full_ramp_semi_elevated_link">
-        <pose>5 10 0 0 0 0</pose>
+        <pose>5 10 1.5 0 0 0</pose>
         <collision name="full_ramp_semi_elevated_collision">
           <geometry>
             <mesh>
@@ -492,7 +492,7 @@
     <model name="half_ramp">
       <static>true</static>
       <link name="half_ramp_link">
-        <pose>10 10 0 0 0 0</pose>
+        <pose>10 10 1.5 0 0 0</pose>
         <collision name="half_ramp_collision">
           <geometry>
             <mesh>
@@ -515,7 +515,7 @@
     <model name="half_ramp_elevated_1">
       <static>true</static>
       <link name="half_ramp_elevated_1_link">
-        <pose>15 10 0 0 0 0</pose>
+        <pose>15 10 1.5 0 0 0</pose>
         <collision name="half_ramp_elevated_1_collision">
           <geometry>
             <mesh>
@@ -538,7 +538,7 @@
     <model name="half_ramp_elevated_2">
       <static>true</static>
       <link name="half_ramp_elevated_2_link">
-        <pose>20 10 0 0 0 0</pose>
+        <pose>20 10 1.5 0 0 0</pose>
         <collision name="half_ramp_elevated_2_collision">
           <geometry>
             <mesh>
@@ -561,7 +561,7 @@
     <model name="half_ramp_full_elevated">
       <static>true</static>
       <link name="half_ramp_full_elevated_link">
-        <pose>25 10 0 0 0 0</pose>
+        <pose>25 10 1.5 0 0 0</pose>
         <collision name="half_ramp_full_elevated_collision">
           <geometry>
             <mesh>
@@ -584,7 +584,7 @@
     <model name="half_ramp_semi_elevated">
       <static>true</static>
       <link name="half_ramp_semi_elevated_link">
-        <pose>30 10 0 0 0 0</pose>
+        <pose>30 10 1.5 0 0 0</pose>
         <collision name="half_ramp_semi_elevated_collision">
           <geometry>
             <mesh>
@@ -607,7 +607,7 @@
     <model name="simple_elev_ramp">
       <static>true</static>
       <link name="simple_elev_ramp_link">
-        <pose>35 10 0 0 0 0</pose>
+        <pose>35 10 1.5 0 0 0</pose>
         <collision name="simple_elev_ramp_collision">
           <geometry>
             <mesh>
@@ -630,7 +630,7 @@
     <model name="victim_with_box">
       <static>true</static>
       <link name="victim_with_box_link">
-        <pose>40 10 0 0 0 0</pose>
+        <pose>40 10 1.5 0 0 0</pose>
         <collision name="victim_with_box_collision">
           <geometry>
             <mesh>
@@ -653,7 +653,7 @@
     <model name="victim-with-box1">
       <static>true</static>
       <link name="victim-with-box1_link">
-        <pose>5 15 0 0 0 0</pose>
+        <pose>5 15 1.5 0 0 0</pose>
         <collision name="victim-with-box1_collision">
           <geometry>
             <mesh>
@@ -676,7 +676,7 @@
     <model name="victim_with_box_c">
       <static>true</static>
       <link name="victim_with_box_c_link">
-        <pose>10 15 0 0 0 0</pose>
+        <pose>10 15 1.5 0 0 0</pose>
         <collision name="victim_with_box_c_collision">
           <geometry>
             <mesh>
@@ -699,7 +699,7 @@
     <model name="victim_with_box_q">
       <static>true</static>
       <link name="victim_with_box_q_link">
-        <pose>15 15 0 0 0 0</pose>
+        <pose>15 15 1.5 0 0 0</pose>
         <collision name="victim_with_box_q_collision">
           <geometry>
             <mesh>
@@ -722,7 +722,7 @@
     <model name="victim_with_box_s">
       <static>true</static>
       <link name="victim_with_box_s_link">
-        <pose>20 15 0 0 0 0</pose>
+        <pose>20 15 1.5 0 0 0</pose>
         <collision name="victim_with_box_s_collision">
           <geometry>
             <mesh>
@@ -745,7 +745,7 @@
     <model name="victim_with_box_sc">
       <static>true</static>
       <link name="victim_with_box_sc_link">
-        <pose>25 15 0 0 0 0</pose>
+        <pose>25 15 1.5 0 0 0</pose>
         <collision name="victim_with_box_sc_collision">
           <geometry>
             <mesh>
@@ -768,7 +768,7 @@
     <model name="victim_with_box_t">
       <static>true</static>
       <link name="victim_with_box_t_link">
-        <pose>30 15 0 0 0 0</pose>
+        <pose>30 15 1.5 0 0 0</pose>
         <collision name="victim_with_box_t_collision">
           <geometry>
             <mesh>
@@ -791,7 +791,7 @@
     <model name="victim_with_box_tc">
       <static>true</static>
       <link name="victim_with_box_tc_link">
-        <pose>35 15 0 0 0 0</pose>
+        <pose>35 15 1.5 0 0 0</pose>
         <collision name="victim_with_box_tc_collision">
           <geometry>
             <mesh>
@@ -814,7 +814,7 @@
     <model name="victim_with_box_ts">
       <static>true</static>
       <link name="victim_with_box_ts_link">
-        <pose>40 15 0 0 0 0</pose>
+        <pose>40 15 1.5 0 0 0</pose>
         <collision name="victim_with_box_ts_collision">
           <geometry>
             <mesh>
@@ -837,7 +837,7 @@
     <model name="victim_with_box_tsc">
       <static>true</static>
       <link name="victim_with_box_tsc_link">
-        <pose>5 20 0 0 0 0</pose>
+        <pose>5 20 1.5 0 0 0</pose>
         <collision name="victim_with_box_tsc_collision">
           <geometry>
             <mesh>
@@ -860,7 +860,7 @@
     <model name="corner_diag_120">
       <static>true</static>
       <link name="corner_diag_120_link">
-        <pose>10 20 0 0 0 0</pose>
+        <pose>10 20 1.5 0 0 0</pose>
         <collision name="corner_diag_120_collision">
           <geometry>
             <mesh>
@@ -883,7 +883,7 @@
     <model name="small_wall">
       <static>true</static>
       <link name="small_wall_link">
-        <pose>15 20 0 0 0 0</pose>
+        <pose>15 20 1.5 0 0 0</pose>
         <collision name="small_wall_collision">
           <geometry>
             <mesh>
@@ -906,7 +906,7 @@
     <model name="small_wall_gap_no_tex">
       <static>true</static>
       <link name="small_wall_gap_no_tex_link">
-        <pose>20 20 0 0 0 0</pose>
+        <pose>20 20 1.5 0 0 0</pose>
         <collision name="small_wall_gap_no_tex_collision">
           <geometry>
             <mesh>
@@ -929,7 +929,7 @@
     <model name="small_wall_holes1">
       <static>true</static>
       <link name="small_wall_holes1_link">
-        <pose>25 20 0 0 0 0</pose>
+        <pose>25 20 1.5 0 0 0</pose>
         <collision name="small_wall_holes1_collision">
           <geometry>
             <mesh>
@@ -952,7 +952,7 @@
     <model name="small_wall_no_tex">
       <static>true</static>
       <link name="small_wall_no_tex_link">
-        <pose>30 20 0 0 0 0</pose>
+        <pose>30 20 1.5 0 0 0</pose>
         <collision name="small_wall_no_tex_collision">
           <geometry>
             <mesh>
@@ -975,7 +975,7 @@
     <model name="small_wall_qr">
       <static>true</static>
       <link name="small_wall_qr_link">
-        <pose>35 20 0 0 0 0</pose>
+        <pose>35 20 1.5 0 0 0</pose>
         <collision name="small_wall_qr_collision">
           <geometry>
             <mesh>
@@ -998,7 +998,7 @@
     <model name="small_wall_qr2">
       <static>true</static>
       <link name="small_wall_qr2_link">
-        <pose>40 20 0 0 0 0</pose>
+        <pose>40 20 1.5 0 0 0</pose>
         <collision name="small_wall_qr2_collision">
           <geometry>
             <mesh>
@@ -1021,7 +1021,7 @@
     <model name="small_wall_qr3">
       <static>true</static>
       <link name="small_wall_qr3_link">
-        <pose>5 25 0 0 0 0</pose>
+        <pose>5 25 1.5 0 0 0</pose>
         <collision name="small_wall_qr3_collision">
           <geometry>
             <mesh>
@@ -1044,7 +1044,7 @@
     <model name="small_wall_qr4">
       <static>true</static>
       <link name="small_wall_qr4_link">
-        <pose>10 25 0 0 0 0</pose>
+        <pose>10 25 1.5 0 0 0</pose>
         <collision name="small_wall_qr4_collision">
           <geometry>
             <mesh>
@@ -1067,7 +1067,7 @@
     <model name="small_wall_triple_holes">
       <static>true</static>
       <link name="small_wall_triple_holes_link">
-        <pose>15 25 0 0 0 0</pose>
+        <pose>15 25 1.5 0 0 0</pose>
         <collision name="small_wall_triple_holes_collision">
           <geometry>
             <mesh>
@@ -1090,7 +1090,7 @@
     <model name="tall_wall">
       <static>true</static>
       <link name="tall_wall_link">
-        <pose>20 25 0 0 0 0</pose>
+        <pose>20 25 1.5 0 0 0</pose>
         <collision name="tall_wall_collision">
           <geometry>
             <mesh>
@@ -1113,7 +1113,7 @@
     <model name="wall_diag_120">
       <static>true</static>
       <link name="wall_diag_120_link">
-        <pose>25 25 0 0 0 0</pose>
+        <pose>25 25 1.5 0 0 0</pose>
         <collision name="wall_diag_120_collision">
           <geometry>
             <mesh>
