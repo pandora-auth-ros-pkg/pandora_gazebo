@@ -60,6 +60,7 @@
         </extra>
       </profile_COMMON>
       <extra><technique profile="MAX3D"><double_sided>1</double_sided></technique></extra>
+      </effect>
     <effect id="Image-effect">
       <profile_COMMON>
         <newparam sid="plywood256x256_jpg_002-surface">

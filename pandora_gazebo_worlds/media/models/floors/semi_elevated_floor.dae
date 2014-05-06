@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.70.0 commit date:2014-04-10, commit time:11:49, hash:f93bc76</authoring_tool>
     </contributor>
-    <created>2014-05-03T19:03:05</created>
-    <modified>2014-05-03T19:03:05</modified>
+    <created>2014-05-05T17:37:50</created>
+    <modified>2014-05-05T17:37:50</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -68,7 +68,7 @@
     <geometry id="Cube_005-mesh" name="Cube.005">
       <mesh>
         <source id="Cube_005-mesh-positions">
-          <float_array id="Cube_005-mesh-positions-array" count="120">31 37 -0.9999998 31 39 -0.9999998 33 39 -0.9999998 33 37 -0.9999998 31 37 1 31 39 1 33 39 1 33 37 1 -1 37 -0.9999998 -1 39 -0.9999998 1 39 -0.9999998 1 37 -0.9999998 -1 37 1 -1 39 1 1 39 1 1 37 1 -1 -1 -1 -1 1 -1 1 1 -1 1 -1 -1 -1 -1 1 -1 1 1 1 1 1 1 -1 1 31 -1 -1 31 1 -1 33 1 -1 33 -1 -1 31 -1 1 31 1 1 33 1 1 33 -1 1 -4 -1 1.003448 -4 39 1.003448 36 39 1.003448 36 -1 1.003448 -4 -1 1.141379 -4 39 1.141379 36 39 1.141379 36 -1 1.141379</float_array>
+          <float_array id="Cube_005-mesh-positions-array" count="120">15 18 -0.003447771 15 20 -0.003447771 17 20 -0.003447771 17 18 -0.003447771 15 18 1.996552 15 20 1.996552 17 20 1.996552 17 18 1.996552 -17 18 -0.003447771 -17 20 -0.003447771 -15 20 -0.003447771 -15 18 -0.003447771 -17 18 1.996552 -17 20 1.996552 -15 20 1.996552 -15 18 1.996552 -17 -20 -0.003448009 -17 -18 -0.003448009 -15 -18 -0.003448009 -15 -20 -0.003448009 -17 -20 1.996552 -17 -18 1.996552 -15 -18 1.996552 -15 -20 1.996552 15 -20 -0.003448009 15 -18 -0.003448009 17 -18 -0.003448009 17 -20 -0.003448009 15 -20 1.996552 15 -18 1.996552 17 -18 1.996552 17 -20 1.996552 -20 -20 2 -20 20 2 20 20 2 20 -20 2 -20 -20 2.137931 -20 20 2.137931 20 20 2.137931 20 -20 2.137931</float_array>
           <technique_common>
             <accessor source="#Cube_005-mesh-positions-array" count="40" stride="3">
               <param name="X" type="float"/>
@@ -103,7 +103,7 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="Cube_002" name="Cube_002" type="NODE">
-        <matrix sid="transform">0.025 0 0 -0.4 0 0.025 0 -0.475 0 0 0.0725 0.07225 0 0 0 1</matrix>
+        <matrix sid="transform">0.025 0 0 3.55271e-15 0 0.025 0 0 0 0 0.0725 -1.49012e-8 0 0 0 1</matrix>
         <instance_geometry url="#Cube_005-mesh">
           <bind_material>
             <technique_common>
