@@ -49,6 +49,7 @@
 #include <angles/angles.h>
 #include <pluginlib/class_list_macros.h>
 #include <gazebo_ros_control/robot_hw_sim.h>
+#include <urdf/model.h>
 
 namespace pandora_gazebo_interface
 {
@@ -69,6 +70,8 @@ namespace pandora_gazebo_interface
       double jointPosition_[8];
       double jointVelocity_[8];
       double jointEffort_[8];
+
+      std ::vector < int > jointTypes_ ; 
 
       std::vector<gazebo::physics::JointPtr> gazeboJoints_;
       gazebo::physics::LinkPtr gazeboLink_;
