@@ -52,52 +52,84 @@
 #include <urdf/model.h>
 
 namespace pandora_gazebo_interface
+
 {
+
   class GazeboInterface :
-    public gazebo_ros_control::RobotHWSim
+    public gazebo_ros_control ::RobotHWSim
+    
   {
-    private:
-      ros::NodeHandle nodeHandle_;
-      hardware_interface::ImuSensorInterface imuSensorInterface_;
-      hardware_interface::ImuSensorHandle::Data imuData_;
-      double imuOrientation[4];
-
-      hardware_interface::JointStateInterface jointStateInterface_;
-      hardware_interface::VelocityJointInterface velocityJointInterface_;
-      hardware_interface::PositionJointInterface positionJointInterface_;
-      std::vector<std::string> jointNames_;
-      double jointCommand_[8];
-      double jointPosition_[8];
-      double jointVelocity_[8];
-      double jointEffort_[8];
-
-      std ::vector < int > jointTypes_ ; 
-
-      std::vector<gazebo::physics::JointPtr> gazeboJoints_;
-      gazebo::physics::LinkPtr gazeboLink_;
-
-      std::vector<std::string> getJointNameFromParamServer();
-      void registerInterfaces();
 
     public:
-      ~GazeboInterface();
-      bool initSim(
-        const std::string& robot_namespace,
-        ros::NodeHandle model_nh,
-        gazebo::physics::ModelPtr parent_model,
-        const urdf::Model *const urdf_model,
-        std::vector<transmission_interface::TransmissionInfo> transmissions);
+    
+      ~GazeboInterface ( void ) ; 
+      
+      bool initSim ( const std ::string & robotnamespace , 
+                     ros ::NodeHandle modelNh , 
+                     physics ::ModelPtr parentModel , 
+                     const urdf ::Model * const urdfModel , 
+                     std 
+                      ::vector 
+                      < transmission_interface ::TransmissionInfo > 
+                      transmissions ) ; 
 
-      void readSim(ros::Time time, ros::Duration period);
+      void readSim ( ros ::Time time , ros ::Duration period ) ; 
 
-      void writeSim(ros::Time time, ros::Duration period);
-  };
+      void writeSim (ros ::Time time , ros ::Duration period ) ; 
+  
+    private: 
+    
+      ros ::NodeHandle nodeHandle_ ; 
+      
+      hardware_interface ::ImuSensorInterface imuSensorInterface_ ; 
+      hardware_interface ::ImuSensorHandle ::Data imuData_ ; 
+      double imuOrientation [ 4 ] ; 
+
+      hardware_interface::JointStateInterface jointStateInterface_ ; 
+      hardware_interface::PositionJointInterface positionJointInterface_ ; 
+      hardware_interface::VelocityJointInterface velocityJointInterface_ ; 
+      
+      joint_limits_interface 
+       ::PositionJointSaturationInterface positionJointSaturationInterface_ ; 
+      joint_limits_interface 
+       ::PositionJointSoftLimitsInterface positionJointLimitsInterface_ ; 
+      joint_limits_interface 
+       ::VelocityJointSaturationInterface velocityJointSaturationInterface_ ; 
+      joint_limits_interface 
+       ::VelocityJointSoftLimitsInterface velocityJointLimitsInterface_ ; 
+      
+      std ::vector < std ::string > jointNames_ ; 
+      std ::vector < int > jointTypes_ ; 
+      
+      std ::vector < ControlMethod > jointControlMethods_ ; 
+      std ::vector < control_toolbox ::Pid > pidControllers_ ; 
+      
+      std ::vector < double > jointLowerLimits_ ; 
+      std ::vector < double > jointUpperLimits_ ; 
+      std ::vector < double > jointEffortLimits_ ; 
+      
+      std ::vector < double > jointPosition_ ; 
+      std ::vector < double > jointPositionCommand_ ; 
+      std ::vector < double > jointVelocity_ ; 
+      std ::vector < double > jointVelocityCommand_ ; 
+      
+      //double jointCommand_ [ 8 ] ; 
+      //double jointPosition_ [ 8 ] ; 
+      //double jointVelocity_ [ 8 ] ; 
+
+      std ::vector < physics ::JointPtr > gazeboJoints_ ; 
+      physics ::LinkPtr gazeboLink_ ; 
+      
+      void registerInterfaces ( void ) ; 
+      
+  } ;
+  
 }  // namespace pandora_gazebo_interface
 
 PLUGINLIB_EXPORT_CLASS
 (
-  pandora_gazebo_interface::GazeboInterface,
-  gazebo_ros_control::RobotHWSim)
+  pandora_gazebo_interface ::GazeboInterface , 
+  gazebo_ros_control ::RobotHWSim )
 
 #endif  // PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
 

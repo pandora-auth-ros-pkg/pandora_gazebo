@@ -42,10 +42,10 @@ namespace pandora_gazebo_interface
 
 {
 
-  bool GazeboInterface ::initSim ( const std ::string & robot_namespace , 
-                                   ros ::NodeHandle model_nh , 
-                                   physics ::ModelPtr parent_model , 
-                                   const urdf ::Model * const urdf_model , 
+  bool GazeboInterface ::initSim ( const std ::string & robotnamespace , 
+                                   ros ::NodeHandle modelNh , 
+                                   physics ::ModelPtr parentModel , 
+                                   const urdf ::Model * const urdfModel , 
                                    std 
                                     ::vector 
                                     < transmission_interface ::TransmissionInfo > 
@@ -57,12 +57,12 @@ namespace pandora_gazebo_interface
     registerInterfaces ( ) ; 
 
     // Get gazebo entities
-    gazeboLink_ = parent_model ->GetLink ( imuData_ .frame_id ) ; 
+    gazeboLink_ = parentModel ->GetLink ( imuData_ .frame_id ) ; 
 
-    for ( int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    for ( unsigned int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
     
-      physics ::JointPtr joint = parent_model 
-                                   ->GetJoint ( jointNames_ [ i ] ) ; 
+      physics ::JointPtr joint = parentModel 
+                                  ->GetJoint ( jointNames_ [ i ] ) ; 
                                    
       this ->gazeboJoints_ .push_back ( joint ) ; 
        
@@ -79,14 +79,17 @@ namespace pandora_gazebo_interface
   void GazeboInterface ::readSim ( ros ::Time time , ros ::Duration period ) { 
   
     // Read robot orientation for IMU
+    
     math ::Pose pose = gazeboLink_ ->GetWorldPose ( ) ; 
     
-    imuOrientation[0] = pose .rot .x ; 
-    imuOrientation[1] = pose .rot .y ; 
-    imuOrientation[2] = pose .rot .z ; 
-    imuOrientation[3] = pose .rot .w ; 
+    imuOrientation [ 0 ] = pose .rot .x ; 
+    imuOrientation [ 1 ] = pose .rot .y ; 
+    imuOrientation [ 2 ] = pose .rot .z ; 
+    imuOrientation [ 3 ] = pose .rot .w ; 
     
-    for ( int i = 0 ; i < 8 ; i ++ ) { 
+    for ( unsigned int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    
+      // Read joint position
     
       if ( jointTypes_ [ i ] == urdf ::Joint ::PRISMATIC ) 
       
@@ -99,12 +102,11 @@ namespace pandora_gazebo_interface
         angles ::shortest_angular_distance ( jointPosition_ [ i ] , 
                                              gazeboJoints_ [ i ] 
                                               ->GetAngle ( 0 ) .Radian ( ) ) ; 
+               
+      // Read joint velocity
                               
       jointVelocity_ [ i ] = gazeboJoints_ [ i ] 
                               ->GetVelocity ( 0 ) ; 
-                              
-      jointEffort_ [ i ] = gazeboJoints_ [ i ] 
-                            ->GetForce ( ( unsigned int ) ( 0 ) ) ; 
     
     }
     
@@ -112,14 +114,69 @@ namespace pandora_gazebo_interface
 
   void GazeboInterface ::writeSim ( ros ::Time time , ros ::Duration period ) { 
   
-    //~ for (int ii = 0; ii < 3; ii++)
-    //~ {
-      //~ gazeboJoints_[ii]->SetVelocity(0, jointCommand_[ii]);
-    //~ }
-    //~ for (int ii = 4; ii < 8; ii++)
-    //~ {
-      //~ gazeboJoints_[ii]->SetAngle(0, jointCommand_[ii]);
-    //~ }
+    this ->positionJointSaturationInterface_ .enforceLimits ( period ) ; 
+    this ->positionJointLimitsInterface_ .enforceLimits ( period ) ; 
+    this ->velocityJointSaturationInterface_ .enforceLimits ( period ) ; 
+    this ->velocityJointLimitsInterface_ .enforceLimits ( period ) ; 
+    
+    for ( unsigned int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    
+      switch ( jointControlMethods_ [ i ] ) { 
+
+        case POSITION_PID: {
+        
+            double error ; 
+            
+            switch ( this ->jointTypes [ i ] ) {
+            
+              case urdf ::Joint ::REVOLUTE: 
+              
+                angles ::shortest_angular_distance_with_limits 
+                          ( jointPosition_ [ i ] , 
+                            jointPositionCommand_ [ i ] , 
+                            jointLowerLimits_ [ i ] , 
+                            jointUpperLimits_ [ i ] , 
+                            error ) ; 
+                            
+              break ; 
+                
+              case urdf ::Joint ::CONTINUOUS: 
+              
+                error = angles ::shortest_angular_distance 
+                                  ( jointPosition_ [ i ] , 
+                                    jointPositionCommand_ [ i] ) ; 
+                                    
+              break ; 
+                
+              default: 
+              
+                error = jointPositionCommand_ [ i ] - jointPosition_ [ i ] ; 
+                
+            }
+            
+            double command = pidControllers_ [ i ] 
+                              .computeCommand ( error , period ) ; 
+
+            double effortLimit = jointEffortLimits_ [ i ] ; 
+                                        
+            double effort = 
+            std ::min ( std ::max ( command , - effortLimit ) , effortLimit ) ; 
+                                        
+            this ->gazeboJoints_ [ i ] ->SetForce ( 0 , effort ) ; 
+            
+        }
+        
+        break ; 
+
+        case VELOCITY: 
+        
+          this ->gazeboJoints_ [ i ] ->SetVelocity ( 0 , jointCommand_ [ i ] ) ; 
+          
+        break ; 
+          
+      }
+      
+    }
     
   }
   
@@ -155,7 +212,7 @@ namespace pandora_gazebo_interface
     this ->jointNames_ .push_back ( "/right_rear_wheel_joint" ) ; 
     this ->jointTypes_ .push_back ( urdf::Joint::REVOLUTE ) ; 
     
-    for ( int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    for ( unsigned int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
       
       hardware_interface 
        ::JointStateHandle jointStateHandle ( this ->jointNames_ [ i ] , 
@@ -171,7 +228,7 @@ namespace pandora_gazebo_interface
 
     // Connect and register the joint velocity interface
       
-    for ( int i = 0 ; i < 4 ; i ++ ) { 
+    for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
       
       hardware_interface 
        ::JointStateHandle 
@@ -189,7 +246,7 @@ namespace pandora_gazebo_interface
 
     // Connect and register the joint position interface
       
-    for ( int i = 4 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    for ( unsigned int i = 4 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
       
       hardware_interface 
        ::JointStateHandle 
@@ -204,47 +261,6 @@ namespace pandora_gazebo_interface
     registerInterface ( & this ->positionJointInterface_ ) ; 
     
     */
-    
-  }
-
-  std::vector<std::string> GazeboInterface::getJointNameFromParamServer()
-  {
-    std::vector<std::string> jointNames;
-    std::string name;
-    nodeHandle_.getParam(
-      "/motor_joints/robot_movement_joints/left_front_joint",
-      name);
-    jointNames.push_back(name);
-    nodeHandle_.getParam(
-      "/motor_joints/robot_movement_joints/right_front_joint",
-      name);
-    jointNames.push_back(name);
-    nodeHandle_.getParam(
-      "/motor_joints/robot_movement_joints/left_rear_joint",
-      name);
-    jointNames.push_back(name);
-    nodeHandle_.getParam(
-      "/motor_joints/robot_movement_joints/right_rear_joint",
-      name);
-    jointNames.push_back(name);
-    nodeHandle_.getParam(
-      "/motor_joints/stabilizer_joints/pitch_joint",
-      name);
-    jointNames.push_back(name);
-    nodeHandle_.getParam(
-      "/motor_joints/stabilizer_joints/roll_joint",
-      name);
-    jointNames.push_back(name);
-    nodeHandle_.getParam(
-      "/motor_joints/kinect_orientation_joints/pitch_joint",
-      name);
-    jointNames.push_back(name);
-    nodeHandle_.getParam(
-      "/motor_joints/kinect_orientation_joints/yaw_joint",
-      name);
-    jointNames.push_back(name);
-
-    return jointNames;
     
   }
   
