@@ -55,8 +55,7 @@ namespace pandora_gazebo_interface
   
     // Number of transmissions / joints
     //jointNum_ = transmissions .size ( ) ; 
-    // TODO: Add the joints for kinect and laser
-    jointNum_ = 4 ; 
+    jointNum_ = 8 ; 
     
     // Resize vectors
     jointNames_ . resize ( jointNum_ ) ; 
@@ -95,11 +94,15 @@ namespace pandora_gazebo_interface
     
       if ( jointControlMethods_ [ i ] == POSITION_PID ) { 
       
+        /*
+      
         const ros ::NodeHandle nh ( modelNh , robotnamespace + 
                                               "/gazebo_ros_control/pid_gains/" + 
                                               jointNames_ [ i ] ) ; 
         
         pidControllers_ [ i ] .init ( nh ) ; 
+        
+        */
       
       }
     
@@ -246,7 +249,7 @@ namespace pandora_gazebo_interface
     
     for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
     
-      jointTypes_ [ i ] = urdf::Joint::CONTINUOUS ; 
+      jointTypes_ [ i ] = urdf ::Joint ::CONTINUOUS ; 
       jointEffort_ [ i ] = 1.0 ; 
       jointPosition_ [ i ] = 1.0 ; 
       jointVelocity_ [ i ] = 0.0 ; 
@@ -256,6 +259,31 @@ namespace pandora_gazebo_interface
       jointEffortLimits_ [ i ] = 50.0 ; 
     
     }
+    
+    jointNames_ [ 4 ] = "/kinect_pitch_joint" ; 
+    jointNames_ [ 5 ] = "/kinect_yaw_joint" ; 
+    jointNames_ [ 6 ] = "/laser_roll_joint" ; 
+    jointNames_ [ 7 ] = "/laser_pitch_joint" ; 
+    
+    for ( unsigned int i = 4 ; i < 8 ; i ++ ) { 
+    
+      jointTypes_ [ i ] = urdf ::Joint ::REVOLUTE ; 
+      jointEffort_ [ i ] = 0.0 ; 
+      jointPosition_ [ i ] = 0.0 ; 
+      jointVelocity_ [ i ] = 0.0 ; 
+      jointEffortCommand_ [ i ] = 0.0 ; 
+      jointPositionCommand_ [ i ] = 0.0 ; 
+      jointVelocityCommand_ [ i ] = 0.0 ; 
+      jointLowerLimits_ [ i ] = - 1.57079632679 ; 
+      jointUpperLimits_ [ i ] = 1.57079632679 ; 
+      jointEffortLimits_ [ i ] = 300.0 ; 
+    
+    }
+    
+    pidControllers_ [ 4 ] .initPid ( 1.2 , 0.0 , 0.5 , 0.0 , 0. ) ; 
+    pidControllers_ [ 5 ] .initPid ( 0.8 , 0.0 , 0.45 , 0.0 , 0.0 ) ; 
+    pidControllers_ [ 6 ] .initPid ( 1.8 , 0.0 , 0.45 , 0.0 , 0.0 ) ; 
+    pidControllers_ [ 7 ] .initPid ( 2.5 , 0.0 , 0.3 , 0.0 , 0.0 ) ; 
     
     for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
       
@@ -285,26 +313,22 @@ namespace pandora_gazebo_interface
     }
 
     // Connect and register the joint position interface
-
-    /*
       
-    for ( unsigned int i = 4 ; i < jointNum_ ; i ++ ) { 
+    for ( unsigned int i = 4 ; i < 8 ; i ++ ) { 
     
       jointControlMethods_ [ i ] = POSITION_PID ; 
       
       hardware_interface 
-       ::JointStateHandle 
+       ::JointHandle 
        jointHandle ( jointStateInterface_ .getHandle ( jointNames_ [ i ] ) , 
                      & jointPositionCommand_ [ i ] ) ; 
                              
       positionJointInterface_ .registerHandle ( jointHandle ) ; 
     
     }
-    
-    */
       
     registerInterface ( & jointStateInterface_ ) ; 
-    //registerInterface ( & positionJointInterface_ ) ; 
+    registerInterface ( & positionJointInterface_ ) ; 
     registerInterface ( & velocityJointInterface_ ) ; 
     
   }
