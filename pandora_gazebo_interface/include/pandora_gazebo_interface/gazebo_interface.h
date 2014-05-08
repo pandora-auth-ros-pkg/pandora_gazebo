@@ -37,18 +37,29 @@
 #ifndef PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
 #define PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
 
-#include <time.h>
-#include "ros/ros.h"
+
+// ros_control
+#include <control_toolbox/pid.h>
 #include <hardware_interface/imu_sensor_interface.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
+#include <gazebo_ros_control/robot_hw_sim.h>
+
+// Gazebo
 #include <gazebo/common/common.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/gazebo.hh>
+
+// ROS
+#include <ros/ros.h>
 #include <angles/angles.h>
 #include <pluginlib/class_list_macros.h>
+
+// gazebo_ros_control
 #include <gazebo_ros_control/robot_hw_sim.h>
+
+// URDF
 #include <urdf/model.h>
 
 namespace pandora_gazebo_interface
@@ -66,7 +77,7 @@ namespace pandora_gazebo_interface
       
       bool initSim ( const std ::string & robotnamespace , 
                      ros ::NodeHandle modelNh , 
-                     physics ::ModelPtr parentModel , 
+                     gazebo ::physics ::ModelPtr parentModel , 
                      const urdf ::Model * const urdfModel , 
                      std 
                       ::vector 
@@ -79,24 +90,24 @@ namespace pandora_gazebo_interface
   
     private: 
     
+      enum ControlMethod { EFFORT , 
+                           POSITION , 
+                           POSITION_PID , 
+                           VELOCITY , 
+                           VELOCITY_PID } ; 
+    
       ros ::NodeHandle nodeHandle_ ; 
       
       hardware_interface ::ImuSensorInterface imuSensorInterface_ ; 
       hardware_interface ::ImuSensorHandle ::Data imuData_ ; 
-      double imuOrientation [ 4 ] ; 
+      
+      double imuOrientation_ [ 4 ] ; 
 
       hardware_interface::JointStateInterface jointStateInterface_ ; 
       hardware_interface::PositionJointInterface positionJointInterface_ ; 
       hardware_interface::VelocityJointInterface velocityJointInterface_ ; 
       
-      joint_limits_interface 
-       ::PositionJointSaturationInterface positionJointSaturationInterface_ ; 
-      joint_limits_interface 
-       ::PositionJointSoftLimitsInterface positionJointLimitsInterface_ ; 
-      joint_limits_interface 
-       ::VelocityJointSaturationInterface velocityJointSaturationInterface_ ; 
-      joint_limits_interface 
-       ::VelocityJointSoftLimitsInterface velocityJointLimitsInterface_ ; 
+      unsigned int jointNum_ ; 
       
       std ::vector < std ::string > jointNames_ ; 
       std ::vector < int > jointTypes_ ; 
@@ -108,17 +119,16 @@ namespace pandora_gazebo_interface
       std ::vector < double > jointUpperLimits_ ; 
       std ::vector < double > jointEffortLimits_ ; 
       
+      std ::vector < double > jointEffort_ ; 
       std ::vector < double > jointPosition_ ; 
-      std ::vector < double > jointPositionCommand_ ; 
       std ::vector < double > jointVelocity_ ; 
-      std ::vector < double > jointVelocityCommand_ ; 
       
-      //double jointCommand_ [ 8 ] ; 
-      //double jointPosition_ [ 8 ] ; 
-      //double jointVelocity_ [ 8 ] ; 
+      std ::vector < double > jointEffortCommand_ ; 
+      std ::vector < double > jointPositionCommand_ ; 
+      std ::vector < double > jointVelocityCommand_ ; 
 
-      std ::vector < physics ::JointPtr > gazeboJoints_ ; 
-      physics ::LinkPtr gazeboLink_ ; 
+      std ::vector < gazebo ::physics ::JointPtr > gazeboJoints_ ; 
+      gazebo ::physics ::LinkPtr gazeboLink_ ; 
       
       void registerInterfaces ( void ) ; 
       

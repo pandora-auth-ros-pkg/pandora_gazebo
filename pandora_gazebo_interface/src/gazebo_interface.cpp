@@ -44,7 +44,7 @@ namespace pandora_gazebo_interface
 
   bool GazeboInterface ::initSim ( const std ::string & robotnamespace , 
                                    ros ::NodeHandle modelNh , 
-                                   physics ::ModelPtr parentModel , 
+                                   gazebo ::physics ::ModelPtr parentModel , 
                                    const urdf ::Model * const urdfModel , 
                                    std 
                                     ::vector 
@@ -53,19 +53,60 @@ namespace pandora_gazebo_interface
   
   {
   
+    // Number of transmissions / joints
+    //jointNum_ = transmissions .size ( ) ; 
+    // TODO: Add the joints for kinect and laser
+    jointNum_ = 4 ; 
+    
+    // Resize vectors
+    jointNames_ . resize ( jointNum_ ) ; 
+    jointTypes_ . resize ( jointNum_ ) ; 
+    
+    jointControlMethods_ . resize ( jointNum_ ) ; 
+    pidControllers_ . resize ( jointNum_ ) ; 
+    
+    jointLowerLimits_ . resize ( jointNum_ ) ; 
+    jointUpperLimits_ . resize ( jointNum_ ) ; 
+    jointEffortLimits_ . resize ( jointNum_ ) ; 
+    
+    jointEffort_ . resize ( jointNum_ ) ; 
+    jointPosition_ . resize ( jointNum_ ) ; 
+    jointVelocity_ . resize ( jointNum_ ) ; 
+    
+    jointEffortCommand_ . resize ( jointNum_ ) ; 
+    jointPositionCommand_ . resize ( jointNum_ ) ; 
+    jointVelocityCommand_ . resize ( jointNum_ ) ; 
+    
+    gazeboJoints_ .resize ( jointNum_ ) ; 
+  
     // Variable initialization
     registerInterfaces ( ) ; 
 
-    // Get gazebo entities
+    // Load gazebo link
     gazeboLink_ = parentModel ->GetLink ( imuData_ .frame_id ) ; 
 
-    for ( unsigned int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    // Load gazebo joints
+    for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) 
     
-      physics ::JointPtr joint = parentModel 
-                                  ->GetJoint ( jointNames_ [ i ] ) ; 
-                                   
-      this ->gazeboJoints_ .push_back ( joint ) ; 
-       
+      gazeboJoints_ [ i ] = parentModel ->GetJoint ( jointNames_ [ i ] ) ; 
+      
+    // Load PID controllers and initialize / set the limits.
+    for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
+    
+      if ( jointControlMethods_ [ i ] == POSITION_PID ) { 
+      
+        const ros ::NodeHandle nh ( modelNh , robotnamespace + 
+                                              "/gazebo_ros_control/pid_gains/" + 
+                                              jointNames_ [ i ] ) ; 
+        
+        pidControllers_ [ i ] .init ( nh ) ; 
+      
+      }
+    
+      if ( jointControlMethods_ [ i ] == VELOCITY ) 
+
+        gazeboJoints_ [ i ] ->SetMaxForce ( 0 , jointEffortLimits_ [ i ] ) ; 
+        
     }
     
   }
@@ -80,14 +121,14 @@ namespace pandora_gazebo_interface
   
     // Read robot orientation for IMU
     
-    math ::Pose pose = gazeboLink_ ->GetWorldPose ( ) ; 
+    gazebo ::math ::Pose pose = gazeboLink_ ->GetWorldPose ( ) ; 
     
-    imuOrientation [ 0 ] = pose .rot .x ; 
-    imuOrientation [ 1 ] = pose .rot .y ; 
-    imuOrientation [ 2 ] = pose .rot .z ; 
-    imuOrientation [ 3 ] = pose .rot .w ; 
+    imuOrientation_ [ 0 ] = pose .rot .x ; 
+    imuOrientation_ [ 1 ] = pose .rot .y ; 
+    imuOrientation_ [ 2 ] = pose .rot .z ; 
+    imuOrientation_ [ 3 ] = pose .rot .w ; 
     
-    for ( unsigned int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
     
       // Read joint position
     
@@ -113,13 +154,8 @@ namespace pandora_gazebo_interface
   }
 
   void GazeboInterface ::writeSim ( ros ::Time time , ros ::Duration period ) { 
-  
-    this ->positionJointSaturationInterface_ .enforceLimits ( period ) ; 
-    this ->positionJointLimitsInterface_ .enforceLimits ( period ) ; 
-    this ->velocityJointSaturationInterface_ .enforceLimits ( period ) ; 
-    this ->velocityJointLimitsInterface_ .enforceLimits ( period ) ; 
     
-    for ( unsigned int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
     
       switch ( jointControlMethods_ [ i ] ) { 
 
@@ -127,7 +163,7 @@ namespace pandora_gazebo_interface
         
             double error ; 
             
-            switch ( this ->jointTypes [ i ] ) {
+            switch ( jointTypes_ [ i ] ) {
             
               case urdf ::Joint ::REVOLUTE: 
               
@@ -162,7 +198,7 @@ namespace pandora_gazebo_interface
             double effort = 
             std ::min ( std ::max ( command , - effortLimit ) , effortLimit ) ; 
                                         
-            this ->gazeboJoints_ [ i ] ->SetForce ( 0 , effort ) ; 
+            gazeboJoints_ [ i ] ->SetForce ( 0 , effort ) ; 
             
         }
         
@@ -170,7 +206,8 @@ namespace pandora_gazebo_interface
 
         case VELOCITY: 
         
-          this ->gazeboJoints_ [ i ] ->SetVelocity ( 0 , jointCommand_ [ i ] ) ; 
+          gazeboJoints_ [ i ] 
+           ->SetVelocity ( 0 , jointVelocityCommand_ [ i ] ) ; 
           
         break ; 
           
@@ -184,12 +221,12 @@ namespace pandora_gazebo_interface
 
     // Connect and register imu sensor interface
     
-    imuOrientation [ 0 ] = 0 ; 
-    imuOrientation [ 1 ] = 0 ; 
-    imuOrientation [ 2 ] = 0 ; 
-    imuOrientation [ 3 ] = 1 ; 
+    imuOrientation_ [ 0 ] = 0 ; 
+    imuOrientation_ [ 1 ] = 0 ; 
+    imuOrientation_ [ 2 ] = 0 ; 
+    imuOrientation_ [ 3 ] = 1 ; 
     
-    imuData_. orientation = imuOrientation ; 
+    imuData_. orientation = imuOrientation_ ; 
     imuData_ .name= "/sensors/imu" ; 
     imuData_ .frame_id = "base_link" ; 
     
@@ -200,67 +237,75 @@ namespace pandora_gazebo_interface
 
     // Connect and register the joint state interface
     
-    this ->jointNames_ .push_back ( "/left_front_wheel_joint" ) ; 
-    this ->jointTypes_ .push_back ( urdf::Joint::REVOLUTE ) ; 
+    // All joints are currently hardcoded
     
-    this ->jointNames_ .push_back ( "/left_rear_wheel_joint" ) ; 
-    this ->jointTypes_ .push_back ( urdf::Joint::REVOLUTE ) ; 
+    jointNames_ [ 0 ] = "/left_front_wheel_joint" ; 
+    jointNames_ [ 1 ] = "/left_rear_wheel_joint" ; 
+    jointNames_ [ 2 ] = "/right_front_wheel_joint" ; 
+    jointNames_ [ 3 ] = "/right_rear_wheel_joint" ; 
     
-    this ->jointNames_ .push_back ( "/right_front_wheel_joint" ) ; 
-    this ->jointTypes_ .push_back ( urdf::Joint::REVOLUTE ) ; 
+    for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
     
-    this ->jointNames_ .push_back ( "/right_rear_wheel_joint" ) ; 
-    this ->jointTypes_ .push_back ( urdf::Joint::REVOLUTE ) ; 
+      jointTypes_ [ i ] = urdf::Joint::CONTINUOUS ; 
+      jointEffort_ [ i ] = 1.0 ; 
+      jointPosition_ [ i ] = 1.0 ; 
+      jointVelocity_ [ i ] = 0.0 ; 
+      jointEffortCommand_ [ i ] = 0.0 ; 
+      jointPositionCommand_ [ i ] = 0.0 ; 
+      jointVelocityCommand_ [ i ] = 0.0 ; 
+      jointEffortLimits_ [ i ] = 50.0 ; 
     
-    for ( unsigned int i = 0 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    }
+    
+    for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
       
       hardware_interface 
-       ::JointStateHandle jointStateHandle ( this ->jointNames_ [ i ] , 
-                                             & this ->jointPosition_ [ i ] , 
-                                             & this ->jointVelocity_ [ i ] , 
-                                             & this ->jointEffort_ [ i ] ) ; 
+       ::JointStateHandle jointStateHandle ( jointNames_ [ i ] , 
+                                             & jointEffort_ [ i ] , 
+                                             & jointPosition_ [ i ] , 
+                                             & jointVelocity_ [ i ] ) ; 
                                              
-      this ->jointStateInterface_ .registerHandle ( jointStateHandle ) ; 
+      jointStateInterface_ .registerHandle ( jointStateHandle ) ; 
       
     }
-      
-    registerInterface ( & this ->jointStateInterface_ ) ; 
 
     // Connect and register the joint velocity interface
       
     for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
+    
+      jointControlMethods_ [ i ] = VELOCITY ; 
       
       hardware_interface 
-       ::JointStateHandle 
-       jointVelocityHandle ( this ->jointStateInterface_ 
-                                     .getHandle ( this ->jointNames_ [ i ] ) , 
-                             & this ->jointCommand_ [ i ] ) ; 
+       ::JointHandle 
+       jointHandle ( jointStateInterface_ .getHandle ( jointNames_ [ i ] ) , 
+                     & jointVelocityCommand_ [ i ] ) ; 
                              
-      this ->velocityJointInterface_ .registerHandle ( jointVelocityHandle ) ; 
+      velocityJointInterface_ .registerHandle ( jointHandle ) ; 
     
     }
-      
-    registerInterface ( & this ->velocityJointInterface_ ) ; 
-
-    /*
 
     // Connect and register the joint position interface
+
+    /*
       
-    for ( unsigned int i = 4 ; i < this ->jointNames_ .size ( ) ; i ++ ) { 
+    for ( unsigned int i = 4 ; i < jointNum_ ; i ++ ) { 
+    
+      jointControlMethods_ [ i ] = POSITION_PID ; 
       
       hardware_interface 
        ::JointStateHandle 
-       jointPositionHandle ( this ->jointStateInterface_ 
-                                     .getHandle ( this ->jointNames_ [ i ] ) , 
-                             & this ->jointCommand_ [ i ] ) ; 
+       jointHandle ( jointStateInterface_ .getHandle ( jointNames_ [ i ] ) , 
+                     & jointPositionCommand_ [ i ] ) ; 
                              
-      this ->positionJointInterface_ .registerHandle ( jointPositionHandle ) ; 
+      positionJointInterface_ .registerHandle ( jointHandle ) ; 
     
     }
-      
-    registerInterface ( & this ->positionJointInterface_ ) ; 
     
     */
+      
+    registerInterface ( & jointStateInterface_ ) ; 
+    //registerInterface ( & positionJointInterface_ ) ; 
+    registerInterface ( & velocityJointInterface_ ) ; 
     
   }
   
