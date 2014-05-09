@@ -8,6 +8,7 @@ find_package(
   gazebo_ros
   gazebo_plugins
   gazebo_ros_control
+  control_toolbox
   pluginlib
 )
 
@@ -23,6 +24,7 @@ catkin_package(
     gazebo_ros
     gazebo_plugins
     gazebo_ros_control
+    control_toolbox
     pluginlib
 #  DEPENDS
 )

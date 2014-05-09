@@ -114,6 +114,8 @@ namespace pandora_gazebo_interface
         
     }
     
+    return true ; 
+    
   }
 
   GazeboInterface ::~GazeboInterface ( ) { 
@@ -245,10 +247,10 @@ namespace pandora_gazebo_interface
     
     // All joints are currently hardcoded
     
-    jointNames_ [ 0 ] = "/left_front_wheel_joint" ; 
-    jointNames_ [ 1 ] = "/left_rear_wheel_joint" ; 
-    jointNames_ [ 2 ] = "/right_front_wheel_joint" ; 
-    jointNames_ [ 3 ] = "/right_rear_wheel_joint" ; 
+    jointNames_ [ 0 ] = "left_front_wheel_joint" ; 
+    jointNames_ [ 1 ] = "left_rear_wheel_joint" ; 
+    jointNames_ [ 2 ] = "right_front_wheel_joint" ; 
+    jointNames_ [ 3 ] = "right_rear_wheel_joint" ; 
     
     for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
     
@@ -264,10 +266,10 @@ namespace pandora_gazebo_interface
     
     }
     
-    jointNames_ [ 4 ] = "/kinect_pitch_joint" ; 
-    jointNames_ [ 5 ] = "/kinect_yaw_joint" ; 
-    jointNames_ [ 6 ] = "/laser_roll_joint" ; 
-    jointNames_ [ 7 ] = "/laser_pitch_joint" ; 
+    jointNames_ [ 4 ] = "kinect_pitch_joint" ; 
+    jointNames_ [ 5 ] = "kinect_yaw_joint" ; 
+    jointNames_ [ 6 ] = "laser_roll_joint" ; 
+    jointNames_ [ 7 ] = "laser_pitch_joint" ; 
     
     for ( unsigned int i = 4 ; i < 8 ; i ++ ) { 
     

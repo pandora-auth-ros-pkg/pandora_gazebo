@@ -138,16 +138,8 @@ namespace pandora_gazebo_interface
   
 }  // namespace pandora_gazebo_interface
 
-PLUGINLIB_EXPORT_CLASS
-(
-  pandora_gazebo_interface ::GazeboInterface , 
-  gazebo_ros_control ::RobotHWSim )
+PLUGINLIB_EXPORT_CLASS( pandora_gazebo_interface::GazeboInterface,
+                        gazebo_ros_control::RobotHWSim
+                      )
 
 #endif  // PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
-
-
-
-
-
-
-
