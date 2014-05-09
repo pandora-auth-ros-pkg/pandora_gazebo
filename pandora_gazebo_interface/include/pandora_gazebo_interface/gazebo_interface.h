@@ -126,6 +126,8 @@ namespace pandora_gazebo_interface
       std ::vector < double > jointEffortCommand_ ; 
       std ::vector < double > jointPositionCommand_ ; 
       std ::vector < double > jointVelocityCommand_ ; 
+      
+      std ::vector < double > wheel_velocity_multiplier_ ; 
 
       std ::vector < gazebo ::physics ::JointPtr > gazeboJoints_ ; 
       gazebo ::physics ::LinkPtr gazeboLink_ ; 

@@ -76,6 +76,8 @@ namespace pandora_gazebo_interface
     jointPositionCommand_ . resize ( jointNum_ ) ; 
     jointVelocityCommand_ . resize ( jointNum_ ) ; 
     
+    wheel_velocity_multiplier_ . resize ( jointNum_ ) ; 
+    
     gazeboJoints_ .resize ( jointNum_ ) ; 
   
     // Variable initialization
@@ -210,7 +212,8 @@ namespace pandora_gazebo_interface
         case VELOCITY: 
         
           gazeboJoints_ [ i ] 
-           ->SetVelocity ( 0 , jointVelocityCommand_ [ i ] ) ; 
+           ->SetVelocity ( 0 , jointVelocityCommand_ [ i ] * 
+                               wheel_velocity_multiplier_ [ i ] ) ; 
           
         break ; 
           
@@ -257,6 +260,7 @@ namespace pandora_gazebo_interface
       jointPositionCommand_ [ i ] = 0.0 ; 
       jointVelocityCommand_ [ i ] = 0.0 ; 
       jointEffortLimits_ [ i ] = 50.0 ; 
+      wheel_velocity_multiplier_ [ i ] = 15.8 ; 
     
     }
     

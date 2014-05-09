@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="robot" default="pioneer3at"/>
+  <arg name="robot" default="gears"/>
 
   <!-- Load joint controller configurations from YAML files to parameter server -->
   
