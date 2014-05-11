@@ -138,8 +138,8 @@
           <surface>
             <friction>
               <ode>
-                <mu>15.0</mu>
-                <mu2>15.0</mu2>
+                <mu>0.5</mu>
+                <mu2>0.5</mu2>
                 <fdir1>0 0 0</fdir1>
                 <slip1>0</slip1>
                 <slip2>0</slip2>
@@ -165,7 +165,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://floors/marble_floor.dae</uri>
+              <uri>file://floors/marble_floor_2.dae</uri>
               <scale>10 10 1</scale>
             </mesh>
           </geometry>
@@ -176,7 +176,7 @@
       <static>true</static>
       <link name="rubber_floor_link">
         <pose>-5 -5 0 0 0 0</pose>
-        <collision name="plywood_floor_collision">
+        <collision name="rubber_floor_collision">
           <geometry>
             <plane>
               <normal>0 0 1</normal>
@@ -186,8 +186,8 @@
           <surface>
             <friction>
               <ode>
-                <mu>1.0</mu>
-                <mu2>1.0</mu2>
+                <mu>20.0</mu>
+                <mu2>20.0</mu2>
                 <fdir1>0 0 0</fdir1>
                 <slip1>0</slip1>
                 <slip2>0</slip2>
@@ -213,7 +213,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://floors/rubber_floor.dae</uri>
+              <uri>file://floors/rubber_floor_2.dae</uri>
               <scale>10 10 1</scale>
             </mesh>
           </geometry>

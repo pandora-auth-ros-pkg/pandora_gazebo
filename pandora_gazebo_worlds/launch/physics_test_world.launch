@@ -7,6 +7,8 @@
     <arg name="world" value="physics_test_world"/>
     <arg name="robot" value="$(arg robot)"/>
     <arg name="gui" value="$(arg gui)"/> 
+    <arg name="x" value="2.5"/> 
+    <arg name="y" value="2.5"/> 
     <arg name="z" value="0.5"/> 
   </include>
 
