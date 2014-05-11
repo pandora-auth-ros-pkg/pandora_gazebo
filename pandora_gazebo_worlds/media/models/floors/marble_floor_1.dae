@@ -5,27 +5,27 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.70.0 commit date:2014-04-10, commit time:11:49, hash:f93bc76</authoring_tool>
     </contributor>
-    <created>2014-05-10T14:28:11</created>
-    <modified>2014-05-10T14:28:11</modified>
+    <created>2014-05-10T14:25:26</created>
+    <modified>2014-05-10T14:25:26</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images>
-    <image id="plywood256x256_jpg" name="plywood256x256_jpg">
-      <init_from>../images/plywood256x256.jpg</init_from>
+    <image id="marble_jpg" name="marble_jpg">
+      <init_from>../images/marble.jpg</init_from>
     </image>
   </library_images>
   <library_effects>
-    <effect id="Plywood-effect">
+    <effect id="Marble-effect">
       <profile_COMMON>
-        <newparam sid="plywood256x256_jpg-surface">
+        <newparam sid="marble_jpg-surface">
           <surface type="2D">
-            <init_from>plywood256x256_jpg</init_from>
+            <init_from>marble_jpg</init_from>
           </surface>
         </newparam>
-        <newparam sid="plywood256x256_jpg-sampler">
+        <newparam sid="marble_jpg-sampler">
           <sampler2D>
-            <source>plywood256x256_jpg-surface</source>
+            <source>marble_jpg-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -37,7 +37,7 @@
               <color sid="ambient">0 0 0 1</color>
             </ambient>
             <diffuse>
-              <texture texture="plywood256x256_jpg-sampler" texcoord="UVMap"/>
+              <texture texture="marble_jpg-sampler" texcoord="UVMap"/>
             </diffuse>
             <specular>
               <color sid="specular">0.25 0.25 0.25 1</color>
@@ -54,8 +54,8 @@
     </effect>
   </library_effects>
   <library_materials>
-    <material id="Plywood-material" name="Plywood">
-      <instance_effect url="#Plywood-effect"/>
+    <material id="Marble-material" name="Marble">
+      <instance_effect url="#Marble-effect"/>
     </material>
   </library_materials>
   <library_geometries>
@@ -82,7 +82,7 @@
           </technique_common>
         </source>
         <source id="Plane_003-mesh-map">
-          <float_array id="Plane_003-mesh-map-array" count="12">-0.4616975 -0.4616975 1.461698 -0.4616973 1.461698 1.461697 -0.4616975 1.461697 -0.4616975 -0.4616975 1.461698 1.461697</float_array>
+          <float_array id="Plane_003-mesh-map-array" count="12">-0.4981494 -0.4981495 1.498149 -0.4981492 1.498149 1.498149 -0.4981494 1.498149 -0.4981494 -0.4981495 1.498149 1.498149</float_array>
           <technique_common>
             <accessor source="#Plane_003-mesh-map-array" count="6" stride="2">
               <param name="S" type="float"/>
@@ -93,7 +93,7 @@
         <vertices id="Plane_003-mesh-vertices">
           <input semantic="POSITION" source="#Plane_003-mesh-positions"/>
         </vertices>
-        <polylist material="Plywood-material" count="2">
+        <polylist material="Marble-material" count="2">
           <input semantic="VERTEX" source="#Plane_003-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Plane_003-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Plane_003-mesh-map" offset="2" set="0"/>
@@ -111,7 +111,7 @@
         <instance_geometry url="#Plane_003-mesh">
           <bind_material>
             <technique_common>
-              <instance_material symbol="Plywood-material" target="#Plywood-material">
+              <instance_material symbol="Marble-material" target="#Marble-material">
                 <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>

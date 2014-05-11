@@ -1,0 +1,15 @@
+<launch>
+
+  <arg name="gui" default="true"/>
+  <arg name="robot" default="gears"/>
+  
+  <include file="$(find pandora_gazebo_worlds)/launch/start.launch">
+    <arg name="world" value="physics_test_world"/>
+    <arg name="robot" value="$(arg robot)"/>
+    <arg name="gui" value="$(arg gui)"/> 
+    <arg name="x" value="2.5"/> 
+    <arg name="y" value="2.5"/> 
+    <arg name="z" value="0.5"/> 
+  </include>
+
+</launch>

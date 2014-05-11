@@ -5,27 +5,27 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.70.0 commit date:2014-04-10, commit time:11:49, hash:f93bc76</authoring_tool>
     </contributor>
-    <created>2014-05-03T16:00:44</created>
-    <modified>2014-05-03T16:00:44</modified>
+    <created>2014-05-10T14:30:40</created>
+    <modified>2014-05-10T14:30:40</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images>
-    <image id="marble_jpg_001" name="marble_jpg_001">
-      <init_from>../images/marble.jpg</init_from>
+    <image id="rubber_jpg" name="rubber_jpg">
+      <init_from>../images/rubber.jpg</init_from>
     </image>
   </library_images>
   <library_effects>
     <effect id="Marble-effect">
       <profile_COMMON>
-        <newparam sid="marble_jpg_001-surface">
+        <newparam sid="rubber_jpg-surface">
           <surface type="2D">
-            <init_from>marble_jpg_001</init_from>
+            <init_from>rubber_jpg</init_from>
           </surface>
         </newparam>
-        <newparam sid="marble_jpg_001-sampler">
+        <newparam sid="rubber_jpg-sampler">
           <sampler2D>
-            <source>marble_jpg_001-surface</source>
+            <source>rubber_jpg-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -37,10 +37,10 @@
               <color sid="ambient">0 0 0 1</color>
             </ambient>
             <diffuse>
-              <texture texture="marble_jpg_001-sampler" texcoord="UVMap"/>
+              <texture texture="rubber_jpg-sampler" texcoord="UVMap"/>
             </diffuse>
             <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
+              <color sid="specular">0.25 0.25 0.25 1</color>
             </specular>
             <shininess>
               <float sid="shininess">50</float>
@@ -50,13 +50,7 @@
             </index_of_refraction>
           </phong>
         </technique>
-        <extra>
-          <technique profile="GOOGLEEARTH">
-            <double_sided>1</double_sided>
-          </technique>
-        </extra>
       </profile_COMMON>
-      <extra><technique profile="MAX3D"><double_sided>1</double_sided></technique></extra>
     </effect>
   </library_effects>
   <library_materials>
@@ -65,36 +59,46 @@
     </material>
   </library_materials>
   <library_geometries>
-    <geometry id="Plane-mesh" name="Plane">
+    <geometry id="Plane_003-mesh" name="Plane.003">
       <mesh>
-        <source id="Plane-mesh-positions">
-          <float_array id="Plane-mesh-positions-array" count="12">-1 -1 0 1 -1 0 -1 1 0 1 1 0</float_array>
+        <source id="Plane_003-mesh-positions">
+          <float_array id="Plane_003-mesh-positions-array" count="12">-0.5 -0.5 0 0.5 -0.5 0 -0.5 0.5 0 0.5 0.5 0</float_array>
           <technique_common>
-            <accessor source="#Plane-mesh-positions-array" count="4" stride="3">
+            <accessor source="#Plane_003-mesh-positions-array" count="4" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <source id="Plane-mesh-normals">
-          <float_array id="Plane-mesh-normals-array" count="6">0 0 1 0 0 1</float_array>
+        <source id="Plane_003-mesh-normals">
+          <float_array id="Plane_003-mesh-normals-array" count="6">0 0 1 0 0 1</float_array>
           <technique_common>
-            <accessor source="#Plane-mesh-normals-array" count="2" stride="3">
+            <accessor source="#Plane_003-mesh-normals-array" count="2" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <vertices id="Plane-mesh-vertices">
-          <input semantic="POSITION" source="#Plane-mesh-positions"/>
+        <source id="Plane_003-mesh-map">
+          <float_array id="Plane_003-mesh-map-array" count="12">0.006860196 0.006860136 0.99314 0.006860196 0.99314 0.9931398 0.006860196 0.9931398 0.006860196 0.006860136 0.99314 0.9931398</float_array>
+          <technique_common>
+            <accessor source="#Plane_003-mesh-map-array" count="6" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Plane_003-mesh-vertices">
+          <input semantic="POSITION" source="#Plane_003-mesh-positions"/>
         </vertices>
         <polylist material="Marble-material" count="2">
-          <input semantic="VERTEX" source="#Plane-mesh-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#Plane-mesh-normals" offset="1"/>
+          <input semantic="VERTEX" source="#Plane_003-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Plane_003-mesh-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#Plane_003-mesh-map" offset="2" set="0"/>
           <vcount>3 3 </vcount>
-          <p>0 0 1 0 3 0 2 1 0 1 3 1</p>
+          <p>0 0 0 1 0 1 3 0 2 2 1 3 0 1 4 3 1 5</p>
         </polylist>
       </mesh>
     </geometry>
@@ -103,8 +107,8 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="Plane" name="Plane" type="NODE">
-        <matrix sid="transform">0.5 0 0 0 0 0.5 0 0 0 0 1 0 0 0 0 1</matrix>
-        <instance_geometry url="#Plane-mesh">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Plane_003-mesh">
           <bind_material>
             <technique_common>
               <instance_material symbol="Marble-material" target="#Marble-material">
