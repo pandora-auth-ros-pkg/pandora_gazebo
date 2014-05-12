@@ -217,7 +217,8 @@ namespace pandora_gazebo_interface
         
           gazeboJoints_ [ i ] 
            ->SetVelocity ( 0 , jointVelocityCommand_ [ i ] * 
-                               wheel_velocity_multiplier_ [ i ] ) ; 
+                               wheel_velocity_multiplier_ [ i ] * 
+                               22.5 / 255.0 ) ; 
           
         break ; 
           
@@ -261,8 +262,8 @@ namespace pandora_gazebo_interface
       jointPosition_ [ i ] = 1.0 ; 
       jointVelocity_ [ i ] = 0.0 ; 
       jointVelocityCommand_ [ i ] = 0.0 ; 
-      jointEffortLimits_ [ i ] = 50.0 ; 
-      wheel_velocity_multiplier_ [ i ] = 15.8 ; 
+      jointEffortLimits_ [ i ] = 100.0 ; 
+      wheel_velocity_multiplier_ [ i ] = 1.25 ; 
     
     }
     
