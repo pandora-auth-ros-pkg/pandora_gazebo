@@ -73,7 +73,6 @@ namespace pandora_gazebo_interface
     jointPosition_ . resize ( jointNum_ ) ; 
     jointVelocity_ . resize ( jointNum_ ) ; 
     
-    jointEffortCommand_ . resize ( jointNum_ ) ; 
     jointPositionCommand_ . resize ( jointNum_ ) ; 
     jointVelocityCommand_ . resize ( jointNum_ ) ; 
     
@@ -114,6 +113,8 @@ namespace pandora_gazebo_interface
         gazeboJoints_ [ i ] ->SetMaxForce ( 0 , jointEffortLimits_ [ i ] ) ; 
         
     }
+    
+    ROS_INFO ( "Loaded pandora gazebo interface!" ) ; 
     
     return true ; 
     
@@ -216,7 +217,8 @@ namespace pandora_gazebo_interface
         
           gazeboJoints_ [ i ] 
            ->SetVelocity ( 0 , jointVelocityCommand_ [ i ] * 
-                               wheel_velocity_multiplier_ [ i ] ) ; 
+                               wheel_velocity_multiplier_ [ i ] * 
+                               22.5 / 255.0 ) ; 
           
         break ; 
           
@@ -259,11 +261,9 @@ namespace pandora_gazebo_interface
       jointEffort_ [ i ] = 1.0 ; 
       jointPosition_ [ i ] = 1.0 ; 
       jointVelocity_ [ i ] = 0.0 ; 
-      jointEffortCommand_ [ i ] = 0.0 ; 
-      jointPositionCommand_ [ i ] = 0.0 ; 
       jointVelocityCommand_ [ i ] = 0.0 ; 
-      jointEffortLimits_ [ i ] = 50.0 ; 
-      wheel_velocity_multiplier_ [ i ] = 15.8 ; 
+      jointEffortLimits_ [ i ] = 100.0 ; 
+      wheel_velocity_multiplier_ [ i ] = 1.25 ; 
     
     }
     
@@ -278,9 +278,7 @@ namespace pandora_gazebo_interface
       jointEffort_ [ i ] = 0.0 ; 
       jointPosition_ [ i ] = 0.0 ; 
       jointVelocity_ [ i ] = 0.0 ; 
-      jointEffortCommand_ [ i ] = 0.0 ; 
       jointPositionCommand_ [ i ] = 0.0 ; 
-      jointVelocityCommand_ [ i ] = 0.0 ; 
       jointLowerLimits_ [ i ] = - 1.57079632679 ; 
       jointUpperLimits_ [ i ] = 1.57079632679 ; 
       jointEffortLimits_ [ i ] = 300.0 ; 
@@ -300,9 +298,7 @@ namespace pandora_gazebo_interface
     jointEffort_ [ i ] = 0.0 ; 
     jointPosition_ [ i ] = 0.0 ; 
     jointVelocity_ [ i ] = 0.0 ; 
-    jointEffortCommand_ [ i ] = 0.0 ; 
     jointPositionCommand_ [ i ] = 0.0 ; 
-    jointVelocityCommand_ [ i ] = 0.0 ; 
     jointLowerLimits_ [ i ] = - TODO ; 
     jointUpperLimits_ [ i ] = TODO ; 
     jointEffortLimits_ [ i ] = TODO ; 

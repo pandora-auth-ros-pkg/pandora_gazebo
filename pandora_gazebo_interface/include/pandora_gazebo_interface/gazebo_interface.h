@@ -123,7 +123,6 @@ namespace pandora_gazebo_interface
       std ::vector < double > jointPosition_ ; 
       std ::vector < double > jointVelocity_ ; 
       
-      std ::vector < double > jointEffortCommand_ ; 
       std ::vector < double > jointPositionCommand_ ; 
       std ::vector < double > jointVelocityCommand_ ; 
       

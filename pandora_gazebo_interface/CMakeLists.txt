@@ -47,16 +47,3 @@ target_link_libraries(
   gazebo_interface
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES})
-
-# To check lint : catkin_make roslint_pandora_simulation_interface
-set(ROSLINT_CPP_OPTS
-  "--filter=-build/include_what_you_use")
-
-FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
-  RELATIVE ${PROJECT_SOURCE_DIR}
-
-  include/pandora_gazebo_interface/gazebo_interface.h
-  src/gazebo_interface.cpp
-
-)
-roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})
