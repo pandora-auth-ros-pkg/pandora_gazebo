@@ -165,7 +165,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://floors/marble_floor_2.dae</uri>
+              <uri>file://floors/marble_floor_1.dae</uri>
               <scale>10 10 1</scale>
             </mesh>
           </geometry>
@@ -213,7 +213,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://floors/rubber_floor_2.dae</uri>
+              <uri>file://floors/rubber_floor_1.dae</uri>
               <scale>10 10 1</scale>
             </mesh>
           </geometry>
