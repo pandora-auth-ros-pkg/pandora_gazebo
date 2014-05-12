@@ -73,7 +73,6 @@ namespace pandora_gazebo_interface
     jointPosition_ . resize ( jointNum_ ) ; 
     jointVelocity_ . resize ( jointNum_ ) ; 
     
-    jointEffortCommand_ . resize ( jointNum_ ) ; 
     jointPositionCommand_ . resize ( jointNum_ ) ; 
     jointVelocityCommand_ . resize ( jointNum_ ) ; 
     
@@ -261,8 +260,6 @@ namespace pandora_gazebo_interface
       jointEffort_ [ i ] = 1.0 ; 
       jointPosition_ [ i ] = 1.0 ; 
       jointVelocity_ [ i ] = 0.0 ; 
-      jointEffortCommand_ [ i ] = 0.0 ; 
-      jointPositionCommand_ [ i ] = 0.0 ; 
       jointVelocityCommand_ [ i ] = 0.0 ; 
       jointEffortLimits_ [ i ] = 50.0 ; 
       wheel_velocity_multiplier_ [ i ] = 15.8 ; 
@@ -280,9 +277,7 @@ namespace pandora_gazebo_interface
       jointEffort_ [ i ] = 0.0 ; 
       jointPosition_ [ i ] = 0.0 ; 
       jointVelocity_ [ i ] = 0.0 ; 
-      jointEffortCommand_ [ i ] = 0.0 ; 
       jointPositionCommand_ [ i ] = 0.0 ; 
-      jointVelocityCommand_ [ i ] = 0.0 ; 
       jointLowerLimits_ [ i ] = - 1.57079632679 ; 
       jointUpperLimits_ [ i ] = 1.57079632679 ; 
       jointEffortLimits_ [ i ] = 300.0 ; 
@@ -302,9 +297,7 @@ namespace pandora_gazebo_interface
     jointEffort_ [ i ] = 0.0 ; 
     jointPosition_ [ i ] = 0.0 ; 
     jointVelocity_ [ i ] = 0.0 ; 
-    jointEffortCommand_ [ i ] = 0.0 ; 
     jointPositionCommand_ [ i ] = 0.0 ; 
-    jointVelocityCommand_ [ i ] = 0.0 ; 
     jointLowerLimits_ [ i ] = - TODO ; 
     jointUpperLimits_ [ i ] = TODO ; 
     jointEffortLimits_ [ i ] = TODO ; 
