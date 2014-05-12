@@ -115,6 +115,8 @@ namespace pandora_gazebo_interface
         
     }
     
+    ROS_INFO ( "Loaded pandora gazebo interface!" ) ; 
+    
     return true ; 
     
   }
