@@ -3,6 +3,7 @@
   <arg name="gui" default="true"/>
   <arg name="robot" default="gears"/>
   <arg name="control" default="false"/>
+  <arg name="interface" default="false"/>
   
   <include file="$(find pandora_gazebo_worlds)/launch/start.launch">
     <arg name="world" value="testbed"/>
@@ -10,6 +11,7 @@
     <arg name="gui" value="$(arg gui)"/> 
     <arg name="z" value="0.5"/> 
     <arg name="control" value="$(arg control)"/>
+    <arg name="interface" value="$(arg interface)" />
   </include>
   
 </launch>

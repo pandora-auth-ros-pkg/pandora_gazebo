@@ -3,6 +3,7 @@
   <arg name="world" default="empty"/>
   <arg name="robot" default="gears"/>
   <arg name="control" default="false"/>
+  <arg name="interface" default="false"/>
   <arg name="x" default="0"/>
   <arg name="y" default="0"/>
   <arg name="z" default="0"/>
@@ -17,6 +18,7 @@
   
   <include file="$(find pandora_robots_description)/launch/$(arg robot)/$(arg robot)_description.launch" >
     <arg name="control" value="$(arg control)" />
+    <arg name="interface" value="$(arg interface)" />
   </include>
   
   <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" 
