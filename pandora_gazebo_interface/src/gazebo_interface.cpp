@@ -55,8 +55,7 @@ namespace pandora_gazebo_interface
   
     // Number of transmissions / joints
     //jointNum_ = transmissions .size ( ) ; 
-    jointNum_ = 8 ; 
-    //jointNum_ = 9 ; 
+    jointNum_ = 9 ; 
     
     // Resize vectors
     jointNames_ . resize ( jointNum_ ) ; 
@@ -249,6 +248,7 @@ namespace pandora_gazebo_interface
     // Connect and register the joint state interface
     
     // All joints are currently hardcoded
+    // TODO: Get info from yaml or transmissions
     
     jointNames_ [ 0 ] = "left_front_wheel_joint" ; 
     jointNames_ [ 1 ] = "left_rear_wheel_joint" ; 
@@ -290,22 +290,18 @@ namespace pandora_gazebo_interface
     pidControllers_ [ 6 ] .initPid ( 1.8 , 0.0 , 0.45 , 0.0 , 0.0 ) ; 
     pidControllers_ [ 7 ] .initPid ( 2.5 , 0.0 , 0.3 , 0.0 , 0.0 ) ; 
     
-    /*
-    
-    jointNames_ [ 8 ] = "linear_joint" ; 
+    jointNames_ [ 8 ] = "linear_elevator_joint" ; 
     
     jointTypes_ [ i ] = urdf ::Joint ::PRISMATIC ; 
     jointEffort_ [ i ] = 0.0 ; 
     jointPosition_ [ i ] = 0.0 ; 
     jointVelocity_ [ i ] = 0.0 ; 
     jointPositionCommand_ [ i ] = 0.0 ; 
-    jointLowerLimits_ [ i ] = - TODO ; 
-    jointUpperLimits_ [ i ] = TODO ; 
-    jointEffortLimits_ [ i ] = TODO ; 
+    jointLowerLimits_ [ i ] = 0.0 ; 
+    jointUpperLimits_ [ i ] = 0.24 ; 
+    jointEffortLimits_ [ i ] = 100.0 ; 
     
-    pidController_ [ 8 ] .initPid ( TODO ) ; 
-    
-    */
+    pidController_ [ 8 ] .initPid ( 10.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ; 
     
     for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
       
