@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
       sensor_msgs
       gazebo_ros
       gazebo_plugins
-      controllers_and_sensors_communications
+      pandora_arm_hardware_interface
 )
 
 include_directories(include
@@ -41,7 +41,7 @@ catkin_package(
     sensor_msgs
     gazebo_ros
     gazebo_plugins
-    controllers_and_sensors_communications
+    pandora_arm_hardware_interface
 #  DEPENDS system_lib
   LIBRARIES
     motion_plugin
@@ -91,7 +91,7 @@ target_link_libraries(pandora_p3d_plugin
 )
 
 add_library(pandora_thermal_plugin src/pandora_thermal_plugin.cpp)
-add_dependencies(pandora_thermal_plugin controllers_and_sensors_communications_gencpp)
+add_dependencies(pandora_thermal_plugin pandora_arm_hardware_interface_gencpp)
 target_link_libraries(pandora_thermal_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}
@@ -99,7 +99,7 @@ target_link_libraries(pandora_thermal_plugin
 )
 
 add_library(pandora_co2_plugin src/pandora_co2_plugin.cpp)
-add_dependencies(pandora_co2_plugin controllers_and_sensors_communications_gencpp)
+add_dependencies(pandora_co2_plugin pandora_arm_hardware_interface_gencpp)
 target_link_libraries(pandora_co2_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}
@@ -107,7 +107,7 @@ target_link_libraries(pandora_co2_plugin
 )
 
 add_library(pandora_microphone_plugin src/pandora_microphone_plugin.cpp)
-add_dependencies(pandora_microphone_plugin controllers_and_sensors_communications_gencpp)
+add_dependencies(pandora_microphone_plugin pandora_arm_hardware_interface_gencpp)
 target_link_libraries(pandora_microphone_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}

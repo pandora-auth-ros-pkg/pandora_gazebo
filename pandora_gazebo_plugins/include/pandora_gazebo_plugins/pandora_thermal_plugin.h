@@ -39,8 +39,6 @@
 #include <gazebo/gazebo.hh>
 #include <gazebo/sensors/sensors.hh>
 
-#include "controllers_and_sensors_communications/tpaMsg.h"
-
 namespace gazebo
 {
 
@@ -103,7 +101,7 @@ namespace gazebo
                    
     private: void PutThermalData(common::Time &_updateTime);
     
-    controllers_and_sensors_communications::tpaMsg tmsg;
+    sensor_msgs::Image tmsg;
 
 	};
   GZ_REGISTER_SENSOR_PLUGIN(PandoraThermalPlugin)

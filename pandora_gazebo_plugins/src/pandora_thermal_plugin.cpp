@@ -94,7 +94,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   if (this->topic_name_ != "")
   {
     // Custom Callback Queue
-    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<controllers_and_sensors_communications::tpaMsg>(
+    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<sensor_msgs::Image>(
       this->topic_name_,1,
       boost::bind( &PandoraThermalPlugin::CameraConnect,this),
       boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
@@ -330,7 +330,7 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
 
   for ( int i = 0 ; i < msgWidth ; i++ ) 
   
-    tmsg .pixelTemp [ i ] = pixelTemp [ i ] ; 
+    tmsg .pixelTemp [ i ] = pixelTemp [ i ] ; // TODO
     
   this ->pub_ .publish ( this ->tmsg ) ; 
   

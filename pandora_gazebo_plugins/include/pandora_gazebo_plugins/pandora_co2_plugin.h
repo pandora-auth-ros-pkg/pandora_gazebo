@@ -39,7 +39,7 @@
 #include <gazebo/gazebo.hh>
 #include <gazebo/sensors/sensors.hh>
 
-#include "controllers_and_sensors_communications/co2Msg.h"
+#include "pandora_arm_hardware_interface/co2Msg.h"
 
 namespace gazebo
 {
@@ -99,7 +99,7 @@ namespace gazebo
                    
     private: void PutCo2Data(common::Time &_updateTime);
     
-    controllers_and_sensors_communications::co2Msg tmsg;
+    pandora_arm_hardware_interface::co2Msg tmsg;
 
 	};
   GZ_REGISTER_SENSOR_PLUGIN(PandoraCo2Plugin)
