@@ -21,6 +21,10 @@
   <rosparam command="load" ns="control"
             file="$(find pandora_gazebo_controllers)/config/pandora_linear_elevator_controller.yaml" />
   
+  <!-- Linear Head -->
+  <rosparam command="load" ns="control"
+            file="$(find pandora_gazebo_controllers)/config/pandora_linear_head_controllers.yaml" />
+  
   <!-- Robot Wheels -->
   <rosparam command="load" ns="control"
             file="$(find pandora_gazebo_controllers)/config/pandora_$(arg robot)_wheel_controllers.yaml" />
@@ -36,6 +40,8 @@
                 kinect_pitch_controller
                 kinect_yaw_controller
                 linear_elevator_controller
+                linear_head_pitch_controller
+                linear_head_yaw_controller
                 $(arg robot)_left_front_wheel_controller
                 $(arg robot)_left_rear_wheel_controller
                 $(arg robot)_right_front_wheel_controller

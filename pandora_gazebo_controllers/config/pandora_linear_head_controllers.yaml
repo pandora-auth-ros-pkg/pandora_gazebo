@@ -1,0 +1,11 @@
+# Linear Head Position Controllers ---------------------------------------
+
+linear_head_pitch_controller:
+  type: effort_controllers/JointPositionController
+  joint: linear_head_pitch_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0, i_clamp: 0.0}
+
+linear_head_yaw_controller:
+  type: effort_controllers/JointPositionController
+  joint: linear_head_yaw_joint
+  pid: {p: 10.0, i: 0.0, d: 0.0, i_clamp: 0.0}

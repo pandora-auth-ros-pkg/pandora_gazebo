@@ -55,7 +55,7 @@ namespace pandora_gazebo_interface
   
     // Number of transmissions / joints
     //jointNum_ = transmissions .size ( ) ; 
-    jointNum_ = 9 ; 
+    jointNum_ = 11 ; 
     
     // Resize vectors
     jointNames_ . resize ( jointNum_ ) ; 
@@ -250,6 +250,8 @@ namespace pandora_gazebo_interface
     // All joints are currently hardcoded
     // TODO: Get info from yaml or transmissions
     
+    // Wheels -----------------------------------------------------------------
+    
     jointNames_ [ 0 ] = "left_front_wheel_joint" ; 
     jointNames_ [ 1 ] = "left_rear_wheel_joint" ; 
     jointNames_ [ 2 ] = "right_front_wheel_joint" ; 
@@ -258,50 +260,130 @@ namespace pandora_gazebo_interface
     for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
     
       jointTypes_ [ i ] = urdf ::Joint ::CONTINUOUS ; 
+      
       jointEffort_ [ i ] = 1.0 ; 
       jointPosition_ [ i ] = 1.0 ; 
       jointVelocity_ [ i ] = 0.0 ; 
       jointVelocityCommand_ [ i ] = 0.0 ; 
       jointEffortLimits_ [ i ] = 100.0 ; 
+      
       wheel_velocity_multiplier_ [ i ] = 1.25 ; 
     
     }
     
+    // Kinect Pitch -----------------------------------------------------------
+    
     jointNames_ [ 4 ] = "kinect_pitch_joint" ; 
-    jointNames_ [ 5 ] = "kinect_yaw_joint" ; 
-    jointNames_ [ 6 ] = "laser_roll_joint" ; 
-    jointNames_ [ 7 ] = "laser_pitch_joint" ; 
     
-    for ( unsigned int i = 4 ; i < 8 ; i ++ ) { 
+    jointTypes_ [ 4 ] = urdf ::Joint ::REVOLUTE ; 
     
-      jointTypes_ [ i ] = urdf ::Joint ::REVOLUTE ; 
-      jointEffort_ [ i ] = 0.0 ; 
-      jointPosition_ [ i ] = 0.0 ; 
-      jointVelocity_ [ i ] = 0.0 ; 
-      jointPositionCommand_ [ i ] = 0.0 ; 
-      jointLowerLimits_ [ i ] = - 1.57079632679 ; 
-      jointUpperLimits_ [ i ] = 1.57079632679 ; 
-      jointEffortLimits_ [ i ] = 300.0 ; 
-    
-    }
+    jointEffort_ [ 4 ] = 0.0 ; 
+    jointPosition_ [ 4 ] = 0.0 ; 
+    jointVelocity_ [ 4 ] = 0.0 ; 
+    jointPositionCommand_ [ 4 ] = 0.0 ; 
+    jointLowerLimits_ [ 4 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 4 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 4 ] = 300.0 ; //FIXME
     
     pidControllers_ [ 4 ] .initPid ( 1.2 , 0.0 , 0.5 , 0.0 , 0. ) ; 
+      
+    // Kinect Yaw -------------------------------------------------------------
+    
+    jointNames_ [ 5 ] = "kinect_yaw_joint" ; 
+    
+    jointTypes_ [ 5 ] = urdf ::Joint ::REVOLUTE ; 
+    
+    jointEffort_ [ 5 ] = 0.0 ; 
+    jointPosition_ [ 5 ] = 0.0 ; 
+    jointVelocity_ [ 5 ] = 0.0 ; 
+    jointPositionCommand_ [ 5 ] = 0.0 ; 
+    jointLowerLimits_ [ 5 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 5 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 5 ] = 300.0 ; //FIXME
+    
     pidControllers_ [ 5 ] .initPid ( 0.8 , 0.0 , 0.45 , 0.0 , 0.0 ) ; 
+    
+    // Laser Roll -------------------------------------------------------------
+    
+    jointNames_ [ 6 ] = "laser_roll_joint" ; 
+    
+    jointTypes_ [ 6 ] = urdf ::Joint ::REVOLUTE ; 
+    
+    jointEffort_ [ 6 ] = 0.0 ; 
+    jointPosition_ [ 6 ] = 0.0 ; 
+    jointVelocity_ [ 6 ] = 0.0 ; 
+    jointPositionCommand_ [ 6 ] = 0.0 ; 
+    jointLowerLimits_ [ 6 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 6 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 6 ] = 300.0 ; //FIXME
+    
     pidControllers_ [ 6 ] .initPid ( 1.8 , 0.0 , 0.45 , 0.0 , 0.0 ) ; 
+        
+    // Laser Pitch ------------------------------------------------------------
+    
+    jointNames_ [ 7 ] = "laser_pitch_joint" ; 
+    
+    jointTypes_ [ 7 ] = urdf ::Joint ::REVOLUTE ; 
+    
+    jointEffort_ [ 7 ] = 0.0 ; 
+    jointPosition_ [ 7 ] = 0.0 ; 
+    jointVelocity_ [ 7 ] = 0.0 ; 
+    jointPositionCommand_ [ 7 ] = 0.0 ; 
+    jointLowerLimits_ [ 7 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 7 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 7 ] = 300.0 ; //FIXME
+    
     pidControllers_ [ 7 ] .initPid ( 2.5 , 0.0 , 0.3 , 0.0 , 0.0 ) ; 
+        
+    // Linear Elevator --------------------------------------------------------
     
     jointNames_ [ 8 ] = "linear_elevator_joint" ; 
     
-    jointTypes_ [ i ] = urdf ::Joint ::PRISMATIC ; 
-    jointEffort_ [ i ] = 0.0 ; 
-    jointPosition_ [ i ] = 0.0 ; 
-    jointVelocity_ [ i ] = 0.0 ; 
-    jointPositionCommand_ [ i ] = 0.0 ; 
-    jointLowerLimits_ [ i ] = 0.0 ; 
-    jointUpperLimits_ [ i ] = 0.24 ; 
-    jointEffortLimits_ [ i ] = 100.0 ; 
+    jointTypes_ [ 8 ] = urdf ::Joint ::PRISMATIC ;
+     
+    jointEffort_ [ 8 ] = 0.0 ; 
+    jointPosition_ [ 8 ] = 0.0 ; 
+    jointVelocity_ [ 8 ] = 0.0 ; 
+    jointPositionCommand_ [ 8 ] = 0.0 ; 
+    jointLowerLimits_ [ 8 ] = 0.0 ; 
+    jointUpperLimits_ [ 8 ] = 0.23 ; 
+    jointEffortLimits_ [ 8 ] = 1000.0 ; //FIXME
     
-    pidController_ [ 8 ] .initPid ( 10.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ; 
+    pidControllers_ [ 8 ] .initPid ( 150.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ; 
+        
+    // Linear Head Pitch ------------------------------------------------------
+    
+    jointNames_ [ 9 ] = "linear_head_pitch_joint" ; 
+    
+    jointTypes_ [ 9 ] = urdf ::Joint ::REVOLUTE ; 
+    
+    jointEffort_ [ 9 ] = 0.0 ; 
+    jointPosition_ [ 9 ] = 0.0 ; 
+    jointVelocity_ [ 9 ] = 0.0 ; 
+    jointPositionCommand_ [ 9 ] = 0.0 ; 
+    jointLowerLimits_ [ 9 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 9 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 9 ] = 300.0 ; //FIXME
+    
+    pidControllers_ [ 9 ] .initPid ( 10.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ; 
+        
+    // Linear Head Yaw --------------------------------------------------------
+    
+    jointNames_ [ 10 ] = "linear_head_yaw_joint" ; 
+    
+    jointTypes_ [ 10 ] = urdf ::Joint ::REVOLUTE ; 
+    
+    jointEffort_ [ 10 ] = 0.0 ; 
+    jointPosition_ [ 10 ] = 0.0 ; 
+    jointVelocity_ [ 10 ] = 0.0 ; 
+    jointPositionCommand_ [ 10 ] = 0.0 ; 
+    jointLowerLimits_ [ 10 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 10 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 10 ] = 300.0 ; //FIXME
+    
+    pidControllers_ [ 10 ] .initPid ( 10.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ; 
+    
+    // Register the joint state handle
     
     for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
       
@@ -315,7 +397,7 @@ namespace pandora_gazebo_interface
       
     }
 
-    // Connect and register the joint velocity interface
+    // Connect and register the joint velocity handle
       
     for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
     
@@ -330,7 +412,7 @@ namespace pandora_gazebo_interface
     
     }
 
-    // Connect and register the joint position interface
+    // Connect and register the joint position handle
       
     for ( unsigned int i = 4 ; i < jointNum_ ; i ++ ) { 
     
@@ -344,6 +426,8 @@ namespace pandora_gazebo_interface
       positionJointInterface_ .registerHandle ( jointHandle ) ; 
     
     }
+    
+    // Register interfaces
       
     registerInterface ( & jointStateInterface_ ) ; 
     registerInterface ( & positionJointInterface_ ) ; 
