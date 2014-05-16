@@ -285,7 +285,7 @@ namespace pandora_gazebo_interface
     jointUpperLimits_ [ 4 ] = 1.57079632679 ; //FIXME
     jointEffortLimits_ [ 4 ] = 300.0 ; //FIXME
     
-    pidControllers_ [ 4 ] .initPid ( 1.2 , 0.0 , 0.5 , 0.0 , 0. ) ; 
+    pidControllers_ [ 4 ] .initPid ( 8.5 , 1.0 , 0.2 , -10.0 , 10.0 ) ; 
       
     // Kinect Yaw -------------------------------------------------------------
     
@@ -301,7 +301,7 @@ namespace pandora_gazebo_interface
     jointUpperLimits_ [ 5 ] = 1.57079632679 ; //FIXME
     jointEffortLimits_ [ 5 ] = 300.0 ; //FIXME
     
-    pidControllers_ [ 5 ] .initPid ( 0.8 , 0.0 , 0.45 , 0.0 , 0.0 ) ; 
+    pidControllers_ [ 5 ] .initPid ( 8.0 , 1.5 , 0.4 , -10.0 , 10.0 ) ; 
     
     // Laser Roll -------------------------------------------------------------
     
@@ -317,7 +317,7 @@ namespace pandora_gazebo_interface
     jointUpperLimits_ [ 6 ] = 1.57079632679 ; //FIXME
     jointEffortLimits_ [ 6 ] = 300.0 ; //FIXME
     
-    pidControllers_ [ 6 ] .initPid ( 1.8 , 0.0 , 0.45 , 0.0 , 0.0 ) ; 
+    pidControllers_ [ 6 ] .initPid ( 1.8 , 0.0 , 0.3 , 0.0 , 0.0 ) ; 
         
     // Laser Pitch ------------------------------------------------------------
     
@@ -349,7 +349,7 @@ namespace pandora_gazebo_interface
     jointUpperLimits_ [ 8 ] = 0.23 ; 
     jointEffortLimits_ [ 8 ] = 1000.0 ; //FIXME
     
-    pidControllers_ [ 8 ] .initPid ( 150.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ; 
+    pidControllers_ [ 8 ] .initPid ( 90.0 , 5.0 , 20.0 , -100.0 , 100.0 ) ; 
         
     // Linear Head Pitch ------------------------------------------------------
     
@@ -365,7 +365,7 @@ namespace pandora_gazebo_interface
     jointUpperLimits_ [ 9 ] = 1.57079632679 ; //FIXME
     jointEffortLimits_ [ 9 ] = 300.0 ; //FIXME
     
-    pidControllers_ [ 9 ] .initPid ( 10.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ; 
+    pidControllers_ [ 9 ] .initPid ( 11.0 , 2.0 , 0.25 , -15.0 , 15.0 ) ; 
         
     // Linear Head Yaw --------------------------------------------------------
     
@@ -381,7 +381,7 @@ namespace pandora_gazebo_interface
     jointUpperLimits_ [ 10 ] = 1.57079632679 ; //FIXME
     jointEffortLimits_ [ 10 ] = 300.0 ; //FIXME
     
-    pidControllers_ [ 10 ] .initPid ( 10.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ; 
+    pidControllers_ [ 10 ] .initPid ( 12.0 , 1.0 , 0.45 , -10.0 , 10.0 ) ; 
     
     // Register the joint state handle
     
