@@ -42,22 +42,160 @@ namespace pandora_gazebo_interface
 
 {
 
+  GazeboInterface ::~GazeboInterface ( ) { 
+  
+    
+  
+  }
+
   bool GazeboInterface ::initSim ( const std ::string & robotnamespace , 
                                    ros ::NodeHandle modelNh , 
                                    gazebo ::physics ::ModelPtr parentModel , 
                                    const urdf ::Model * const urdfModel , 
-                                   std 
-                                    ::vector 
-                                    < transmission_interface ::TransmissionInfo > 
-                                    transmissions ) 
+                                   std ::vector 
+                                   < transmission_interface ::TransmissionInfo > 
+                                    transmissions ) { 
+                                    
+    robotnamespace_ = robotnamespace ; 
+    modelNh_ = modelNh ; 
+    parentModel_ = parentModel ; 
+    urdfModel_ = urdfModel ; 
+    transmissions_ = transmissions ; 
   
-  {
+    if ( ! initLinks ( ) ) {
   
-    // Number of transmissions / joints
-    //jointNum_ = transmissions .size ( ) ; 
-    jointNum_ = 11 ; 
+      ROS_FATAL_STREAM (    "Unable to initialize links . "
+                         << "pandora_gazebo_interface initializing failed." ) ; 
+    
+      return false ; 
+    
+    }
+    
+    if ( ! initJoints ( ) ) {
+  
+      ROS_FATAL_STREAM (    "Unable to initialize joints. "
+                         << "pandora_gazebo_interface initializing failed." ) ; 
+    
+      return false ; 
+    
+    }
+    
+    if ( ! initXMEGA ( ) ) {
+  
+      ROS_FATAL_STREAM (    "Unable to initialize XMEGA. "
+                         << "pandora_gazebo_interface initializing failed." ) ; 
+    
+      return false ; 
+    
+    }
+    
+    if ( ! initARM ( ) ) {
+  
+      ROS_FATAL_STREAM (    "Unable to initialize ARM. "
+                         << "pandora_gazebo_interface initializing failed." ) ; 
+    
+      return false ; 
+    
+    }
+    
+    if ( ! registerInterfaces ( ) ) {
+  
+      ROS_FATAL_STREAM (    "Unable to register interfaces. "
+                         << "pandora_gazebo_interface initializing failed." ) ; 
+    
+      return false ; 
+    
+    }
+    
+    ROS_INFO ( "pandora_gazebo_interface initialized successfully!" ) ; 
+    
+    return true ; 
+    
+  }
+
+  void GazeboInterface ::readSim ( ros ::Time time , ros ::Duration period ) { 
+  
+    readTime_ = time ; 
+    readPeriod_ = period ; 
+  
+    readLinks ( ) ; 
+    
+    readJoints ( ) ; 
+    
+    readXMEGA ( ) ; 
+    
+    readARM ( ) ; 
+    
+  }
+
+  void GazeboInterface ::writeSim ( ros ::Time time , ros ::Duration period ) { 
+  
+    writeTime_ = time ; 
+    writePeriod_ = period ; 
+  
+    writeLinks ( ) ; 
+  
+    writeJoints ( ) ; 
+    
+    writeXMEGA ( ) ; 
+    
+    writeARM ( ) ; 
+    
+  }
+
+  bool GazeboInterface ::initLinks ( void ) { 
+  
+    // Number of links
+    linkNum_ = 1 ; //FIXME
     
     // Resize vectors
+    gazeboLinks_ .resize ( linkNum_ ) ; 
+    
+    linkNames_ .resize ( linkNum_ ) ; 
+    
+    // Initialize link data
+    if ( ! initIMU ( ) ) { 
+    
+      return false ; 
+      
+    }
+
+    // Load gazebo links
+    for ( unsigned int i = 0 ; i < linkNum_ ; i ++ ) 
+    
+      gazeboLinks_ [ i ] = parentModel_ ->GetLink ( linkNames_ [ i ] ) ; 
+    
+    return true ; 
+    
+  }
+
+  bool GazeboInterface ::initIMU ( void ) { 
+    
+    linkNames_ [ 0 ] = "base_link" ; //FIXME
+    
+    imuOrientation_ [ 0 ] = 0 ; //FIXME
+    imuOrientation_ [ 1 ] = 0 ; //FIXME
+    imuOrientation_ [ 2 ] = 0 ; //FIXME
+    imuOrientation_ [ 3 ] = 1 ; //FIXME
+    
+    imuData_. orientation = imuOrientation_ ; 
+    
+    imuData_ .name= "/sensors/imu" ; //FIXME
+    imuData_ .frame_id = linkNames_ [ 0 ] ; 
+    
+    return true ; 
+  
+  }
+
+  bool GazeboInterface ::initJoints ( void ) { 
+  
+    // Number of joints
+    jointNum_ = 11 ; //FIXME
+    //jointNum_ = transmissions .size ( ) ; 
+    
+    // Resize vectors
+    gazeboJoints_ .resize ( jointNum_ ) ; 
+    
     jointNames_ . resize ( jointNum_ ) ; 
     jointTypes_ . resize ( jointNum_ ) ; 
     
@@ -77,18 +215,35 @@ namespace pandora_gazebo_interface
     
     wheel_velocity_multiplier_ . resize ( jointNum_ ) ; 
     
-    gazeboJoints_ .resize ( jointNum_ ) ; 
-  
-    // Variable initialization
-    registerInterfaces ( ) ; 
-
-    // Load gazebo link
-    gazeboLink_ = parentModel ->GetLink ( imuData_ .frame_id ) ; 
+    // Initialize link data
+    if ( ! initWheels ( ) ) { 
+    
+      return false ; 
+      
+    }
+    
+    if ( ! initLinear ( ) ) { 
+    
+      return false ; 
+      
+    }
+    
+    if ( ! initLaser ( ) ) { 
+    
+      return false ; 
+      
+    }
+    
+    if ( ! initKinect ( ) ) { 
+    
+      return false ; 
+      
+    }
 
     // Load gazebo joints
     for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) 
     
-      gazeboJoints_ [ i ] = parentModel ->GetJoint ( jointNames_ [ i ] ) ; 
+      gazeboJoints_ [ i ] = parentModel_ ->GetJoint ( jointNames_ [ i ] ) ; 
       
     // Load PID controllers and initialize / set the limits.
     for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
@@ -97,9 +252,9 @@ namespace pandora_gazebo_interface
       
         /*
       
-        const ros ::NodeHandle nh ( modelNh , robotnamespace + 
-                                              "/gazebo_ros_control/pid_gains/" + 
-                                              jointNames_ [ i ] ) ; 
+        const ros ::NodeHandle nh ( modelNh_ , robotnamespace_ + 
+                                               "/gazebo_ros_control/pid_gains/" + 
+                                               jointNames_ [ i ] ) ; 
         
         pidControllers_ [ i ] .init ( nh ) ; 
         
@@ -113,28 +268,330 @@ namespace pandora_gazebo_interface
         
     }
     
-    ROS_INFO ( "Loaded pandora gazebo interface!" ) ; 
+    return true ; 
+    
+  }
+
+  bool GazeboInterface ::initWheels ( void ) { 
+    
+    jointNames_ [ 0 ] = "left_front_wheel_joint" ; //FIXME
+    jointNames_ [ 1 ] = "left_rear_wheel_joint" ; //FIXME
+    jointNames_ [ 2 ] = "right_front_wheel_joint" ; //FIXME
+    jointNames_ [ 3 ] = "right_rear_wheel_joint" ; //FIXME
+    
+    for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
+    
+      jointTypes_ [ i ] = urdf ::Joint ::CONTINUOUS ; //FIXME
+      
+      jointEffort_ [ i ] = 1.0 ; 
+      jointPosition_ [ i ] = 1.0 ; 
+      jointVelocity_ [ i ] = 0.0 ; 
+      jointVelocityCommand_ [ i ] = 0.0 ; 
+      jointEffortLimits_ [ i ] = 100.0 ; //FIXME
+    
+      jointControlMethods_ [ i ] = VELOCITY ; //FIXME
+      
+      wheel_velocity_multiplier_ [ i ] = 1.25 * 22.5 / 255.0 ; //FIXME
+      //wheel_velocity_multiplier_ [ i ] = 15.8 ; 
+    
+    }
+    
+    return true ; 
+  
+  }
+
+  bool GazeboInterface ::initLinear ( void ) { 
+        
+    // Elevator ---------------------------------------------------------------
+    
+    jointNames_ [ 4 ] = "linear_elevator_joint" ; //FIXME
+    
+    jointTypes_ [ 4 ] = urdf ::Joint ::PRISMATIC ;//FIXME
+     
+    jointEffort_ [ 4 ] = 0.0 ; 
+    jointPosition_ [ 4 ] = 0.0 ; 
+    jointVelocity_ [ 4 ] = 0.0 ; 
+    jointPositionCommand_ [ 4 ] = 0.0 ; 
+    jointLowerLimits_ [ 4 ] = 0.0 ; //FIXME
+    jointUpperLimits_ [ 4 ] = 0.23 ; //FIXME
+    jointEffortLimits_ [ 4 ] = 100.0 ; //FIXME
+    //jointEffortLimits_ [ 4 ] = 15.0 ; 
+    
+    jointControlMethods_ [ 4 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 4 ] .initPid ( 90.0 , 5.0 , 20.0 , 100.0 , - 100.0 ) ; //FIXME
+        
+    // Head Pitch -------------------------------------------------------------
+    
+    jointNames_ [ 5 ] = "linear_head_pitch_joint" ; //FIXME
+    
+    jointTypes_ [ 5 ] = urdf ::Joint ::REVOLUTE ; //FIXME
+    
+    jointEffort_ [ 5 ] = 0.0 ; 
+    jointPosition_ [ 5 ] = 0.0 ; 
+    jointVelocity_ [ 5 ] = 0.0 ; 
+    jointPositionCommand_ [ 5 ] = 0.0 ; 
+    jointLowerLimits_ [ 5 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 5 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 5 ] = 50.0 ; //FIXME
+    //jointEffortLimits_ [ 5 ] = 8.0 ; 
+    
+    jointControlMethods_ [ 5 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 5 ] .initPid ( 11.0 , 2.0 , 0.25 , 15.0 , - 15.0 ) ; //FIXME
+        
+    // Head Yaw ---------------------------------------------------------------
+    
+    jointNames_ [ 6 ] = "linear_head_yaw_joint" ; //FIXME
+    
+    jointTypes_ [ 6 ] = urdf ::Joint ::REVOLUTE ; //FIXME
+    
+    jointEffort_ [ 6 ] = 0.0 ; 
+    jointPosition_ [ 6 ] = 0.0 ; 
+    jointVelocity_ [ 6 ] = 0.0 ; 
+    jointPositionCommand_ [ 6 ] = 0.0 ; 
+    jointLowerLimits_ [ 6 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 6 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 6 ] = 50.0 ; //FIXME
+    //jointEffortLimits_ [ 6 ] = 8.0 ; 
+    
+    jointControlMethods_ [ 6 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 6 ] .initPid ( 12.0 , 1.0 , 0.45 , 10.0 , - 10.0 ) ; //FIXME
+  
+    return true ; 
+  
+  }
+
+  bool GazeboInterface ::initLaser ( void ) { 
+    
+    // Roll -------------------------------------------------------------------
+    
+    jointNames_ [ 7 ] = "laser_roll_joint" ; //FIXME
+    
+    jointTypes_ [ 7 ] = urdf ::Joint ::REVOLUTE ; //FIXME
+    
+    jointEffort_ [ 7 ] = 0.0 ; 
+    jointPosition_ [ 7 ] = 0.0 ; 
+    jointVelocity_ [ 7 ] = 0.0 ; 
+    jointPositionCommand_ [ 7 ] = 0.0 ; 
+    jointLowerLimits_ [ 7 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 7 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 7 ] = 50.0 ; //FIXME
+    //jointEffortLimits_ [ 7 ] = 0.1 ; 
+    
+    jointControlMethods_ [ 7 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 7 ] .initPid ( 1.8 , 0.0 , 0.3 , 0.0 , 0.0 ) ; //FIXME
+        
+    // Pitch ------------------------------------------------------------------
+    
+    jointNames_ [ 8 ] = "laser_pitch_joint" ; 
+    
+    jointTypes_ [ 8 ] = urdf ::Joint ::REVOLUTE ; 
+    
+    jointEffort_ [ 8 ] = 0.0 ; 
+    jointPosition_ [ 8 ] = 0.0 ; 
+    jointVelocity_ [ 8 ] = 0.0 ; 
+    jointPositionCommand_ [ 8 ] = 0.0 ; 
+    jointLowerLimits_ [ 8 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 8 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 8 ] = 50.0 ; //FIXME
+    //jointEffortLimits_ [ 8 ] = 0.1 ; 
+    
+    jointControlMethods_ [ 8 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 8 ] .initPid ( 2.5 , 0.0 , 0.3 , 0.0 , 0.0 ) ; //FIXME
+  
+    return true ; 
+  
+  }
+
+  bool GazeboInterface ::initKinect ( void ) { 
+    
+    // Pitch ------------------------------------------------------------------
+    
+    jointNames_ [ 9 ] = "kinect_pitch_joint" ; //FIXME
+    
+    jointTypes_ [ 9 ] = urdf ::Joint ::REVOLUTE ; //FIXME
+    
+    jointEffort_ [ 9 ] = 0.0 ; 
+    jointPosition_ [ 9 ] = 0.0 ; 
+    jointVelocity_ [ 9 ] = 0.0 ; 
+    jointPositionCommand_ [ 9 ] = 0.0 ; 
+    jointLowerLimits_ [ 9 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 9 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 9 ] = 50.0 ; //FIXME
+    //jointEffortLimits_ [ 9 ] = 3.0 ; 
+    
+    jointControlMethods_ [ 9 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 9 ] .initPid ( 8.5 , 1.0 , 0.2 , 10.0 , - 10.0 ) ; //FIXME
+      
+    // Yaw --------------------------------------------------------------------
+    
+    jointNames_ [ 10 ] = "kinect_yaw_joint" ; //FIXME
+    
+    jointTypes_ [ 10 ] = urdf ::Joint ::REVOLUTE ; //FIXME
+    
+    jointEffort_ [ 10 ] = 0.0 ; 
+    jointPosition_ [ 10 ] = 0.0 ; 
+    jointVelocity_ [ 10 ] = 0.0 ; 
+    jointPositionCommand_ [ 10 ] = 0.0 ; 
+    jointLowerLimits_ [ 10 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 10 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 10 ] = 50.0 ; //FIXME
+    //jointEffortLimits_ [ 10 ] = 5.0 ; 
+    
+    jointControlMethods_ [ 10 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 10 ] .initPid ( 8.0 , 1.5 , 0.4 , 10.0 , - 10.0 ) ; //FIXME
+    
+    return true ; 
+  
+  }
+
+  bool GazeboInterface ::initXMEGA ( void ) { 
+  
+    if ( ! initSonars ( ) ) { 
+    
+      return false ; 
+      
+    }
     
     return true ; 
     
   }
 
-  GazeboInterface ::~GazeboInterface ( ) { 
+  bool GazeboInterface ::initSonars ( void ) { 
   
-  
-  
+    // TODO
+    
+    return true ; 
+    
   }
 
-  void GazeboInterface ::readSim ( ros ::Time time , ros ::Duration period ) { 
+  bool GazeboInterface ::initARM ( void ) { 
+  
+    if ( ! initThermals ( ) ) { 
+    
+      return false ; 
+      
+    }
+  
+    if ( ! initCO2 ( ) ) { 
+    
+      return false ; 
+      
+    }
+  
+    if ( ! initMicrophone ( ) ) { 
+    
+      return false ; 
+      
+    }
+    
+    return true ; 
+    
+  }
+
+  bool GazeboInterface ::initThermals ( void ) { 
+  
+    // TODO
+    
+    return true ; 
+    
+  }
+
+  bool GazeboInterface ::initCO2 ( void ) { 
+  
+    // TODO
+    
+    return true ; 
+    
+  }
+
+  bool GazeboInterface ::initMicrophone ( void ) { 
+  
+    // TODO
+    
+    return true ; 
+    
+  }
+  
+  bool GazeboInterface ::registerInterfaces ( void ) { 
+
+    // Connect and register the imu sensor handle
+    
+    hardware_interface ::ImuSensorHandle imuSensorHandle ( imuData_ ) ; 
+    
+    imuSensorInterface_ .registerHandle ( imuSensorHandle ) ; 
+    
+    // Connect and register the joint state handle
+    
+    for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
+      
+      hardware_interface 
+       ::JointStateHandle jointStateHandle ( jointNames_ [ i ] , 
+                                             & jointEffort_ [ i ] , 
+                                             & jointPosition_ [ i ] , 
+                                             & jointVelocity_ [ i ] ) ; 
+                                             
+      jointStateInterface_ .registerHandle ( jointStateHandle ) ; 
+      
+    }
+
+    // Connect and register the joint velocity handle
+      
+    for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
+      
+      hardware_interface 
+       ::JointHandle 
+       jointHandle ( jointStateInterface_ .getHandle ( jointNames_ [ i ] ) , 
+                     & jointVelocityCommand_ [ i ] ) ; 
+                             
+      velocityJointInterface_ .registerHandle ( jointHandle ) ; 
+    
+    }
+
+    // Connect and register the joint position handle
+      
+    for ( unsigned int i = 4 ; i < jointNum_ ; i ++ ) { 
+      
+      hardware_interface 
+       ::JointHandle 
+       jointHandle ( jointStateInterface_ .getHandle ( jointNames_ [ i ] ) , 
+                     & jointPositionCommand_ [ i ] ) ; 
+                             
+      positionJointInterface_ .registerHandle ( jointHandle ) ; 
+    
+    }
+    
+    // Register interfaces
+    
+    registerInterface ( & imuSensorInterface_ ) ; 
+    registerInterface ( & jointStateInterface_ ) ; 
+    registerInterface ( & positionJointInterface_ ) ; 
+    registerInterface ( & velocityJointInterface_ ) ; 
+    
+    return true ; 
+    
+  }
+
+  void GazeboInterface ::readLinks ( void ) { 
   
     // Read robot orientation for IMU
     
-    gazebo ::math ::Pose pose = gazeboLink_ ->GetWorldPose ( ) ; 
+    gazebo ::math ::Pose pose = gazeboLinks_ [ 0 ] ->GetWorldPose ( ) ; 
     
     imuOrientation_ [ 0 ] = pose .rot .x ; 
     imuOrientation_ [ 1 ] = pose .rot .y ; 
     imuOrientation_ [ 2 ] = pose .rot .z ; 
     imuOrientation_ [ 3 ] = pose .rot .w ; 
+    
+  }
+
+  void GazeboInterface ::readJoints ( void ) { 
     
     for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
     
@@ -158,10 +615,26 @@ namespace pandora_gazebo_interface
                               ->GetVelocity ( 0 ) ; 
     
     }
+  
+  }
+
+  void GazeboInterface ::readXMEGA ( void ) { 
+  
+    // TODO
+  
+  }
+
+  void GazeboInterface ::readARM ( void ) { 
+  
+    // TODO
     
   }
 
-  void GazeboInterface ::writeSim ( ros ::Time time , ros ::Duration period ) { 
+  void GazeboInterface ::writeLinks ( void ) { 
+  
+  }
+
+  void GazeboInterface ::writeJoints ( void ) { 
     
     for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
     
@@ -199,7 +672,7 @@ namespace pandora_gazebo_interface
             }
             
             double command = pidControllers_ [ i ] 
-                              .computeCommand ( error , period ) ; 
+                              .computeCommand ( error , writePeriod_ ) ; 
 
             double effortLimit = jointEffortLimits_ [ i ] ; 
                                         
@@ -216,222 +689,25 @@ namespace pandora_gazebo_interface
         
           gazeboJoints_ [ i ] 
            ->SetVelocity ( 0 , jointVelocityCommand_ [ i ] * 
-                               wheel_velocity_multiplier_ [ i ] * 
-                               22.5 / 255.0 ) ; 
+                               wheel_velocity_multiplier_ [ i ] ) ; 
           
         break ; 
           
       }
       
     }
+  
+  }
+
+  void GazeboInterface ::writeXMEGA ( void ) { 
+  
+    // TODO
     
   }
+
+  void GazeboInterface ::writeARM ( void ) { 
   
-  void GazeboInterface ::registerInterfaces ( ) { 
-
-    // Connect and register imu sensor interface
-    
-    imuOrientation_ [ 0 ] = 0 ; 
-    imuOrientation_ [ 1 ] = 0 ; 
-    imuOrientation_ [ 2 ] = 0 ; 
-    imuOrientation_ [ 3 ] = 1 ; 
-    
-    imuData_. orientation = imuOrientation_ ; 
-    imuData_ .name= "/sensors/imu" ; 
-    imuData_ .frame_id = "base_link" ; 
-    
-    hardware_interface ::ImuSensorHandle imuSensorHandle ( imuData_ ) ; 
-    imuSensorInterface_ .registerHandle ( imuSensorHandle ) ; 
-    
-    registerInterface ( & imuSensorInterface_ ) ; 
-
-    // Connect and register the joint state interface
-    
-    // All joints are currently hardcoded
-    // TODO: Get info from yaml or transmissions
-    
-    // Wheels -----------------------------------------------------------------
-    
-    jointNames_ [ 0 ] = "left_front_wheel_joint" ; 
-    jointNames_ [ 1 ] = "left_rear_wheel_joint" ; 
-    jointNames_ [ 2 ] = "right_front_wheel_joint" ; 
-    jointNames_ [ 3 ] = "right_rear_wheel_joint" ; 
-    
-    for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
-    
-      jointTypes_ [ i ] = urdf ::Joint ::CONTINUOUS ; 
-      
-      jointEffort_ [ i ] = 1.0 ; 
-      jointPosition_ [ i ] = 1.0 ; 
-      jointVelocity_ [ i ] = 0.0 ; 
-      jointVelocityCommand_ [ i ] = 0.0 ; 
-      jointEffortLimits_ [ i ] = 100.0 ; 
-      
-      wheel_velocity_multiplier_ [ i ] = 1.25 ; 
-    
-    }
-    
-    // Kinect Pitch -----------------------------------------------------------
-    
-    jointNames_ [ 4 ] = "kinect_pitch_joint" ; 
-    
-    jointTypes_ [ 4 ] = urdf ::Joint ::REVOLUTE ; 
-    
-    jointEffort_ [ 4 ] = 0.0 ; 
-    jointPosition_ [ 4 ] = 0.0 ; 
-    jointVelocity_ [ 4 ] = 0.0 ; 
-    jointPositionCommand_ [ 4 ] = 0.0 ; 
-    jointLowerLimits_ [ 4 ] = - 1.57079632679 ; //FIXME
-    jointUpperLimits_ [ 4 ] = 1.57079632679 ; //FIXME
-    jointEffortLimits_ [ 4 ] = 300.0 ; //FIXME
-    
-    pidControllers_ [ 4 ] .initPid ( 8.5 , 1.0 , 0.2 , -10.0 , 10.0 ) ; 
-      
-    // Kinect Yaw -------------------------------------------------------------
-    
-    jointNames_ [ 5 ] = "kinect_yaw_joint" ; 
-    
-    jointTypes_ [ 5 ] = urdf ::Joint ::REVOLUTE ; 
-    
-    jointEffort_ [ 5 ] = 0.0 ; 
-    jointPosition_ [ 5 ] = 0.0 ; 
-    jointVelocity_ [ 5 ] = 0.0 ; 
-    jointPositionCommand_ [ 5 ] = 0.0 ; 
-    jointLowerLimits_ [ 5 ] = - 1.57079632679 ; //FIXME
-    jointUpperLimits_ [ 5 ] = 1.57079632679 ; //FIXME
-    jointEffortLimits_ [ 5 ] = 300.0 ; //FIXME
-    
-    pidControllers_ [ 5 ] .initPid ( 8.0 , 1.5 , 0.4 , -10.0 , 10.0 ) ; 
-    
-    // Laser Roll -------------------------------------------------------------
-    
-    jointNames_ [ 6 ] = "laser_roll_joint" ; 
-    
-    jointTypes_ [ 6 ] = urdf ::Joint ::REVOLUTE ; 
-    
-    jointEffort_ [ 6 ] = 0.0 ; 
-    jointPosition_ [ 6 ] = 0.0 ; 
-    jointVelocity_ [ 6 ] = 0.0 ; 
-    jointPositionCommand_ [ 6 ] = 0.0 ; 
-    jointLowerLimits_ [ 6 ] = - 1.57079632679 ; //FIXME
-    jointUpperLimits_ [ 6 ] = 1.57079632679 ; //FIXME
-    jointEffortLimits_ [ 6 ] = 300.0 ; //FIXME
-    
-    pidControllers_ [ 6 ] .initPid ( 1.8 , 0.0 , 0.3 , 0.0 , 0.0 ) ; 
-        
-    // Laser Pitch ------------------------------------------------------------
-    
-    jointNames_ [ 7 ] = "laser_pitch_joint" ; 
-    
-    jointTypes_ [ 7 ] = urdf ::Joint ::REVOLUTE ; 
-    
-    jointEffort_ [ 7 ] = 0.0 ; 
-    jointPosition_ [ 7 ] = 0.0 ; 
-    jointVelocity_ [ 7 ] = 0.0 ; 
-    jointPositionCommand_ [ 7 ] = 0.0 ; 
-    jointLowerLimits_ [ 7 ] = - 1.57079632679 ; //FIXME
-    jointUpperLimits_ [ 7 ] = 1.57079632679 ; //FIXME
-    jointEffortLimits_ [ 7 ] = 300.0 ; //FIXME
-    
-    pidControllers_ [ 7 ] .initPid ( 2.5 , 0.0 , 0.3 , 0.0 , 0.0 ) ; 
-        
-    // Linear Elevator --------------------------------------------------------
-    
-    jointNames_ [ 8 ] = "linear_elevator_joint" ; 
-    
-    jointTypes_ [ 8 ] = urdf ::Joint ::PRISMATIC ;
-     
-    jointEffort_ [ 8 ] = 0.0 ; 
-    jointPosition_ [ 8 ] = 0.0 ; 
-    jointVelocity_ [ 8 ] = 0.0 ; 
-    jointPositionCommand_ [ 8 ] = 0.0 ; 
-    jointLowerLimits_ [ 8 ] = 0.0 ; 
-    jointUpperLimits_ [ 8 ] = 0.23 ; 
-    jointEffortLimits_ [ 8 ] = 1000.0 ; //FIXME
-    
-    pidControllers_ [ 8 ] .initPid ( 90.0 , 5.0 , 20.0 , -100.0 , 100.0 ) ; 
-        
-    // Linear Head Pitch ------------------------------------------------------
-    
-    jointNames_ [ 9 ] = "linear_head_pitch_joint" ; 
-    
-    jointTypes_ [ 9 ] = urdf ::Joint ::REVOLUTE ; 
-    
-    jointEffort_ [ 9 ] = 0.0 ; 
-    jointPosition_ [ 9 ] = 0.0 ; 
-    jointVelocity_ [ 9 ] = 0.0 ; 
-    jointPositionCommand_ [ 9 ] = 0.0 ; 
-    jointLowerLimits_ [ 9 ] = - 1.57079632679 ; //FIXME
-    jointUpperLimits_ [ 9 ] = 1.57079632679 ; //FIXME
-    jointEffortLimits_ [ 9 ] = 300.0 ; //FIXME
-    
-    pidControllers_ [ 9 ] .initPid ( 11.0 , 2.0 , 0.25 , -15.0 , 15.0 ) ; 
-        
-    // Linear Head Yaw --------------------------------------------------------
-    
-    jointNames_ [ 10 ] = "linear_head_yaw_joint" ; 
-    
-    jointTypes_ [ 10 ] = urdf ::Joint ::REVOLUTE ; 
-    
-    jointEffort_ [ 10 ] = 0.0 ; 
-    jointPosition_ [ 10 ] = 0.0 ; 
-    jointVelocity_ [ 10 ] = 0.0 ; 
-    jointPositionCommand_ [ 10 ] = 0.0 ; 
-    jointLowerLimits_ [ 10 ] = - 1.57079632679 ; //FIXME
-    jointUpperLimits_ [ 10 ] = 1.57079632679 ; //FIXME
-    jointEffortLimits_ [ 10 ] = 300.0 ; //FIXME
-    
-    pidControllers_ [ 10 ] .initPid ( 12.0 , 1.0 , 0.45 , -10.0 , 10.0 ) ; 
-    
-    // Register the joint state handle
-    
-    for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
-      
-      hardware_interface 
-       ::JointStateHandle jointStateHandle ( jointNames_ [ i ] , 
-                                             & jointEffort_ [ i ] , 
-                                             & jointPosition_ [ i ] , 
-                                             & jointVelocity_ [ i ] ) ; 
-                                             
-      jointStateInterface_ .registerHandle ( jointStateHandle ) ; 
-      
-    }
-
-    // Connect and register the joint velocity handle
-      
-    for ( unsigned int i = 0 ; i < 4 ; i ++ ) { 
-    
-      jointControlMethods_ [ i ] = VELOCITY ; 
-      
-      hardware_interface 
-       ::JointHandle 
-       jointHandle ( jointStateInterface_ .getHandle ( jointNames_ [ i ] ) , 
-                     & jointVelocityCommand_ [ i ] ) ; 
-                             
-      velocityJointInterface_ .registerHandle ( jointHandle ) ; 
-    
-    }
-
-    // Connect and register the joint position handle
-      
-    for ( unsigned int i = 4 ; i < jointNum_ ; i ++ ) { 
-    
-      jointControlMethods_ [ i ] = POSITION_PID ; 
-      
-      hardware_interface 
-       ::JointHandle 
-       jointHandle ( jointStateInterface_ .getHandle ( jointNames_ [ i ] ) , 
-                     & jointPositionCommand_ [ i ] ) ; 
-                             
-      positionJointInterface_ .registerHandle ( jointHandle ) ; 
-    
-    }
-    
-    // Register interfaces
-      
-    registerInterface ( & jointStateInterface_ ) ; 
-    registerInterface ( & positionJointInterface_ ) ; 
-    registerInterface ( & velocityJointInterface_ ) ; 
+    // TODO
     
   }
   

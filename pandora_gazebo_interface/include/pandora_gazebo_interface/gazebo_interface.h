@@ -3,6 +3,8 @@
 * Software License Agreement (BSD License)
 *
 *  Copyright (c) 2014, P.A.N.D.O.R.A. Team.
+*  Copyright (c) 2013, Open Source Robotics Foundation
+*  Copyright (c) 2013, The Johns Hopkins University
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -32,7 +34,7 @@
 *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 *  POSSIBILITY OF SUCH DAMAGE.
 *
-* Author:  Evangelos Apostolidis
+* Author:  Dave Coleman, Johnathan Bohren , Evangelos Apostolidis
 *********************************************************************/
 #ifndef PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
 #define PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
@@ -79,9 +81,7 @@ namespace pandora_gazebo_interface
                      ros ::NodeHandle modelNh , 
                      gazebo ::physics ::ModelPtr parentModel , 
                      const urdf ::Model * const urdfModel , 
-                     std 
-                      ::vector 
-                      < transmission_interface ::TransmissionInfo > 
+                     std ::vector < transmission_interface ::TransmissionInfo > 
                       transmissions ) ; 
 
       void readSim ( ros ::Time time , ros ::Duration period ) ; 
@@ -89,26 +89,83 @@ namespace pandora_gazebo_interface
       void writeSim (ros ::Time time , ros ::Duration period ) ; 
   
     private: 
+                      
+      bool initLinks ( void ) ; 
+                      
+      bool initIMU ( void ) ; 
+                      
+      bool initJoints ( void ) ; 
+                      
+      bool initWheels ( void ) ; 
+                      
+      bool initLinear ( void ) ; 
+                      
+      bool initLaser ( void ) ; 
+                      
+      bool initKinect ( void ) ; 
+                      
+      bool initXMEGA ( void ) ; 
+                      
+      bool initSonars ( void ) ; 
+                      
+      bool initARM ( void ) ; 
+                      
+      bool initThermals ( void ) ; 
+                      
+      bool initCO2 ( void ) ; 
+                      
+      bool initMicrophone ( void ) ; 
+                      
+      bool registerInterfaces ( void ) ; 
+
+      void readLinks ( void ) ; 
+
+      void readJoints ( void ) ; 
+
+      void readXMEGA ( void ) ; 
+
+      void readARM ( void ) ; 
+
+      void writeLinks ( void ) ; 
+
+      void writeJoints ( void ) ; 
+
+      void writeXMEGA ( void ) ; 
+
+      void writeARM ( void ) ; 
     
       enum ControlMethod { EFFORT , 
                            POSITION , 
                            POSITION_PID , 
                            VELOCITY , 
                            VELOCITY_PID } ; 
-    
-      ros ::NodeHandle nodeHandle_ ; 
+                           
+      std ::string robotnamespace_ ; 
+      ros ::NodeHandle modelNh_ ; 
+      gazebo ::physics ::ModelPtr parentModel_ ; 
+      const urdf ::Model * urdfModel_ ; 
+      std ::vector < transmission_interface ::TransmissionInfo > transmissions_ ; 
       
-      hardware_interface ::ImuSensorInterface imuSensorInterface_ ; 
-      hardware_interface ::ImuSensorHandle ::Data imuData_ ; 
+      ros ::Time readTime_ ; 
+      ros ::Duration readPeriod_ ; 
       
-      double imuOrientation_ [ 4 ] ; 
+      ros ::Time writeTime_ ; 
+      ros ::Duration writePeriod_ ; 
 
+      hardware_interface ::ImuSensorInterface imuSensorInterface_ ; 
       hardware_interface::JointStateInterface jointStateInterface_ ; 
       hardware_interface::PositionJointInterface positionJointInterface_ ; 
       hardware_interface::VelocityJointInterface velocityJointInterface_ ; 
       
-      unsigned int jointNum_ ; 
+      double imuOrientation_ [ 4 ] ; 
+      hardware_interface ::ImuSensorHandle ::Data imuData_ ; 
       
+      unsigned int linkNum_ ; 
+      std ::vector < gazebo ::physics ::LinkPtr > gazeboLinks_ ; 
+      std ::vector < std ::string > linkNames_ ; 
+      
+      unsigned int jointNum_ ; 
+      std ::vector < gazebo ::physics ::JointPtr > gazeboJoints_ ; 
       std ::vector < std ::string > jointNames_ ; 
       std ::vector < int > jointTypes_ ; 
       
@@ -127,11 +184,6 @@ namespace pandora_gazebo_interface
       std ::vector < double > jointVelocityCommand_ ; 
       
       std ::vector < double > wheel_velocity_multiplier_ ; 
-
-      std ::vector < gazebo ::physics ::JointPtr > gazeboJoints_ ; 
-      gazebo ::physics ::LinkPtr gazeboLink_ ; 
-      
-      void registerInterfaces ( void ) ; 
       
   } ;
   
