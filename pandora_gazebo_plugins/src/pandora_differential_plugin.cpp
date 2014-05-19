@@ -423,6 +423,22 @@ namespace gazebo {
       
     }
     
+    if ( ! this ->sdf ->HasElement ( "publishJointStates" ) ) { 
+  
+      ROS_INFO_STREAM (    "Differential plugin missing <publishJointStates>, "
+                        << "defaults to false." ) ; 
+    
+      this ->publish_joint_states_ = false ;  
+    
+    }
+    
+    else { 
+                                 
+      this ->publish_joint_states_ = 
+      ( this ->sdf ->Get < std ::string > ( "publishJointStates" ) == "true" ) ; 
+      
+    }
+    
     return true ; 
   
   }
@@ -520,7 +536,7 @@ namespace gazebo {
   void GazeboRosDifferential ::AddDifferentialForces ( void ) { 
 
     // Initialize the forces to be set
-    math ::Vector3 left_rear_force ( 0 , 0 , 0 ) ; 
+    math ::Vector3 left_rear_force ( 0 , 0 , 0 ) ;   
     math ::Vector3 right_rear_force ( 0 , 0 , 0 ) ; 
   
     // Calculate and normalize the positive angle difference
@@ -777,7 +793,9 @@ namespace gazebo {
     //GazeboRosDifferential ::AddDifferentialForces ( ) ; 
     
     // Publish joint states to be used in RViz
-    GazeboRosDifferential ::PublishJointStates ( ) ; 
+    if ( this ->publish_joint_states_ ) 
+    
+      GazeboRosDifferential ::PublishJointStates ( ) ; 
   
   }
 

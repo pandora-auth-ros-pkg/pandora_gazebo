@@ -112,6 +112,7 @@ namespace gazebo {
     private: ros ::NodeHandle * rosnode_ ; 
     private: ros ::Publisher joint_state_pub_ ; 
     private: PubQueue < sensor_msgs ::JointState > ::Ptr joint_state_pub_Queue ; 
+    private: bool publish_joint_states_ ; 
 
     // ROS publish multi queue, prevents publish() blocking
     private: PubMultiQueue pmq ; 

@@ -94,7 +94,7 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   if (this->topic_name_ != "")
   {
     // Custom Callback Queue
-    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<pandora_arm_hardware_interface::co2Msg>(
+    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<pandora_arm_hardware_interface::Co2Msg>(
       this->topic_name_,1,
       boost::bind( &PandoraCo2Plugin::CameraConnect,this),
       boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);

@@ -190,7 +190,7 @@ namespace pandora_gazebo_interface
   bool GazeboInterface ::initJoints ( void ) { 
   
     // Number of joints
-    jointNum_ = 11 ; //FIXME
+    jointNum_ = 13 ; //FIXME
     //jointNum_ = transmissions .size ( ) ; 
     
     // Resize vectors
@@ -217,6 +217,12 @@ namespace pandora_gazebo_interface
     
     // Initialize link data
     if ( ! initWheels ( ) ) { 
+    
+      return false ; 
+      
+    }
+    
+    if ( ! initSides ( ) ) { 
     
       return false ; 
       
@@ -300,74 +306,56 @@ namespace pandora_gazebo_interface
   
   }
 
-  bool GazeboInterface ::initLinear ( void ) { 
-        
-    // Elevator ---------------------------------------------------------------
+  bool GazeboInterface ::initSides ( void ) { 
     
-    jointNames_ [ 4 ] = "linear_elevator_joint" ; //FIXME
+    jointNames_ [ 4 ] = "left_side_joint" ; //FIXME
+    jointNames_ [ 5 ] = "right_side_joint" ; //FIXME
     
-    jointTypes_ [ 4 ] = urdf ::Joint ::PRISMATIC ;//FIXME
-     
-    jointEffort_ [ 4 ] = 0.0 ; 
-    jointPosition_ [ 4 ] = 0.0 ; 
-    jointVelocity_ [ 4 ] = 0.0 ; 
-    jointPositionCommand_ [ 4 ] = 0.0 ; 
-    jointLowerLimits_ [ 4 ] = 0.0 ; //FIXME
-    jointUpperLimits_ [ 4 ] = 0.23 ; //FIXME
-    jointEffortLimits_ [ 4 ] = 100.0 ; //FIXME
-    //jointEffortLimits_ [ 4 ] = 15.0 ; 
+    for ( unsigned int i = 0 ; i < 2 ; i ++ ) { 
     
-    jointControlMethods_ [ 4 ] = POSITION_PID ; //FIXME
+      jointTypes_ [ i ] = urdf ::Joint ::REVOLUTE ; //FIXME
     
-    pidControllers_ [ 4 ] .initPid ( 90.0 , 5.0 , 20.0 , 100.0 , - 100.0 ) ; //FIXME
-        
-    // Head Pitch -------------------------------------------------------------
+      jointEffort_ [ i ] = 0.0 ; 
+      jointPosition_ [ i ] = 0.0 ; 
+      jointVelocity_ [ i ] = 0.0 ; 
+      jointPositionCommand_ [ i ] = 0.0 ; 
+      jointLowerLimits_ [ i ] = - 0.785 ; //FIXME
+      jointUpperLimits_ [ i ] = 0.785 ; //FIXME
+      jointEffortLimits_ [ i ] = 150.0 ; //FIXME
+      //jointEffortLimits_ [ i ] = 0.0 ; 
+      
+      jointControlMethods_ [ i ] = NONE ; //FIXME
     
-    jointNames_ [ 5 ] = "linear_head_pitch_joint" ; //FIXME
+    }
     
-    jointTypes_ [ 5 ] = urdf ::Joint ::REVOLUTE ; //FIXME
-    
-    jointEffort_ [ 5 ] = 0.0 ; 
-    jointPosition_ [ 5 ] = 0.0 ; 
-    jointVelocity_ [ 5 ] = 0.0 ; 
-    jointPositionCommand_ [ 5 ] = 0.0 ; 
-    jointLowerLimits_ [ 5 ] = - 1.57079632679 ; //FIXME
-    jointUpperLimits_ [ 5 ] = 1.57079632679 ; //FIXME
-    jointEffortLimits_ [ 5 ] = 50.0 ; //FIXME
-    //jointEffortLimits_ [ 5 ] = 8.0 ; 
-    
-    jointControlMethods_ [ 5 ] = POSITION_PID ; //FIXME
-    
-    pidControllers_ [ 5 ] .initPid ( 11.0 , 2.0 , 0.25 , 15.0 , - 15.0 ) ; //FIXME
-        
-    // Head Yaw ---------------------------------------------------------------
-    
-    jointNames_ [ 6 ] = "linear_head_yaw_joint" ; //FIXME
-    
-    jointTypes_ [ 6 ] = urdf ::Joint ::REVOLUTE ; //FIXME
-    
-    jointEffort_ [ 6 ] = 0.0 ; 
-    jointPosition_ [ 6 ] = 0.0 ; 
-    jointVelocity_ [ 6 ] = 0.0 ; 
-    jointPositionCommand_ [ 6 ] = 0.0 ; 
-    jointLowerLimits_ [ 6 ] = - 1.57079632679 ; //FIXME
-    jointUpperLimits_ [ 6 ] = 1.57079632679 ; //FIXME
-    jointEffortLimits_ [ 6 ] = 50.0 ; //FIXME
-    //jointEffortLimits_ [ 6 ] = 8.0 ; 
-    
-    jointControlMethods_ [ 6 ] = POSITION_PID ; //FIXME
-    
-    pidControllers_ [ 6 ] .initPid ( 12.0 , 1.0 , 0.45 , 10.0 , - 10.0 ) ; //FIXME
-  
     return true ; 
   
   }
 
-  bool GazeboInterface ::initLaser ( void ) { 
+  bool GazeboInterface ::initLinear ( void ) { 
+        
+    // Elevator ---------------------------------------------------------------
     
-    // Roll -------------------------------------------------------------------
+    jointNames_ [ 6 ] = "linear_elevator_joint" ; //FIXME
     
-    jointNames_ [ 7 ] = "laser_roll_joint" ; //FIXME
+    jointTypes_ [ 6 ] = urdf ::Joint ::PRISMATIC ;//FIXME
+     
+    jointEffort_ [ 6 ] = 0.0 ; 
+    jointPosition_ [ 6 ] = 0.0 ; 
+    jointVelocity_ [ 6 ] = 0.0 ; 
+    jointPositionCommand_ [ 6 ] = 0.0 ; 
+    jointLowerLimits_ [ 6 ] = 0.0 ; //FIXME
+    jointUpperLimits_ [ 6 ] = 0.23 ; //FIXME
+    jointEffortLimits_ [ 6 ] = 100.0 ; //FIXME
+    //jointEffortLimits_ [ 6 ] = 15.0 ; 
+    
+    jointControlMethods_ [ 6 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 6 ] .initPid ( 90.0 , 5.0 , 20.0 , 100.0 , - 100.0 ) ; //FIXME
+        
+    // Head Pitch -------------------------------------------------------------
+    
+    jointNames_ [ 7 ] = "linear_head_pitch_joint" ; //FIXME
     
     jointTypes_ [ 7 ] = urdf ::Joint ::REVOLUTE ; //FIXME
     
@@ -378,17 +366,17 @@ namespace pandora_gazebo_interface
     jointLowerLimits_ [ 7 ] = - 1.57079632679 ; //FIXME
     jointUpperLimits_ [ 7 ] = 1.57079632679 ; //FIXME
     jointEffortLimits_ [ 7 ] = 50.0 ; //FIXME
-    //jointEffortLimits_ [ 7 ] = 0.1 ; 
+    //jointEffortLimits_ [ 7 ] = 8.0 ; 
     
     jointControlMethods_ [ 7 ] = POSITION_PID ; //FIXME
     
-    pidControllers_ [ 7 ] .initPid ( 1.8 , 0.0 , 0.3 , 0.0 , 0.0 ) ; //FIXME
+    pidControllers_ [ 7 ] .initPid ( 11.0 , 2.0 , 0.25 , 15.0 , - 15.0 ) ; //FIXME
         
-    // Pitch ------------------------------------------------------------------
+    // Head Yaw ---------------------------------------------------------------
     
-    jointNames_ [ 8 ] = "laser_pitch_joint" ; 
+    jointNames_ [ 8 ] = "linear_head_yaw_joint" ; //FIXME
     
-    jointTypes_ [ 8 ] = urdf ::Joint ::REVOLUTE ; 
+    jointTypes_ [ 8 ] = urdf ::Joint ::REVOLUTE ; //FIXME
     
     jointEffort_ [ 8 ] = 0.0 ; 
     jointPosition_ [ 8 ] = 0.0 ; 
@@ -397,21 +385,21 @@ namespace pandora_gazebo_interface
     jointLowerLimits_ [ 8 ] = - 1.57079632679 ; //FIXME
     jointUpperLimits_ [ 8 ] = 1.57079632679 ; //FIXME
     jointEffortLimits_ [ 8 ] = 50.0 ; //FIXME
-    //jointEffortLimits_ [ 8 ] = 0.1 ; 
+    //jointEffortLimits_ [ 8 ] = 8.0 ; 
     
     jointControlMethods_ [ 8 ] = POSITION_PID ; //FIXME
     
-    pidControllers_ [ 8 ] .initPid ( 2.5 , 0.0 , 0.3 , 0.0 , 0.0 ) ; //FIXME
+    pidControllers_ [ 8 ] .initPid ( 12.0 , 1.0 , 0.45 , 10.0 , - 10.0 ) ; //FIXME
   
     return true ; 
   
   }
 
-  bool GazeboInterface ::initKinect ( void ) { 
+  bool GazeboInterface ::initLaser ( void ) { 
     
-    // Pitch ------------------------------------------------------------------
+    // Roll -------------------------------------------------------------------
     
-    jointNames_ [ 9 ] = "kinect_pitch_joint" ; //FIXME
+    jointNames_ [ 9 ] = "laser_roll_joint" ; //FIXME
     
     jointTypes_ [ 9 ] = urdf ::Joint ::REVOLUTE ; //FIXME
     
@@ -422,17 +410,17 @@ namespace pandora_gazebo_interface
     jointLowerLimits_ [ 9 ] = - 1.57079632679 ; //FIXME
     jointUpperLimits_ [ 9 ] = 1.57079632679 ; //FIXME
     jointEffortLimits_ [ 9 ] = 50.0 ; //FIXME
-    //jointEffortLimits_ [ 9 ] = 3.0 ; 
+    //jointEffortLimits_ [ 9 ] = 0.1 ; 
     
     jointControlMethods_ [ 9 ] = POSITION_PID ; //FIXME
     
-    pidControllers_ [ 9 ] .initPid ( 8.5 , 1.0 , 0.2 , 10.0 , - 10.0 ) ; //FIXME
-      
-    // Yaw --------------------------------------------------------------------
+    pidControllers_ [ 9 ] .initPid ( 1.8 , 0.0 , 0.3 , 0.0 , 0.0 ) ; //FIXME
+        
+    // Pitch ------------------------------------------------------------------
     
-    jointNames_ [ 10 ] = "kinect_yaw_joint" ; //FIXME
+    jointNames_ [ 10 ] = "laser_pitch_joint" ; 
     
-    jointTypes_ [ 10 ] = urdf ::Joint ::REVOLUTE ; //FIXME
+    jointTypes_ [ 10 ] = urdf ::Joint ::REVOLUTE ; 
     
     jointEffort_ [ 10 ] = 0.0 ; 
     jointPosition_ [ 10 ] = 0.0 ; 
@@ -441,11 +429,55 @@ namespace pandora_gazebo_interface
     jointLowerLimits_ [ 10 ] = - 1.57079632679 ; //FIXME
     jointUpperLimits_ [ 10 ] = 1.57079632679 ; //FIXME
     jointEffortLimits_ [ 10 ] = 50.0 ; //FIXME
-    //jointEffortLimits_ [ 10 ] = 5.0 ; 
+    //jointEffortLimits_ [ 10 ] = 0.1 ; 
     
     jointControlMethods_ [ 10 ] = POSITION_PID ; //FIXME
     
-    pidControllers_ [ 10 ] .initPid ( 8.0 , 1.5 , 0.4 , 10.0 , - 10.0 ) ; //FIXME
+    pidControllers_ [ 10 ] .initPid ( 2.5 , 0.0 , 0.3 , 0.0 , 0.0 ) ; //FIXME
+  
+    return true ; 
+  
+  }
+
+  bool GazeboInterface ::initKinect ( void ) { 
+    
+    // Pitch ------------------------------------------------------------------
+    
+    jointNames_ [ 11 ] = "kinect_pitch_joint" ; //FIXME
+    
+    jointTypes_ [ 11 ] = urdf ::Joint ::REVOLUTE ; //FIXME
+    
+    jointEffort_ [ 11 ] = 0.0 ; 
+    jointPosition_ [ 11 ] = 0.0 ; 
+    jointVelocity_ [ 11 ] = 0.0 ; 
+    jointPositionCommand_ [ 11 ] = 0.0 ; 
+    jointLowerLimits_ [ 11 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 11 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 11 ] = 50.0 ; //FIXME
+    //jointEffortLimits_ [ 11 ] = 3.0 ; 
+    
+    jointControlMethods_ [ 11 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 11 ] .initPid ( 8.5 , 1.0 , 0.2 , 10.0 , - 10.0 ) ; //FIXME
+      
+    // Yaw --------------------------------------------------------------------
+    
+    jointNames_ [ 12 ] = "kinect_yaw_joint" ; //FIXME
+    
+    jointTypes_ [ 12 ] = urdf ::Joint ::REVOLUTE ; //FIXME
+    
+    jointEffort_ [ 12 ] = 0.0 ; 
+    jointPosition_ [ 12 ] = 0.0 ; 
+    jointVelocity_ [ 12 ] = 0.0 ; 
+    jointPositionCommand_ [ 12 ] = 0.0 ; 
+    jointLowerLimits_ [ 12 ] = - 1.57079632679 ; //FIXME
+    jointUpperLimits_ [ 12 ] = 1.57079632679 ; //FIXME
+    jointEffortLimits_ [ 12 ] = 50.0 ; //FIXME
+    //jointEffortLimits_ [ 12 ] = 5.0 ; 
+    
+    jointControlMethods_ [ 12 ] = POSITION_PID ; //FIXME
+    
+    pidControllers_ [ 12 ] .initPid ( 8.0 , 1.5 , 0.4 , 10.0 , - 10.0 ) ; //FIXME
     
     return true ; 
   

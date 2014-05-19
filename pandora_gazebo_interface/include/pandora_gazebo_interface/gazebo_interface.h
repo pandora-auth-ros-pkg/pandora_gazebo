@@ -98,6 +98,8 @@ namespace pandora_gazebo_interface
                       
       bool initWheels ( void ) ; 
                       
+      bool initSides ( void ) ; 
+                      
       bool initLinear ( void ) ; 
                       
       bool initLaser ( void ) ; 
@@ -134,7 +136,8 @@ namespace pandora_gazebo_interface
 
       void writeARM ( void ) ; 
     
-      enum ControlMethod { EFFORT , 
+      enum ControlMethod { NONE , 
+                           EFFORT , 
                            POSITION , 
                            POSITION_PID , 
                            VELOCITY , 
