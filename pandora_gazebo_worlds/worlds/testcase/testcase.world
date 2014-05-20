@@ -355,11 +355,11 @@
     <model name="victim_with_box_v_1">
       <static>true</static>
       <link name="victim_with_box_v_1_link">
-        <pose>9.9 1.2 0.9 0 0 -3.14159</pose>
+        <pose>9.9 1.2 0.95 0 0 -3.14159</pose>
         <collision name="victim_with_box_v_1_collision">
           <geometry>
             <mesh>
-              <uri>file://robocup/victims/victim_with_box.dae</uri>
+              <uri>file://various/victim_inside_box.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -368,7 +368,7 @@
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://robocup/victims/victim_with_box.dae</uri>
+              <uri>file://various/victim_inside_box.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
