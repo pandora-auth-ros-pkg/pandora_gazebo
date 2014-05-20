@@ -91,7 +91,6 @@ target_link_libraries(pandora_p3d_plugin
 )
 
 add_library(pandora_thermal_plugin src/pandora_thermal_plugin.cpp)
-add_dependencies(pandora_thermal_plugin pandora_arm_hardware_interface_gencpp)
 target_link_libraries(pandora_thermal_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}
@@ -107,7 +106,6 @@ target_link_libraries(pandora_co2_plugin
 )
 
 add_library(pandora_microphone_plugin src/pandora_microphone_plugin.cpp)
-add_dependencies(pandora_microphone_plugin pandora_arm_hardware_interface_gencpp)
 target_link_libraries(pandora_microphone_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}

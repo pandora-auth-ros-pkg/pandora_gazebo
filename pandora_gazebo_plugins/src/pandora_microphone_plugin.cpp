@@ -94,7 +94,7 @@ void PandoraMicrophonePlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _
   if (this->topic_name_ != "")
   {
     // Custom Callback Queue
-    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<controllers_and_sensors_communications::soundExistenceMsg>(
+    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<std_msgs::Bool>(
       this->topic_name_,1,
       boost::bind( &PandoraMicrophonePlugin::CameraConnect,this),
       boost::bind( &PandoraMicrophonePlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
@@ -252,19 +252,19 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
 
   //----------------------------------------------------------------------
     
-  soundMsg_ .header .stamp = ros:: Time:: now ( ) ; 
-  soundMsg_ .header .frame_id = this ->frame_name_ ; 
+  //soundMsg_ .header .stamp = ros:: Time:: now ( ) ; 
+  //soundMsg_ .header .frame_id = this ->frame_name_ ; 
 
   // Sound detection condition
   if ( maxCert > 0.9 ) 
 
-    soundMsg_ .soundExists = true ; 
+    soundMsg_ .data = true ; 
 
   else 
 
-    soundMsg_ .soundExists = false ; 
+    soundMsg_ .data = false ; 
   
-  soundMsg_ .certainty = maxCert ; 
+  //soundMsg_ .certainty = maxCert ; 
     
   this ->pub_ .publish ( this ->soundMsg_ ) ; 
   

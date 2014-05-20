@@ -28,6 +28,7 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Bool.h>
 
 // Gazebo
 #include <gazebo/physics/physics.hh>
@@ -38,8 +39,6 @@
 
 #include <gazebo/gazebo.hh>
 #include <gazebo/sensors/sensors.hh>
-
-#include "controllers_and_sensors_communications/soundExistenceMsg.h"
 
 namespace gazebo
 {
@@ -93,13 +92,13 @@ namespace gazebo
     private: common::Time sim_time_;
     public: void OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
 
-	protected: virtual void OnNewFrame(const unsigned char *_image,
-                   unsigned int _width, unsigned int _height,
-                   unsigned int _depth, const std::string &_format);
+	  protected: virtual void OnNewFrame(const unsigned char *_image,
+                       unsigned int _width, unsigned int _height,
+                       unsigned int _depth, const std::string &_format);
                    
     private: void PutMicrophoneData(common::Time &_updateTime);
     
-    controllers_and_sensors_communications::soundExistenceMsg soundMsg_ ; 
+    std_msgs::Bool soundMsg_ ; 
 
 	};
   GZ_REGISTER_SENSOR_PLUGIN(PandoraMicrophonePlugin)
