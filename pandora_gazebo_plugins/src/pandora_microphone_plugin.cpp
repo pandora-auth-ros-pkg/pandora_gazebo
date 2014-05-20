@@ -248,23 +248,25 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
 
   }
 
-  // sound detection condition
-  if ( maxCert > 0.9 ) 
-
-    tmsg .soundExists = true ; 
-
-  else 
-
-    tmsg .soundExists = false ; 
-
   this ->pub_viz .publish ( imgviz ) ; 
 
   //----------------------------------------------------------------------
     
-  tmsg .header .stamp = ros:: Time:: now ( ) ; 
-  tmsg .certainty = maxCert ; 
+  soundMsg_ .header .stamp = ros:: Time:: now ( ) ; 
+  soundMsg_ .header .frame_id = this ->frame_name_ ; 
+
+  // Sound detection condition
+  if ( maxCert > 0.9 ) 
+
+    soundMsg_ .soundExists = true ; 
+
+  else 
+
+    soundMsg_ .soundExists = false ; 
+  
+  soundMsg_ .certainty = maxCert ; 
     
-  this ->pub_ .publish ( this ->tmsg ) ; 
+  this ->pub_ .publish ( this ->soundMsg_ ) ; 
   
   //----------------------------------------------------------------------
   

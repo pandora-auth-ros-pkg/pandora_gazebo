@@ -101,7 +101,7 @@ namespace gazebo
                    
     private: void PutThermalData(common::Time &_updateTime);
     
-    sensor_msgs::Image tmsg;
+    sensor_msgs::Image tempMsg_ ; 
 
 	};
   GZ_REGISTER_SENSOR_PLUGIN(PandoraThermalPlugin)

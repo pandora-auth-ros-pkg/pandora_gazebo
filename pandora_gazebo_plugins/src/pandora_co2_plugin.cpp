@@ -259,10 +259,15 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
 
   //----------------------------------------------------------------------
 
-  tmsg .header .stamp = ros:: Time:: now ( ) ; 
-  tmsg .ppm = ppm ; // TODO
+  co2Msg_ .header .stamp = ros:: Time:: now ( ) ; 
+  co2Msg_ .header .frame_id = this ->frame_name_ ; 
+  
+  co2Msg_ .ppm = ppm ; 
+  
+  // TODO
+  // co2Msg_ .co2_percentage = maxPpm ; 
     
-  this ->pub_ .publish ( this ->tmsg ) ; 
+  this ->pub_ .publish ( this ->co2Msg_ ) ; 
   
   //----------------------------------------------------------------------
   

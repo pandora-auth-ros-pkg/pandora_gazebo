@@ -99,7 +99,7 @@ namespace gazebo
                    
     private: void PutMicrophoneData(common::Time &_updateTime);
     
-    controllers_and_sensors_communications::soundExistenceMsg tmsg;
+    controllers_and_sensors_communications::soundExistenceMsg soundMsg_ ; 
 
 	};
   GZ_REGISTER_SENSOR_PLUGIN(PandoraMicrophonePlugin)

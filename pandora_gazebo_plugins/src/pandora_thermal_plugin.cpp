@@ -242,9 +242,7 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
 
       for ( unsigned int k = 0 ; k < 3 ; k++ ) 
 
-        imgviz 
-         .data 
-          .push_back ( ( char ) ( currentTemp * 255.0 ) ) ; 
+        imgviz .data .push_back ( ( char ) ( currentTemp * 255.0 ) ) ; 
       
     }
 
@@ -253,86 +251,92 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
   this -> pub_viz .publish ( imgviz ) ; 
 
   //----------------------------------------------------------------------
-  
-  int msgWidth = 8 ; 
 
-  int msgHeight = 8 ; 
+  tempMsg_ .header .stamp = ros:: Time:: now ( ) ; 
+  tempMsg_ .header .frame_id = this ->frame_name_ ; 
+
+  tempMsg_ .height = 8 ; 
+  tempMsg_ .width = 8 ; 
+  tempMsg_ .step = tempMsg_ .width * 3 ; 
+  tempMsg_ .encoding = "bgr8" ;  
+  
+  int divWidth = ( imgviz .width / tempMsg_ .width ) ; 
+  int divHeight = ( imgviz .height / tempMsg_ .height ) ; 
 
   int ambientTemp = 25.0 ; 
-
-  long * pixelTemp ; 
-
-  pixelTemp = new long [ msgWidth ] ; 
-
-  for ( unsigned int i = 0 ; i < msgWidth ; i++ ) 
-
-    pixelTemp [ i ] = 0 ;
   
-  for ( unsigned int i = 0 ; i < msgWidth ; i++ ) { 
+  for ( unsigned int i = 0 ; i < tempMsg_ .width ; i++ ) { 
 
-    float maxTemp = 0 ; 
-
-    for ( unsigned int j = 0 ; j < msgHeight ; j++ ) { 
+    for ( unsigned int j = 0 ; j < tempMsg_ .height ; j++ ) { 
+    
+      float meanTemp = 0 ; 
+    
+      for ( unsigned int k = 0 ; k < divWidth ; k++ ) { 
+    
+        for ( unsigned int l = 0 ; l < divHeight ; l++ ) { 
       
-      float currentTemp = 0 ; 
+          float currentTemp = 0 ; 
 
-      float R = data [ ( ( i * msgHeight ) + j ) * 3 + 0 ] ; 
-      float G = data [ ( ( i * msgHeight ) + j ) * 3 + 1 ] ; 
-      float B = data [ ( ( i * msgHeight ) + j ) * 3 + 2 ] ; 
+          float R = data [ ( ( k + i * divWidth ) * imgviz .height + 
+                             ( l + j * divHeight ) ) * 3 + 0 ] ; 
+          float G = data [ ( ( k + i * divWidth ) * imgviz .height + 
+                             ( l + j * divHeight ) ) * 3 + 1 ] ; 
+          float B = data [ ( ( k + i * divWidth ) * imgviz .height + 
+                             ( l + j * divHeight ) ) * 3 + 2 ] ; 
 
-      // temperature is represented by red
-      float R1 = ( R - G ) ; 
-      float R2 = ( R - B ) ; 
+          // temperature is represented by red
+          float R1 = ( R - G ) ; 
+          float R2 = ( R - B ) ; 
 
-      float positiveDiff = 0 ; 
+          float positiveDiff = 0 ; 
 
-      if ( R1 > 0 ) { 
+          if ( R1 > 0 ) { 
 
-        currentTemp += pow ( R1 , 2 ) ; 
+            currentTemp += pow ( R1 , 2 ) ; 
 
-        ++ positiveDiff ; 
+            ++ positiveDiff ; 
+          
+          }
+
+          if ( R2 > 0 ) { 
+
+            currentTemp += pow ( R2 , 2 ) ; 
+
+            ++ positiveDiff ; 
+
+          }
+          
+          currentTemp = sqrt ( currentTemp ) ; 
+
+          if ( positiveDiff == 1 ) 
+
+            currentTemp /= 255.0 ; 
+
+          else if ( positiveDiff == 2 ) 
+
+            currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
+                                   + pow ( 255.0 , 2 ) ) ; 
+        
+          meanTemp += currentTemp ; 
+        
+        }
       
       }
-
-      if ( R2 > 0 ) { 
-
-        currentTemp += pow ( R2 , 2 ) ; 
-
-        ++ positiveDiff ; 
-
-      }
       
-      currentTemp = sqrt ( currentTemp ) ; 
+      meanTemp /= ( divWidth * divHeight ) ; 
 
-      if ( positiveDiff == 1 ) 
+      for ( unsigned int m = 0 ; m < 3 ; m++ ) 
 
-        currentTemp /= 255.0 ; 
-
-      else if ( positiveDiff == 2 )     
-
-        currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
-                              + pow ( 255.0 , 2 ) ) ; 
-
-      if ( maxTemp < currentTemp ) 
-
-        maxTemp = currentTemp ; 
+        tempMsg_  
+         .data 
+          .push_back ( ( char ) ( ( unsigned int ) ( meanTemp * 15.0 
+                                                     + ambientTemp) ) ) ; 
       
     }
 
-    // min temperature = ambient = 25
-    // max temperature = ambient + 15 = 40
-    pixelTemp [ i ] = ambientTemp + ( maxTemp * 15.0 ) ; 
-
   }
 
-  tmsg .header .stamp = ros:: Time:: now ( ) ; 
-  tmsg .ambientTemp = ambientTemp ; 
-
-  for ( int i = 0 ; i < msgWidth ; i++ ) 
-  
-    tmsg .pixelTemp [ i ] = pixelTemp [ i ] ; // TODO
-    
-  this ->pub_ .publish ( this ->tmsg ) ; 
+  this -> pub_ .publish ( tempMsg_ ) ; 
   
   //----------------------------------------------------------------------
   

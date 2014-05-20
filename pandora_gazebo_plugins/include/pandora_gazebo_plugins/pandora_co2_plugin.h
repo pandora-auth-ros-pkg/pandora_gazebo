@@ -99,7 +99,7 @@ namespace gazebo
                    
     private: void PutCo2Data(common::Time &_updateTime);
     
-    pandora_arm_hardware_interface::Co2Msg tmsg;
+    pandora_arm_hardware_interface::Co2Msg co2Msg_ ;
 
 	};
   GZ_REGISTER_SENSOR_PLUGIN(PandoraCo2Plugin)
