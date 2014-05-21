@@ -14,6 +14,11 @@
   <author>Evangelos Apostolidis</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+  
+  <run_depend>pandora_motor_hardware_interface</run_depend>
+  <run_depend>pandora_imu_hardware_interface</run_depend>
+  <run_depend>pandora_xmega_hardware_interface</run_depend>
+  <run_depend>pandora_arm_hardware_interface</run_depend>
 
   <export>
   </export>

@@ -1,0 +1,9 @@
+# Kinect Position Controllers ---------------------------------------
+
+kinect_pitch_controller:
+  type: position_controllers/JointPositionController
+  joint: kinect_pitch_joint
+
+kinect_yaw_controller:
+  type: position_controllers/JointPositionController
+  joint: kinect_yaw_joint
