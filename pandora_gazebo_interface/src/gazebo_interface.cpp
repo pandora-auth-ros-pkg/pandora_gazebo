@@ -289,8 +289,8 @@ namespace pandora_gazebo_interface
     
       jointTypes_ [ i ] = urdf ::Joint ::CONTINUOUS ; //FIXME
       
-      jointEffort_ [ i ] = 1.0 ; 
-      jointPosition_ [ i ] = 1.0 ; 
+      jointEffort_ [ i ] = 0.0 ; 
+      jointPosition_ [ i ] = 0.0 ; 
       jointVelocity_ [ i ] = 0.0 ; 
       jointVelocityCommand_ [ i ] = 0.0 ; 
       jointEffortLimits_ [ i ] = 100.0 ; //FIXME
@@ -311,7 +311,7 @@ namespace pandora_gazebo_interface
     jointNames_ [ 4 ] = "left_side_joint" ; //FIXME
     jointNames_ [ 5 ] = "right_side_joint" ; //FIXME
     
-    for ( unsigned int i = 0 ; i < 2 ; i ++ ) { 
+    for ( unsigned int i = 4 ; i < 6 ; i ++ ) { 
     
       jointTypes_ [ i ] = urdf ::Joint ::REVOLUTE ; //FIXME
     
@@ -565,9 +565,9 @@ namespace pandora_gazebo_interface
       
       hardware_interface 
        ::JointStateHandle jointStateHandle ( jointNames_ [ i ] , 
-                                             & jointEffort_ [ i ] , 
                                              & jointPosition_ [ i ] , 
-                                             & jointVelocity_ [ i ] ) ; 
+                                             & jointVelocity_ [ i ] , 
+                                             & jointEffort_ [ i ] ) ; 
                                              
       jointStateInterface_ .registerHandle ( jointStateHandle ) ; 
       

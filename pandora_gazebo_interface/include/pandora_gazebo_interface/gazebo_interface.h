@@ -156,9 +156,9 @@ namespace pandora_gazebo_interface
       ros ::Duration writePeriod_ ; 
 
       hardware_interface ::ImuSensorInterface imuSensorInterface_ ; 
-      hardware_interface::JointStateInterface jointStateInterface_ ; 
-      hardware_interface::PositionJointInterface positionJointInterface_ ; 
-      hardware_interface::VelocityJointInterface velocityJointInterface_ ; 
+      hardware_interface ::JointStateInterface jointStateInterface_ ; 
+      hardware_interface ::PositionJointInterface positionJointInterface_ ; 
+      hardware_interface ::VelocityJointInterface velocityJointInterface_ ; 
       
       double imuOrientation_ [ 4 ] ; 
       hardware_interface ::ImuSensorHandle ::Data imuData_ ; 
