@@ -2,16 +2,16 @@
   
   <arg name="gui" default="true"/>
   <arg name="robot" default="gears"/>
-  <arg name="control" default="false"/>
-  <arg name="interface" default="false"/>
+  <arg name="control" default="true"/>
+  <arg name="interface" default="true"/>
   
   <include file="$(find pandora_gazebo_worlds)/launch/start.launch">
     <arg name="world" value="robocup_2013"/>
     <arg name="robot" value="$(arg robot)"/>
-    <arg name="gui" value="$(arg gui)"/> 
-    <arg name="z" value="0.5"/> 
     <arg name="control" value="$(arg control)"/>
     <arg name="interface" value="$(arg interface)" />
+    <arg name="gui" value="$(arg gui)"/> 
+    <arg name="z" value="0.5"/> 
   </include>
   
 </launch>
