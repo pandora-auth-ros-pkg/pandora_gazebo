@@ -708,20 +708,22 @@ namespace pandora_gazebo_interface
         
         double error ; 
         
-        // TODO: Enforce command limits
+        double jointCommand = clamp ( jointCommand_ [ i ] , 
+                                      jointLowerLimit_ [ i ] , 
+                                      jointUpperLimit_ [ i ] ) ; 
         
         if ( jointType_ [ i ] == urdf ::Joint ::REVOLUTE ) 
           
           angles ::shortest_angular_distance_with_limits 
                     ( jointPosition_ [ i ] , 
-                      jointCommand_ [ i ] , 
+                      jointCommand , 
                       jointLowerLimit_ [ i ] , 
                       jointUpperLimit_ [ i ] , 
                       error ) ; 
             
         else
           
-          error = jointCommand_ [ i ] - jointPosition_ [ i ] ; 
+          error = jointCommand  - jointPosition_ [ i ] ; 
         
         double pidCommand = pidController_ [ i ] 
                              .computeCommand ( error , writePeriod_ ) ; 
