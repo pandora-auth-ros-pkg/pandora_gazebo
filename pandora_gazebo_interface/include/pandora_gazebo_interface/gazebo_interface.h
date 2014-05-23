@@ -131,10 +131,6 @@ namespace pandora_gazebo_interface
       void writeLinks ( void ) ; 
 
       void writeJoints ( void ) ; 
-
-      void writeXMEGA ( void ) ; 
-
-      void writeARM ( void ) ; 
     
       enum ControlMethod { NONE , 
                            EFFORT , 
@@ -164,27 +160,26 @@ namespace pandora_gazebo_interface
       hardware_interface ::ImuSensorHandle ::Data imuData_ ; 
       
       unsigned int linkNum_ ; 
-      std ::vector < gazebo ::physics ::LinkPtr > gazeboLinks_ ; 
-      std ::vector < std ::string > linkNames_ ; 
+      std ::vector < gazebo ::physics ::LinkPtr > gazeboLink_ ; 
+      std ::vector < std ::string > linkName_ ; 
       
       unsigned int jointNum_ ; 
-      std ::vector < gazebo ::physics ::JointPtr > gazeboJoints_ ; 
-      std ::vector < std ::string > jointNames_ ; 
-      std ::vector < int > jointTypes_ ; 
+      std ::vector < gazebo ::physics ::JointPtr > gazeboJoint_ ; 
+      std ::vector < std ::string > jointName_ ; 
+      std ::vector < int > jointType_ ; 
       
-      std ::vector < ControlMethod > jointControlMethods_ ; 
-      std ::vector < control_toolbox ::Pid > pidControllers_ ; 
+      std ::vector < ControlMethod > jointControlMethod_ ; 
+      std ::vector < control_toolbox ::Pid > pidController_ ; 
       
-      std ::vector < double > jointLowerLimits_ ; 
-      std ::vector < double > jointUpperLimits_ ; 
-      std ::vector < double > jointEffortLimits_ ; 
+      std ::vector < double > jointLowerLimit_ ; 
+      std ::vector < double > jointUpperLimit_ ; 
+      std ::vector < double > jointEffortLimit_ ; 
       
       std ::vector < double > jointEffort_ ; 
       std ::vector < double > jointPosition_ ; 
       std ::vector < double > jointVelocity_ ; 
       
-      std ::vector < double > jointPositionCommand_ ; 
-      std ::vector < double > jointVelocityCommand_ ; 
+      std ::vector < double > jointCommand_ ; 
       
       std ::vector < double > wheel_velocity_multiplier_ ; 
       
