@@ -188,10 +188,6 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
   imgviz .step = width * 3 ; 
   imgviz .encoding = "bgr8" ; 
 
-  int ppm ; 
-
-  int ambientPpm = 1000 ; 
-
   int maxPpm = 0 ; 
   
   for ( unsigned int i = 0 ; i < width ; i++ ) { 
@@ -251,10 +247,6 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
 
   }
 
-  // min ppm = ambient = 1000
-  // max ppm = ambient + 700 = 1700
-  ppm = ambientPpm + ( maxPpm * 700.0 ) ; 
-
   this ->pub_viz .publish ( imgviz ) ; 
 
   //----------------------------------------------------------------------
@@ -262,10 +254,7 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
   co2Msg_ .header .stamp = ros:: Time:: now ( ) ; 
   co2Msg_ .header .frame_id = this ->frame_name_ ; 
   
-  co2Msg_ .ppm = ppm ; 
-  
-  // TODO
-  // co2Msg_ .co2_percentage = maxPpm ; 
+  co2Msg_ .co2_percentage = maxPpm ; 
     
   this ->pub_ .publish ( this ->co2Msg_ ) ; 
   

@@ -3,4 +3,4 @@
 linear_elevator_controller:
   type: effort_controllers/JointPositionController
   joint: linear_elevator_joint
-  pid: {p: 90.0, i: 5.0, d: 20.0, i_clamp: 100.0}
+  pid: {p: 15000.0, i: 0.0, d: 0.0, i_clamp: 0.0}

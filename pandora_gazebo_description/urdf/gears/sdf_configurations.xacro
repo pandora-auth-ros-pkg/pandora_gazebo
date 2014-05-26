@@ -47,7 +47,7 @@
     <!-- ================================================================== -->
     <xacro:property name="enable_wheel_joint_physics" value="false" />
     <!-- ================================================================== -->
-    <xacro:property name="enable_linear_elevator_joint_physics" value="false" /> <!-- FIXME -->
+    <xacro:property name="enable_linear_elevator_joint_physics" value="true" />
     <!-- ================================================================== -->
     <xacro:property name="enable_linear_head_pitch_joint_physics" value="false" />
     <xacro:property name="enable_linear_head_yaw_joint_physics" value="false" />
