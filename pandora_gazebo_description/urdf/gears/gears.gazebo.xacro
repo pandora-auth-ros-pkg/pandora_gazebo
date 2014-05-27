@@ -297,7 +297,7 @@
       </xacro:if>
       <!-- ================================================================ -->
       <xacro:unless value="$(arg interface)" >
-        <xacro:gazebo_ros_control_plugin namespace="control"
+        <xacro:gazebo_ros_control_plugin namespace="/"
                                          hardware_interface="gazebo_ros_control/DefaultRobotHWSim" />
       </xacro:unless>
       <!-- ================================================================ -->
