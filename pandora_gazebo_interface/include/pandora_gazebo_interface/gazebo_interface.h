@@ -43,6 +43,11 @@
 #include <gazebo/common/common.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/gazebo.hh>
+#include <gazebo/msgs/MessageTypes.hh>
+#include <gazebo/common/Time.hh>
+#include <gazebo/sensors/SensorTypes.hh>
+#include <gazebo/plugins/CameraPlugin.hh>
+#include <gazebo/sensors/sensors.hh>
 
 // ROS
 #include <ros/ros.h>
@@ -140,12 +145,28 @@ namespace pandora_gazebo_interface
       /////////////////////////////////////////////////////////////////////////
 
       void readLinks ( void ) ; 
+    
+      // ----------------------------------------------------------------------
 
       void readJoints ( void ) ; 
+    
+      // ----------------------------------------------------------------------
 
       void readXMEGA ( void ) ; 
 
+      void readPowerSupplies ( void ) ; 
+
+      void readRangeSensors ( void ) ; 
+    
+      // ----------------------------------------------------------------------
+
       void readARM ( void ) ; 
+
+      void readCO2Sensors ( void ) ; 
+
+      void readThermalSensors ( void ) ; 
+
+      void readMicrophoneSensors ( void ) ; 
     
       /////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////

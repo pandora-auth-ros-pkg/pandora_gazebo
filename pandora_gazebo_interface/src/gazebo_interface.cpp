@@ -408,7 +408,6 @@ namespace pandora_gazebo_interface
       jointControlMethod_ [ i ] = VELOCITY ; //FIXME
       
       wheel_velocity_multiplier_ [ i ] = 22.5 / 255.0 ; //FIXME
-      //wheel_velocity_multiplier_ [ i ] = 15.8 ; 
     
     }
     
@@ -1180,6 +1179,34 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
+    readPowerSupplies ( ) ; 
+  
+    readRangeSensors ( ) ; 
+    
+    // ------------------------------------------------------------------------
+  
+  }
+    
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  void GazeboInterface ::readPowerSupplies ( void ) { 
+    
+    // ------------------------------------------------------------------------
+    
+    // TODO
+    
+    // ------------------------------------------------------------------------
+  
+  }
+    
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  void GazeboInterface ::readRangeSensors ( void ) { 
+    
+    // ------------------------------------------------------------------------
+    
     // TODO
     
     // ------------------------------------------------------------------------
@@ -1192,11 +1219,124 @@ namespace pandora_gazebo_interface
   void GazeboInterface ::readARM ( void ) { 
     
     // ------------------------------------------------------------------------
-  
-    // TODO
+    
+    readCO2Sensors ( ) ; 
+    
+    readThermalSensors ( ) ; 
+    
+    readMicrophoneSensors ( ) ; 
     
     // ------------------------------------------------------------------------
     
+  }
+    
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  void GazeboInterface ::readCO2Sensors ( void ) { 
+    
+    // ------------------------------------------------------------------------
+    
+    /*
+    
+    gazebo ::sensors ::CameraSensorPtr sensor = 
+    boost ::dynamic_pointer_cast < gazebo ::sensors ::CameraSensor > ( gazebo ::sensors ::get_sensor ( "co2" ) ) ; 
+    
+    sensor ->SetActive ( true ) ; 
+
+    double hfov = sensor ->GetCamera ( ) ->GetHFOV ( ) .Radian ( ) ; 
+
+    int width = sensor ->GetImageWidth ( ) ; 
+
+    int height = sensor ->GetImageHeight ( ) ; 
+
+    const unsigned char * data = sensor ->GetImageData ( ) ; 
+
+    double maxPpm = 0 ; 
+    
+    for ( unsigned int i = 0 ; i < width ; i++ ) { 
+
+      for ( unsigned int j = 0 ; j < height ; j++ ) { 
+        
+        double currentPpm = 0 ; 
+
+        double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+        double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+        double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+
+        // co2 is represented by green
+        double G1 = ( G - R ) ; 
+        double G2 = ( G - B ) ; 
+
+        double positiveDiff = 0 ; 
+
+        if ( G1 > 0 ) { 
+
+          currentPpm += pow ( G1 , 2 ) ; 
+
+          ++ positiveDiff ; 
+        
+        }
+
+        if ( G2 > 0 ) { 
+
+          currentPpm += pow ( G2 , 2 ) ; 
+
+          ++ positiveDiff ; 
+
+        }
+        
+        currentPpm = sqrt ( currentPpm ) ; 
+
+        if ( positiveDiff == 1 ) 
+
+          currentPpm /= 255.0 ; 
+
+        else if ( positiveDiff == 2 )     
+
+          currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
+                               + pow ( 255.0 , 2 ) ) ;
+
+        if ( maxPpm < currentPpm ) 
+
+          maxPpm = currentPpm ; 
+        
+      }
+
+    }
+    
+    co2SensorCo2Percentage_ [ 0 ] = maxPpm ; 
+    
+    */
+    
+    // ------------------------------------------------------------------------
+  
+  }
+    
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  void GazeboInterface ::readThermalSensors ( void ) { 
+    
+    // ------------------------------------------------------------------------
+    
+    // TODO
+    
+    // ------------------------------------------------------------------------
+  
+  }
+    
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  void GazeboInterface ::readMicrophoneSensors ( void ) { 
+    
+    // ------------------------------------------------------------------------
+    
+    // TODO
+    
+    // ------------------------------------------------------------------------
+  
   }
     
   /////////////////////////////////////////////////////////////////////////////

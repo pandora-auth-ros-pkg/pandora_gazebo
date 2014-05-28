@@ -107,8 +107,8 @@ void TeleopTurtle::keyLoop()
         dirty = true;
         break;
       case KEYCODE_A:
-        ROS_DEBUG("MAX_LEFT");
-        angular_ = 2.0;
+        ROS_DEBUG("LEFT_2");
+        angular_ += 2.0;
         dirty = true;
         break;
       case KEYCODE_RIGHT:
@@ -117,8 +117,8 @@ void TeleopTurtle::keyLoop()
         dirty = true;
         break;
       case KEYCODE_D:
-        ROS_DEBUG("MAX_RIGHT");
-        angular_ = -2.0;
+        ROS_DEBUG("RIGHT_2");
+        angular_ += -2.0;
         dirty = true;
         break;
       case KEYCODE_UP:
@@ -127,8 +127,8 @@ void TeleopTurtle::keyLoop()
         dirty = true;
         break;
       case KEYCODE_W:
-        ROS_DEBUG("MAX_UP");
-        linear_ = 2.0;
+        ROS_DEBUG("UP_2");
+        linear_ += 1.0;
         dirty = true;
         break;
       case KEYCODE_DOWN:
@@ -137,8 +137,8 @@ void TeleopTurtle::keyLoop()
         dirty = true;
         break;
       case KEYCODE_S:
-        ROS_DEBUG("MAX_DOWN");
-        linear_ = -2.0;
+        ROS_DEBUG("DOWN_2");
+        linear_ += -1.0;
         dirty = true;
         break;
       case KEYCODE_H:
