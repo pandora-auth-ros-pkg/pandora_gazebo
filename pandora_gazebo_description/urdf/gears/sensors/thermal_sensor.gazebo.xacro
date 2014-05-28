@@ -9,7 +9,7 @@
   
     <gazebo reference="${prefix_y}_thermal_link" >
     
-      <sensor name="thermal"
+      <sensor name="${prefix_y}_thermal"
               type="camera" >
 
         <camera>

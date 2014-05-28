@@ -168,10 +168,10 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
                        ->GetHFOV ( ) 
                         .Radian ( ) ; 
 
-  int width = this ->parent_camera_sensor_ 
+  unsigned int width = this ->parent_camera_sensor_ 
                     ->GetImageWidth ( ) ; 
 
-  int height = this ->parent_camera_sensor_ 
+  unsigned int height = this ->parent_camera_sensor_ 
                      ->GetImageHeight ( ) ; 
 
   const unsigned char * data = this ->parent_camera_sensor_ 
@@ -189,23 +189,23 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
   imgviz .step = width * 3 ; 
   imgviz .encoding = "bgr8" ; 
 
-  int maxCert = 0 ; 
+  double maxCert = 0 ; 
   
   for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
     for ( unsigned int j = 0 ; j < height ; j++ ) { 
       
-      float currentCert = 0 ; 
+      double currentCert = 0 ; 
 
-      float R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
-      float G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
-      float B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+      double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+      double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+      double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
 
       // sound is represented by blue
-      float B1 = ( B - R ) ; 
-      float B2 = ( B - G ) ; 
+      double B1 = ( B - R ) ; 
+      double B2 = ( B - G ) ; 
 
-      float positiveDiff = 0 ; 
+      double positiveDiff = 0 ; 
 
       if ( B1 > 0 ) { 
 

@@ -109,8 +109,6 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   // Initialize the controller
   }
 
-  // sensor generation off by default
-  this->parent_camera_sensor_->SetActive(false);
   // start custom queue for laser
   this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraCo2Plugin::CameraQueueThread,this ) );
 }
@@ -167,10 +165,10 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
                        ->GetHFOV ( ) 
                         .Radian ( ) ; 
 
-  int width = this ->parent_camera_sensor_ 
+  unsigned int width = this ->parent_camera_sensor_ 
                     ->GetImageWidth ( ) ; 
 
-  int height = this ->parent_camera_sensor_ 
+  unsigned int height = this ->parent_camera_sensor_ 
                      ->GetImageHeight ( ) ; 
 
   const unsigned char * data = this ->parent_camera_sensor_ 
@@ -188,23 +186,23 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
   imgviz .step = width * 3 ; 
   imgviz .encoding = "bgr8" ; 
 
-  int maxPpm = 0 ; 
+  double maxPpm = 0 ; 
   
   for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
     for ( unsigned int j = 0 ; j < height ; j++ ) { 
       
-      float currentPpm = 0 ; 
+      double currentPpm = 0 ; 
 
-      float R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
-      float G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
-      float B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+      double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+      double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+      double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
 
       // co2 is represented by green
-      float G1 = ( G - R ) ; 
-      float G2 = ( G - B ) ; 
+      double G1 = ( G - R ) ; 
+      double G2 = ( G - B ) ; 
 
-      float positiveDiff = 0 ; 
+      double positiveDiff = 0 ; 
 
       if ( G1 > 0 ) { 
 

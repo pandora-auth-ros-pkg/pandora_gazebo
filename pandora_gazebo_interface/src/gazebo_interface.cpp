@@ -1237,18 +1237,14 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
     
-    /*
-    
     gazebo ::sensors ::CameraSensorPtr sensor = 
     boost ::dynamic_pointer_cast < gazebo ::sensors ::CameraSensor > ( gazebo ::sensors ::get_sensor ( "co2" ) ) ; 
-    
-    sensor ->SetActive ( true ) ; 
 
     double hfov = sensor ->GetCamera ( ) ->GetHFOV ( ) .Radian ( ) ; 
 
-    int width = sensor ->GetImageWidth ( ) ; 
+    unsigned int width = sensor ->GetImageWidth ( ) ; 
 
-    int height = sensor ->GetImageHeight ( ) ; 
+    unsigned int height = sensor ->GetImageHeight ( ) ; 
 
     const unsigned char * data = sensor ->GetImageData ( ) ; 
 
@@ -1306,8 +1302,6 @@ namespace pandora_gazebo_interface
     }
     
     co2SensorCo2Percentage_ [ 0 ] = maxPpm ; 
-    
-    */
     
     // ------------------------------------------------------------------------
   

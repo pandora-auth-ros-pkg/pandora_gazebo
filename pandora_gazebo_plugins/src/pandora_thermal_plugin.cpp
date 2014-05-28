@@ -176,10 +176,10 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
                        ->GetHFOV ( ) 
                         .Radian ( ) ; 
 
-  int width = this ->parent_camera_sensor_ 
+  unsigned int width = this ->parent_camera_sensor_ 
                     ->GetImageWidth ( ) ; 
 
-  int height = this ->parent_camera_sensor_ 
+  unsigned int height = this ->parent_camera_sensor_ 
                      ->GetImageHeight ( ) ; 
 
   const unsigned char * data = this ->parent_camera_sensor_ 
@@ -201,17 +201,17 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
 
     for ( unsigned int j = 0 ; j < height ; j++ ) { 
       
-      float currentTemp = 0 ; 
+      double currentTemp = 0 ; 
 
-      float R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
-      float G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
-      float B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+      double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+      double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+      double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
 
       // temperature is represented by red
-      float R1 = ( R - G ) ; 
-      float R2 = ( R - B ) ; 
+      double R1 = ( R - G ) ; 
+      double R2 = ( R - B ) ; 
 
-      float positiveDiff = 0 ; 
+      double positiveDiff = 0 ; 
 
       if ( R1 > 0 ) { 
 
@@ -260,35 +260,35 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
   tempMsg_ .step = tempMsg_ .width * 3 ; 
   tempMsg_ .encoding = "bgr8" ;  
   
-  int divWidth = ( imgviz .width / tempMsg_ .width ) ; 
-  int divHeight = ( imgviz .height / tempMsg_ .height ) ; 
+  unsigned int divWidth = ( imgviz .width / tempMsg_ .width ) ; 
+  unsigned int divHeight = ( imgviz .height / tempMsg_ .height ) ; 
 
-  int ambientTemp = 25.0 ; 
+  double ambientTemp = 25.0 ; 
   
   for ( unsigned int i = 0 ; i < tempMsg_ .width ; i++ ) { 
 
     for ( unsigned int j = 0 ; j < tempMsg_ .height ; j++ ) { 
     
-      float meanTemp = 0 ; 
+      double meanTemp = 0 ; 
     
       for ( unsigned int k = 0 ; k < divWidth ; k++ ) { 
     
         for ( unsigned int l = 0 ; l < divHeight ; l++ ) { 
       
-          float currentTemp = 0 ; 
+          double currentTemp = 0 ; 
 
-          float R = data [ ( ( k + i * divWidth ) * imgviz .height + 
+          double R = data [ ( ( k + i * divWidth ) * imgviz .height + 
                              ( l + j * divHeight ) ) * 3 + 0 ] ; 
-          float G = data [ ( ( k + i * divWidth ) * imgviz .height + 
+          double G = data [ ( ( k + i * divWidth ) * imgviz .height + 
                              ( l + j * divHeight ) ) * 3 + 1 ] ; 
-          float B = data [ ( ( k + i * divWidth ) * imgviz .height + 
+          double B = data [ ( ( k + i * divWidth ) * imgviz .height + 
                              ( l + j * divHeight ) ) * 3 + 2 ] ; 
 
           // temperature is represented by red
-          float R1 = ( R - G ) ; 
-          float R2 = ( R - B ) ; 
+          double R1 = ( R - G ) ; 
+          double R2 = ( R - B ) ; 
 
-          float positiveDiff = 0 ; 
+          double positiveDiff = 0 ; 
 
           if ( R1 > 0 ) { 
 

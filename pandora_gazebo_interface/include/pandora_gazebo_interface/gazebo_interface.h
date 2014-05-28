@@ -40,14 +40,14 @@
 #define PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
 
 // Gazebo
-#include <gazebo/common/common.hh>
-#include <gazebo/physics/physics.hh>
 #include <gazebo/gazebo.hh>
-#include <gazebo/msgs/MessageTypes.hh>
+#include <gazebo/physics/physics.hh>
+#include <gazebo/common/common.hh>
 #include <gazebo/common/Time.hh>
+#include <gazebo/msgs/MessageTypes.hh>
+#include <gazebo/sensors/sensors.hh>
 #include <gazebo/sensors/SensorTypes.hh>
 #include <gazebo/plugins/CameraPlugin.hh>
-#include <gazebo/sensors/sensors.hh>
 
 // ROS
 #include <ros/ros.h>
