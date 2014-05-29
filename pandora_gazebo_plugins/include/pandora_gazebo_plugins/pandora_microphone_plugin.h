@@ -46,13 +46,12 @@ namespace gazebo
   class PandoraMicrophonePlugin : public CameraPlugin
   {
 	
-	public: 
+	  public: PandoraMicrophonePlugin(){}
 	
-	PandoraMicrophonePlugin(){}
+	  public: void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
 	
-	void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
+	  private: physics::WorldPtr world_;
 	
-	private: physics::WorldPtr world_;
     /// \brief The parent sensor
     private: sensors::SensorPtr parent_sensor_;
     private: sensors::CameraSensorPtr parent_camera_sensor_;
@@ -92,13 +91,15 @@ namespace gazebo
     private: common::Time sim_time_;
     public: void OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
 
-	  protected: virtual void OnNewFrame(const unsigned char *_image,
+    protected: virtual void OnNewFrame(const unsigned char *_image,
                        unsigned int _width, unsigned int _height,
                        unsigned int _depth, const std::string &_format);
                    
     private: void PutMicrophoneData(common::Time &_updateTime);
     
-    std_msgs::Bool soundMsg_ ; 
+    private: std_msgs::Bool soundMsg_ ; 
+    
+    private: bool publish_msg_ ; 
 
 	};
   GZ_REGISTER_SENSOR_PLUGIN(PandoraMicrophonePlugin)

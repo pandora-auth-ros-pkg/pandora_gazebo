@@ -130,6 +130,15 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
     }
   }
 
+  if (!_sdf->HasElement("publishMsg"))
+  {
+    ROS_INFO("Block laser plugin missing <publishMsg>, defaults to true");
+    this->publish_msg_ = true;
+  }
+  else
+  {
+    this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
+  }
 
   if (!_sdf->HasElement("gaussianNoise"))
   {
@@ -181,11 +190,6 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
     this->pub_ = this->rosnode_->advertise(ao);
   }
 
-
-  // Initialize the controller
-
-  // sensor generation off by default
-  this->parent_ray_sensor_->SetActive(false);
   // start custom queue for laser
   this->callback_laser_queue_thread_ = boost::thread( boost::bind( &PandoraSonarPlugin::LaserQueueThread,this ) );
 

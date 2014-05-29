@@ -5,7 +5,7 @@
 <!-- ###################################################################### -->
 
   <xacro:macro name="sonar_gazebo_sensor"
-               params="name" >
+               params="name publish_msg" >
   
     <gazebo reference="${name}_sonar_link" >
 
@@ -57,6 +57,8 @@
           <topicName>/sensors/sonar</topicName> <!-- FIXME -->
           <!--============================================================= -->
           <gaussianNoise>0.0</gaussianNoise>
+          <!--============================================================= -->
+          <publishMsg>${publish_msg}</publishMsg>
           <!--============================================================= -->
 
         </plugin>

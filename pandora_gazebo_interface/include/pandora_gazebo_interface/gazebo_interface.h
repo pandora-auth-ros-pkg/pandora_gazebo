@@ -43,11 +43,10 @@
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
-#include <gazebo/common/Time.hh>
-#include <gazebo/msgs/MessageTypes.hh>
 #include <gazebo/sensors/sensors.hh>
 #include <gazebo/sensors/SensorTypes.hh>
 #include <gazebo/plugins/CameraPlugin.hh>
+#include <gazebo/plugins/RayPlugin.hh>
 
 // ROS
 #include <ros/ros.h>
@@ -321,6 +320,9 @@ namespace pandora_gazebo_interface
       std ::vector < std ::string > co2SensorFrameID_ ; 
       
       std ::vector < float > co2SensorCo2Percentage_ ; 
+      
+      std ::vector < gazebo ::sensors ::CameraSensorPtr > 
+       co2SensorCamera_ ; 
     
       // ----------------------------------------------------------------------
       
@@ -334,6 +336,9 @@ namespace pandora_gazebo_interface
       std ::vector < int > thermalSensorStep_ ; 
       
       std ::vector < std ::vector < uint8_t > > thermalSensorVector_ ; 
+      
+      std ::vector < gazebo ::sensors ::CameraSensorPtr > 
+       thermalSensorCamera_ ; 
     
       // ----------------------------------------------------------------------
       
@@ -343,6 +348,9 @@ namespace pandora_gazebo_interface
       std ::vector < std ::string > microphoneSensorFrameID_ ; 
       
       std ::vector < double > microphoneSensorSoundCertainty_ ; 
+      
+      std ::vector < gazebo ::sensors ::CameraSensorPtr > 
+       microphoneSensorCamera_ ; 
     
       /////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////

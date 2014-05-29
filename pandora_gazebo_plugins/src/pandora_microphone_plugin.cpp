@@ -69,6 +69,16 @@ void PandoraMicrophonePlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _
     this->topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
   }
 
+  if (!_sdf->HasElement("publishMsg"))
+  {
+    ROS_INFO("Microphone plugin missing <publishMsg>, defaults to true");
+    this->publish_msg_ = true;
+  }
+  else
+  {
+    this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
+  }
+
   this->camera_connect_count_ = 0;
 
   // Make sure the ROS node for Gazebo has already been initialized
@@ -93,23 +103,26 @@ void PandoraMicrophonePlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _
 
   if (this->topic_name_ != "")
   {
-    // Custom Callback Queue
-    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<std_msgs::Bool>(
-      this->topic_name_,1,
-      boost::bind( &PandoraMicrophonePlugin::CameraConnect,this),
-      boost::bind( &PandoraMicrophonePlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
-    this->pub_ = this->rosnode_->advertise(ao);
+  
+    if ( this->publish_msg_ ) { 
+    
+      // Custom Callback Queue
+      ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<std_msgs::Bool>(
+        this->topic_name_,1,
+        boost::bind( &PandoraMicrophonePlugin::CameraConnect,this),
+        boost::bind( &PandoraMicrophonePlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+      this->pub_ = this->rosnode_->advertise(ao);
+    
+    }
     
     ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
       (this->topic_name_+"/viz/image"),1,
       boost::bind( &PandoraMicrophonePlugin::CameraConnect,this),
       boost::bind( &PandoraMicrophonePlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_viz = this->rosnode_->advertise(ao2);
-  // Initialize the controller
+    
   }
 
-  // sensor generation off by default
-  this->parent_camera_sensor_->SetActive(false);
   // start custom queue for laser
   this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraMicrophonePlugin::CameraQueueThread,this ) );
 }
@@ -251,22 +264,26 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
   this ->pub_viz .publish ( imgviz ) ; 
 
   //----------------------------------------------------------------------
-    
-  //soundMsg_ .header .stamp = ros:: Time:: now ( ) ; 
-  //soundMsg_ .header .frame_id = this ->frame_name_ ; 
-
-  // Sound detection condition
-  if ( maxCert > 0.9 ) 
-
-    soundMsg_ .data = true ; 
-
-  else 
-
-    soundMsg_ .data = false ; 
   
-  //soundMsg_ .certainty = maxCert ; 
+  if ( this->publish_msg_ ) { 
     
-  this ->pub_ .publish ( this ->soundMsg_ ) ; 
+    //soundMsg_ .header .stamp = ros:: Time:: now ( ) ; 
+    //soundMsg_ .header .frame_id = this ->frame_name_ ; 
+
+    // Sound detection condition
+    if ( maxCert > 0.9 ) 
+
+      soundMsg_ .data = true ; 
+
+    else 
+
+      soundMsg_ .data = false ; 
+    
+    //soundMsg_ .certainty = maxCert ; 
+      
+    this ->pub_ .publish ( this ->soundMsg_ ) ; 
+    
+  }
   
   //----------------------------------------------------------------------
   

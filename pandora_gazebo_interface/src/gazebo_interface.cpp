@@ -844,6 +844,7 @@ namespace pandora_gazebo_interface
     co2SensorName_ .resize ( co2SensorNum_ ) ; 
     co2SensorFrameID_ .resize ( co2SensorNum_ ) ; 
     co2SensorCo2Percentage_ .resize ( co2SensorNum_ ) ; 
+    co2SensorCamera_ .resize ( co2SensorNum_ ) ; 
     
     thermalSensorData_ .resize ( thermalSensorNum_ ) ; 
     thermalSensorName_ .resize ( thermalSensorNum_ ) ; 
@@ -852,10 +853,12 @@ namespace pandora_gazebo_interface
     thermalSensorWidth_ .resize ( thermalSensorNum_ ) ; 
     thermalSensorStep_ .resize ( thermalSensorNum_ ) ; 
     thermalSensorVector_ .resize ( thermalSensorNum_ ) ; 
+    thermalSensorCamera_ .resize ( thermalSensorNum_ ) ; 
     
     microphoneSensorName_ .resize ( microphoneSensorNum_ ) ; 
     microphoneSensorFrameID_ .resize ( microphoneSensorNum_ ) ; 
     microphoneSensorSoundCertainty_ .resize ( microphoneSensorNum_ ) ; 
+    microphoneSensorCamera_ .resize ( microphoneSensorNum_ ) ; 
     
     // ------------------------------------------------------------------------
   
@@ -911,6 +914,10 @@ namespace pandora_gazebo_interface
     co2SensorCo2Percentage_ [ 0 ] = 0.0 ; 
     co2SensorData_ [ 0 ] .co2Percentage = & co2SensorCo2Percentage_ [ 0 ] ; 
     
+    co2SensorCamera_ [ 0 ] = 
+    boost ::dynamic_pointer_cast < gazebo ::sensors ::CameraSensor > 
+     ( gazebo ::sensors ::get_sensor ( "co2" ) ) ; 
+    
     // ------------------------------------------------------------------------
     
     return true ; 
@@ -955,11 +962,23 @@ namespace pandora_gazebo_interface
       
       int resolution = thermalSensorHeight_ [ i ] * thermalSensorWidth_ [ i ] ; 
       
-      thermalSensorVector_ [ i ] .resize ( resolution , 0 ) ; 
+      //FIXME: thermalSensorVector_ [ i ] .resize ( resolution , 0 ) ; 
       thermalSensorData_ [ i ] .data = 
       reinterpret_cast < uint8_t * > ( & thermalSensorVector_ [ i ] [ 0 ] ) ; //XXX
     
     }
+    
+    thermalSensorCamera_ [ 0 ] = 
+    boost ::dynamic_pointer_cast < gazebo ::sensors ::CameraSensor > 
+     ( gazebo ::sensors ::get_sensor ( "left_thermal" ) ) ; 
+     
+    thermalSensorCamera_ [ 1 ] = 
+    boost ::dynamic_pointer_cast < gazebo ::sensors ::CameraSensor > 
+     ( gazebo ::sensors ::get_sensor ( "middle_thermal" ) ) ; //FIXME: Adjust name
+     
+    thermalSensorCamera_ [ 2 ] = 
+    boost ::dynamic_pointer_cast < gazebo ::sensors ::CameraSensor > 
+     ( gazebo ::sensors ::get_sensor ( "right_thermal" ) ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -979,6 +998,10 @@ namespace pandora_gazebo_interface
     microphoneSensorFrameID_ [ 0 ] = "microphone" ; 
     
     microphoneSensorSoundCertainty_ [ 0 ] = 0.0 ; 
+    
+    microphoneSensorCamera_ [ 0 ] = 
+    boost ::dynamic_pointer_cast < gazebo ::sensors ::CameraSensor > 
+     ( gazebo ::sensors ::get_sensor ( "microphone" ) ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -1236,72 +1259,71 @@ namespace pandora_gazebo_interface
   void GazeboInterface ::readCO2Sensors ( void ) { 
     
     // ------------------------------------------------------------------------
-    
-    gazebo ::sensors ::CameraSensorPtr sensor = 
-    boost ::dynamic_pointer_cast < gazebo ::sensors ::CameraSensor > ( gazebo ::sensors ::get_sensor ( "co2" ) ) ; 
+      
+    for ( unsigned int n = 0 ; n < co2SensorNum_ ; n ++ ) { 
 
-    double hfov = sensor ->GetCamera ( ) ->GetHFOV ( ) .Radian ( ) ; 
+      unsigned int width = co2SensorCamera_ [ n ] ->GetImageWidth ( ) ; 
 
-    unsigned int width = sensor ->GetImageWidth ( ) ; 
+      unsigned int height = co2SensorCamera_ [ n ] ->GetImageHeight ( ) ; 
 
-    unsigned int height = sensor ->GetImageHeight ( ) ; 
+      const unsigned char * data = co2SensorCamera_ [ n ] ->GetImageData ( ) ; 
 
-    const unsigned char * data = sensor ->GetImageData ( ) ; 
+      double maxPpm = 0 ; 
+      
+      for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
-    double maxPpm = 0 ; 
-    
-    for ( unsigned int i = 0 ; i < width ; i++ ) { 
+        for ( unsigned int j = 0 ; j < height ; j++ ) { 
+          
+          double currentPpm = 0 ; 
 
-      for ( unsigned int j = 0 ; j < height ; j++ ) { 
-        
-        double currentPpm = 0 ; 
+          double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+          double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+          double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
 
-        double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
-        double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
-        double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+          // co2 is represented by green
+          double G1 = ( G - R ) ; 
+          double G2 = ( G - B ) ; 
 
-        // co2 is represented by green
-        double G1 = ( G - R ) ; 
-        double G2 = ( G - B ) ; 
+          double positiveDiff = 0 ; 
 
-        double positiveDiff = 0 ; 
+          if ( G1 > 0 ) { 
 
-        if ( G1 > 0 ) { 
+            currentPpm += pow ( G1 , 2 ) ; 
 
-          currentPpm += pow ( G1 , 2 ) ; 
+            ++ positiveDiff ; 
+          
+          }
 
-          ++ positiveDiff ; 
-        
+          if ( G2 > 0 ) { 
+
+            currentPpm += pow ( G2 , 2 ) ; 
+
+            ++ positiveDiff ; 
+
+          }
+          
+          currentPpm = sqrt ( currentPpm ) ; 
+
+          if ( positiveDiff == 1 ) 
+
+            currentPpm /= 255.0 ; 
+
+          else if ( positiveDiff == 2 )     
+
+            currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
+                                 + pow ( 255.0 , 2 ) ) ;
+
+          if ( maxPpm < currentPpm ) 
+
+            maxPpm = currentPpm ; 
+          
         }
 
-        if ( G2 > 0 ) { 
-
-          currentPpm += pow ( G2 , 2 ) ; 
-
-          ++ positiveDiff ; 
-
-        }
-        
-        currentPpm = sqrt ( currentPpm ) ; 
-
-        if ( positiveDiff == 1 ) 
-
-          currentPpm /= 255.0 ; 
-
-        else if ( positiveDiff == 2 )     
-
-          currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
-                               + pow ( 255.0 , 2 ) ) ;
-
-        if ( maxPpm < currentPpm ) 
-
-          maxPpm = currentPpm ; 
-        
       }
-
-    }
+      
+      co2SensorCo2Percentage_ [ n ] = maxPpm ; //FIXME: use mean instead of max
     
-    co2SensorCo2Percentage_ [ 0 ] = maxPpm ; 
+    }
     
     // ------------------------------------------------------------------------
   
@@ -1313,8 +1335,91 @@ namespace pandora_gazebo_interface
   void GazeboInterface ::readThermalSensors ( void ) { 
     
     // ------------------------------------------------------------------------
+      
+    for ( unsigned int n = 0 ; n < thermalSensorNum_ ; n ++ ) { 
+
+      unsigned int width = thermalSensorCamera_ [ n ] ->GetImageWidth ( ) ; 
+
+      unsigned int height = thermalSensorCamera_ [ n ] ->GetImageHeight ( ) ; 
+
+      const unsigned char * data = thermalSensorCamera_ [ n ] 
+                                    ->GetImageData ( ) ; 
     
-    // TODO
+      unsigned int divWidth = ( width / thermalSensorWidth_ [ n ] ) ; 
+      unsigned int divHeight = ( height / thermalSensorHeight_ [ n ] ) ; 
+
+      double ambientTemp = 25.0 ; 
+    
+      for ( unsigned int i = 0 ; i < thermalSensorWidth_ [ n ] ; i++ ) { 
+
+        for ( unsigned int j = 0 ; j < thermalSensorHeight_ [ n ] ; j++ ) { 
+        
+          double meanTemp = 0 ; 
+        
+          for ( unsigned int k = 0 ; k < divWidth ; k++ ) { 
+        
+            for ( unsigned int l = 0 ; l < divHeight ; l++ ) { 
+          
+              double currentTemp = 0 ; 
+
+              double R = data [ ( ( k + i * divWidth ) * height + 
+                                 ( l + j * divHeight ) ) * 3 + 0 ] ; 
+              double G = data [ ( ( k + i * divWidth ) * height + 
+                                 ( l + j * divHeight ) ) * 3 + 1 ] ; 
+              double B = data [ ( ( k + i * divWidth ) * height + 
+                                 ( l + j * divHeight ) ) * 3 + 2 ] ; 
+
+              // temperature is represented by red
+              double R1 = ( R - G ) ; 
+              double R2 = ( R - B ) ; 
+
+              double positiveDiff = 0 ; 
+
+              if ( R1 > 0 ) { 
+
+                currentTemp += pow ( R1 , 2 ) ; 
+
+                ++ positiveDiff ; 
+              
+              }
+
+              if ( R2 > 0 ) { 
+
+                currentTemp += pow ( R2 , 2 ) ; 
+
+                ++ positiveDiff ; 
+
+              }
+              
+              currentTemp = sqrt ( currentTemp ) ; 
+
+              if ( positiveDiff == 1 ) 
+
+                currentTemp /= 255.0 ; 
+
+              else if ( positiveDiff == 2 ) 
+
+                currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
+                                       + pow ( 255.0 , 2 ) ) ; 
+            
+              meanTemp += currentTemp ; 
+            
+            }
+          
+          }
+          
+          meanTemp /= ( divWidth * divHeight ) ; 
+
+          thermalSensorVector_ [ n ] 
+           .push_back ( ( char ) ( meanTemp * 15.0 + ambientTemp ) ) ; 
+
+          //thermalSensorVector_ [ n ] .push_back ( ( char ) ( meanTemp ) ) ; 
+          
+        }
+
+      }
+    
+    }
     
     // ------------------------------------------------------------------------
   
@@ -1326,8 +1431,72 @@ namespace pandora_gazebo_interface
   void GazeboInterface ::readMicrophoneSensors ( void ) { 
     
     // ------------------------------------------------------------------------
+      
+    for ( unsigned int n = 0 ; n < microphoneSensorNum_ ; n ++ ) { 
+
+      unsigned int width = microphoneSensorCamera_ [ n ] ->GetImageWidth ( ) ; 
+
+      unsigned int height = microphoneSensorCamera_ [ n ] ->GetImageHeight ( ) ; 
+
+      const unsigned char * data = microphoneSensorCamera_ [ n ] 
+                                    ->GetImageData ( ) ; 
+
+      double maxCert = 0 ; 
+      
+      for ( unsigned int i = 0 ; i < width ; i++ ) { 
+
+        for ( unsigned int j = 0 ; j < height ; j++ ) { 
+          
+          double currentCert = 0 ; 
+
+          double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+          double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+          double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+
+          // sound is represented by blue
+          double B1 = ( B - R ) ; 
+          double B2 = ( B - G ) ; 
+
+          double positiveDiff = 0 ; 
+
+          if ( B1 > 0 ) { 
+
+            currentCert += pow ( B1 , 2 ) ; 
+
+            ++ positiveDiff ; 
+          
+          }
+
+          if ( B2 > 0 ) { 
+
+            currentCert += pow ( B2 , 2 ) ; 
+
+            ++ positiveDiff ; 
+
+          }
+          
+          currentCert = sqrt ( currentCert ) ; 
+
+          if ( positiveDiff == 1 ) 
+
+            currentCert /= 255.0 ; 
+
+          else if ( positiveDiff == 2 )     
+
+            currentCert /= sqrt ( pow ( 255.0 , 2 ) 
+                                  + pow ( 255.0 , 2 ) ) ; 
+
+          if ( maxCert < currentCert ) 
+
+            maxCert = currentCert ; 
+          
+        }
+
+      }
     
-    // TODO
+      microphoneSensorSoundCertainty_ [ n ] = maxCert ; //FIXME: use mean instead of max
+    
+    }
     
     // ------------------------------------------------------------------------
   

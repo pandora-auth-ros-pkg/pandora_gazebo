@@ -69,6 +69,16 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
     this->topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
   }
 
+  if (!_sdf->HasElement("publishMsg"))
+  {
+    ROS_INFO("Co2 plugin missing <publishMsg>, defaults to true");
+    this->publish_msg_ = true;
+  }
+  else
+  {
+    this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
+  }
+
   this->camera_connect_count_ = 0;
 
   // Make sure the ROS node for Gazebo has already been initialized
@@ -93,24 +103,28 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
 
   if (this->topic_name_ != "")
   {
-    // Custom Callback Queue
-    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<pandora_arm_hardware_interface::Co2Msg>(
-      this->topic_name_,1,
-      boost::bind( &PandoraCo2Plugin::CameraConnect,this),
-      boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
-    this->pub_ = this->rosnode_->advertise(ao);
-    
+  
+    if ( this->publish_msg_ ) { 
+  
+      // Custom Callback Queue
+      ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<pandora_arm_hardware_interface::Co2Msg>(
+        this->topic_name_,1,
+        boost::bind( &PandoraCo2Plugin::CameraConnect,this),
+        boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+      this->pub_ = this->rosnode_->advertise(ao);
+      
+    }
     
     ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
       (this->topic_name_+"/viz/image"),1,
       boost::bind( &PandoraCo2Plugin::CameraConnect,this),
       boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_viz = this->rosnode_->advertise(ao2);
-  // Initialize the controller
   }
 
   // start custom queue for laser
   this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraCo2Plugin::CameraQueueThread,this ) );
+  
 }
 
 // Increment count
@@ -246,15 +260,19 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
   }
 
   this ->pub_viz .publish ( imgviz ) ; 
-
+  
   //----------------------------------------------------------------------
 
-  co2Msg_ .header .stamp = ros:: Time:: now ( ) ; 
-  co2Msg_ .header .frame_id = this ->frame_name_ ; 
-  
-  co2Msg_ .co2_percentage = maxPpm ; 
+  if ( this->publish_msg_ ) { 
+
+    co2Msg_ .header .stamp = ros:: Time:: now ( ) ; 
+    co2Msg_ .header .frame_id = this ->frame_name_ ; 
     
-  this ->pub_ .publish ( this ->co2Msg_ ) ; 
+    co2Msg_ .co2_percentage = maxPpm ; 
+      
+    this ->pub_ .publish ( this ->co2Msg_ ) ; 
+    
+  }
   
   //----------------------------------------------------------------------
   

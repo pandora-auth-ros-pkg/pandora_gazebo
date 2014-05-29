@@ -69,6 +69,16 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     this->topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
   }
 
+  if (!_sdf->HasElement("publishMsg"))
+  {
+    ROS_INFO("Thermal plugin missing <publishMsg>, defaults to true");
+    this->publish_msg_ = true;
+  }
+  else
+  {
+    this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
+  }
+
   this->camera_connect_count_ = 0;
 
   // Make sure the ROS node for Gazebo has already been initialized
@@ -93,12 +103,17 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
 
   if (this->topic_name_ != "")
   {
+  
+    if ( this->publish_msg_ ) { 
+    
     // Custom Callback Queue
     ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<sensor_msgs::Image>(
       this->topic_name_,1,
       boost::bind( &PandoraThermalPlugin::CameraConnect,this),
       boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_ = this->rosnode_->advertise(ao);
+    
+    }
     
     ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
       (this->topic_name_+"/viz/image"),1,
@@ -113,15 +128,12 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
     boost::bind(&PandoraThermalPlugin::CameraDisconnect, this),
     ros::VoidPtr(), &this->camera_queue_);
     this->camera_info_pub_ = this->rosnode_->advertise(cio);
+    
   }
 
-
-  // Initialize the controller
-
-  // sensor generation off by default
-  this->parent_camera_sensor_->SetActive(false);
   // start custom queue for laser
   this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraThermalPlugin::CameraQueueThread,this ) );
+  
 }
 
 // Increment count
@@ -251,92 +263,95 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
   this -> pub_viz .publish ( imgviz ) ; 
 
   //----------------------------------------------------------------------
-
-  tempMsg_ .header .stamp = ros:: Time:: now ( ) ; 
-  tempMsg_ .header .frame_id = this ->frame_name_ ; 
-
-  tempMsg_ .height = 8 ; 
-  tempMsg_ .width = 8 ; 
-  tempMsg_ .step = tempMsg_ .width * 3 ; 
-  tempMsg_ .encoding = "bgr8" ;  
   
-  unsigned int divWidth = ( imgviz .width / tempMsg_ .width ) ; 
-  unsigned int divHeight = ( imgviz .height / tempMsg_ .height ) ; 
+  if ( this->publish_msg_ ) { 
 
-  double ambientTemp = 25.0 ; 
-  
-  for ( unsigned int i = 0 ; i < tempMsg_ .width ; i++ ) { 
+    tempMsg_ .header .stamp = ros:: Time:: now ( ) ; 
+    tempMsg_ .header .frame_id = this ->frame_name_ ; 
 
-    for ( unsigned int j = 0 ; j < tempMsg_ .height ; j++ ) { 
+    tempMsg_ .height = 8 ; 
+    tempMsg_ .width = 8 ; 
+    tempMsg_ .step = tempMsg_ .width * 3 ; 
+    tempMsg_ .encoding = "bgr8" ; 
     
-      double meanTemp = 0 ; 
+    unsigned int divWidth = ( imgviz .width / tempMsg_ .width ) ; 
+    unsigned int divHeight = ( imgviz .height / tempMsg_ .height ) ; 
+
+    double ambientTemp = 25.0 ; 
     
-      for ( unsigned int k = 0 ; k < divWidth ; k++ ) { 
-    
-        for ( unsigned int l = 0 ; l < divHeight ; l++ ) { 
+    for ( unsigned int i = 0 ; i < tempMsg_ .width ; i++ ) { 
+
+      for ( unsigned int j = 0 ; j < tempMsg_ .height ; j++ ) { 
       
-          double currentTemp = 0 ; 
-
-          double R = data [ ( ( k + i * divWidth ) * imgviz .height + 
-                             ( l + j * divHeight ) ) * 3 + 0 ] ; 
-          double G = data [ ( ( k + i * divWidth ) * imgviz .height + 
-                             ( l + j * divHeight ) ) * 3 + 1 ] ; 
-          double B = data [ ( ( k + i * divWidth ) * imgviz .height + 
-                             ( l + j * divHeight ) ) * 3 + 2 ] ; 
-
-          // temperature is represented by red
-          double R1 = ( R - G ) ; 
-          double R2 = ( R - B ) ; 
-
-          double positiveDiff = 0 ; 
-
-          if ( R1 > 0 ) { 
-
-            currentTemp += pow ( R1 , 2 ) ; 
-
-            ++ positiveDiff ; 
-          
-          }
-
-          if ( R2 > 0 ) { 
-
-            currentTemp += pow ( R2 , 2 ) ; 
-
-            ++ positiveDiff ; 
-
-          }
-          
-          currentTemp = sqrt ( currentTemp ) ; 
-
-          if ( positiveDiff == 1 ) 
-
-            currentTemp /= 255.0 ; 
-
-          else if ( positiveDiff == 2 ) 
-
-            currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
-                                   + pow ( 255.0 , 2 ) ) ; 
+        double meanTemp = 0 ; 
+      
+        for ( unsigned int k = 0 ; k < divWidth ; k++ ) { 
+      
+          for ( unsigned int l = 0 ; l < divHeight ; l++ ) { 
         
-          meanTemp += currentTemp ; 
+            double currentTemp = 0 ; 
+
+            double R = data [ ( ( k + i * divWidth ) * imgviz .height + 
+                               ( l + j * divHeight ) ) * 3 + 0 ] ; 
+            double G = data [ ( ( k + i * divWidth ) * imgviz .height + 
+                               ( l + j * divHeight ) ) * 3 + 1 ] ; 
+            double B = data [ ( ( k + i * divWidth ) * imgviz .height + 
+                               ( l + j * divHeight ) ) * 3 + 2 ] ; 
+
+            // temperature is represented by red
+            double R1 = ( R - G ) ; 
+            double R2 = ( R - B ) ; 
+
+            double positiveDiff = 0 ; 
+
+            if ( R1 > 0 ) { 
+
+              currentTemp += pow ( R1 , 2 ) ; 
+
+              ++ positiveDiff ; 
+            
+            }
+
+            if ( R2 > 0 ) { 
+
+              currentTemp += pow ( R2 , 2 ) ; 
+
+              ++ positiveDiff ; 
+
+            }
+            
+            currentTemp = sqrt ( currentTemp ) ; 
+
+            if ( positiveDiff == 1 ) 
+
+              currentTemp /= 255.0 ; 
+
+            else if ( positiveDiff == 2 ) 
+
+              currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
+                                     + pow ( 255.0 , 2 ) ) ; 
+          
+            meanTemp += currentTemp ; 
+          
+          }
         
         }
-      
+        
+        meanTemp /= ( divWidth * divHeight ) ; 
+
+        for ( unsigned int m = 0 ; m < 3 ; m++ ) 
+
+          tempMsg_  
+           .data 
+            .push_back ( ( char ) ( meanTemp * 15.0 + ambientTemp ) ) ; 
+        
       }
-      
-      meanTemp /= ( divWidth * divHeight ) ; 
 
-      for ( unsigned int m = 0 ; m < 3 ; m++ ) 
-
-        tempMsg_  
-         .data 
-          .push_back ( ( char ) ( ( unsigned int ) ( meanTemp * 15.0 
-                                                     + ambientTemp) ) ) ; 
-      
     }
 
+    this -> pub_ .publish ( tempMsg_ ) ; 
+  
   }
-
-  this -> pub_ .publish ( tempMsg_ ) ; 
   
   //----------------------------------------------------------------------
   

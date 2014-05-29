@@ -4,7 +4,8 @@
 
 <!-- ###################################################################### -->
 
-  <xacro:macro name="microphone_gazebo_sensor" >
+  <xacro:macro name="microphone_gazebo_sensor"
+               params="publish_msg" >
 
     <gazebo reference="microphone_link" >
 
@@ -34,6 +35,8 @@
           <frameName>microphone_link</frameName>
           <!--============================================================= -->
           <topicName>sensors/sound</topicName> <!-- FIXME -->
+          <!--============================================================= -->
+          <publishMsg>${publish_msg}</publishMsg>
           <!--============================================================= -->
 
         </plugin>

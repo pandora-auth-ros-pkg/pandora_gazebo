@@ -47,13 +47,12 @@ namespace gazebo
   class PandoraCo2Plugin : public CameraPlugin
   {
 	
-	public: 
+	  public: PandoraCo2Plugin(){}
 	
-	PandoraCo2Plugin(){}
+	  public: void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
 	
-	void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
+	  private: physics::WorldPtr world_;
 	
-	private: physics::WorldPtr world_;
     /// \brief The parent sensor
     private: sensors::SensorPtr parent_sensor_;
     private: sensors::CameraSensorPtr parent_camera_sensor_;
@@ -93,13 +92,15 @@ namespace gazebo
     private: common::Time sim_time_;
     public: void OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
 
-	protected: virtual void OnNewFrame(const unsigned char *_image,
-                   unsigned int _width, unsigned int _height,
-                   unsigned int _depth, const std::string &_format);
+    protected: virtual void OnNewFrame(const unsigned char *_image,
+                     unsigned int _width, unsigned int _height,
+                     unsigned int _depth, const std::string &_format);
                    
     private: void PutCo2Data(common::Time &_updateTime);
     
-    pandora_arm_hardware_interface::Co2Msg co2Msg_ ;
+    private: pandora_arm_hardware_interface::Co2Msg co2Msg_ ;
+    
+    private: bool publish_msg_ ; 
 
 	};
   GZ_REGISTER_SENSOR_PLUGIN(PandoraCo2Plugin)

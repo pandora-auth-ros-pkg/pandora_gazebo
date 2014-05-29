@@ -45,13 +45,12 @@ namespace gazebo
   class PandoraThermalPlugin : public CameraPlugin
   {
 	
-	public: 
+	  public: PandoraThermalPlugin(){}
 	
-	PandoraThermalPlugin(){}
+	  public: void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
 	
-	void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
+	  private: physics::WorldPtr world_;
 	
-	private: physics::WorldPtr world_;
     /// \brief The parent sensor
     private: sensors::SensorPtr parent_sensor_;
     private: sensors::CameraSensorPtr parent_camera_sensor_;
@@ -95,13 +94,15 @@ namespace gazebo
     private: common::Time sim_time_;
     public: void OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
 
-	protected: virtual void OnNewFrame(const unsigned char *_image,
-                   unsigned int _width, unsigned int _height,
-                   unsigned int _depth, const std::string &_format);
-                   
+	  protected: virtual void OnNewFrame(const unsigned char *_image,
+                     unsigned int _width, unsigned int _height,
+                     unsigned int _depth, const std::string &_format);
+                     
     private: void PutThermalData(common::Time &_updateTime);
     
-    sensor_msgs::Image tempMsg_ ; 
+    private: sensor_msgs::Image tempMsg_ ; 
+    
+    private: bool publish_msg_ ; 
 
 	};
   GZ_REGISTER_SENSOR_PLUGIN(PandoraThermalPlugin)

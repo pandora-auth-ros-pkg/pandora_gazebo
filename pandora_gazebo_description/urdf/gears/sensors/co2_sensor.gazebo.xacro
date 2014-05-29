@@ -4,7 +4,8 @@
 
 <!-- ###################################################################### -->
 
-  <xacro:macro name="co2_gazebo_sensor" >
+  <xacro:macro name="co2_gazebo_sensor"
+               params="publish_msg" >
 
     <gazebo reference="co2_link" >
 
@@ -33,6 +34,8 @@
           <frameName>co2_link</frameName>
           <!--============================================================= -->
           <topicName>sensors/co2</topicName> <!-- FIXME -->
+          <!--============================================================= -->
+          <publishMsg>${publish_msg}</publishMsg>
           <!--============================================================= -->
 
         </plugin>
