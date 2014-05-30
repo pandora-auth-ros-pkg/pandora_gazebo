@@ -1,14 +1,8 @@
 <launch>
 
   <arg name="robot" default="gears" />
-
-  <!-- Load joint controller configurations from YAML files to parameter server -->
   
-  <!-- Joint State -->
-  <rosparam command="load" ns="/"
-            file="$(find pandora_gazebo_controllers)/config/position_controllers/pandora_joint_state_controller.yaml" />
-  
-  <!-- Hokuyo Laser -->
+  <!-- Laser -->
   <rosparam command="load" ns="/"
             file="$(find pandora_gazebo_controllers)/config/position_controllers/pandora_laser_controllers.yaml" />
   
@@ -27,8 +21,7 @@
   <!-- Load the controllers -->
   <node name="controller_spawner" 
         pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/" 
-        args="joint_state_controller
-              laser_roll_controller
+        args="laser_roll_controller
               laser_pitch_controller
               kinect_pitch_controller
               kinect_yaw_controller
@@ -36,24 +29,36 @@
               linear_head_pitch_controller
               linear_head_yaw_controller" />
             
-  <!-- Load Skid Steer -->  
+  <!-- Load Skid Steer -->
   <include file="$(find pandora_motor_hardware_interface)/motor_controllers/launch/motor_controller.launch" >
     <arg name="namespace" value="/" />
   </include>
             
-  <!-- Load IMU -->  
+  <!-- Load IMU -->
   <include file="$(find pandora_imu_hardware_interface)/launch/imu_controller.launch" >
     <arg name="namespace" value="/" />
   </include>
             
-  <!-- Load XMEGA -->  
-  <!-- <include file="$(find pandora_xmega_hardware_interface)/launch/xmega_hardware_interface_and_controllers.launch" > -->  
-    <!-- <arg name="namespace" value="/" /> -->  
-  <!-- </include> -->  
+  <!-- Load XMEGA -->
+  <include file="$(find pandora_xmega_hardware_interface)/xmega_controllers/launch/joint_state_controller.launch" >
+    <arg name="namespace" value="/" />
+  </include>
+  
+  <include file="$(find pandora_xmega_hardware_interface)/xmega_controllers/launch/battery_controller.launch" >
+    <arg name="namespace" value="/" />
+  </include>
+  
+  <include file="$(find pandora_xmega_hardware_interface)/xmega_controllers/launch/range_sensor_controller.launch" >
+    <arg name="namespace" value="/" />
+  </include>
             
-  <!-- Load ARM -->  
-  <!-- <include file="$(find pandora_arm_hardware_interface)/arm_controllers/launch/arm_controllers.launch" > -->  
-    <!-- <arg name="namespace" value="/" /> -->  
-  <!-- </include> -->  
+  <!-- Load ARM -->
+  <include file="$(find pandora_arm_hardware_interface)/arm_controllers/launch/co2_sensor_controller.launch" >
+    <arg name="namespace" value="/" />
+  </include>
+  
+  <include file="$(find pandora_arm_hardware_interface)/arm_controllers/launch/thermal_sensor_controller.launch" >
+    <arg name="namespace" value="/" />
+  </include>
               
 </launch>

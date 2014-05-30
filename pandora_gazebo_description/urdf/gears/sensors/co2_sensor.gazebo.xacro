@@ -9,7 +9,8 @@
 
     <gazebo reference="co2_link" >
 
-      <sensor name="co2" type="camera" >
+      <sensor name="co2"
+              type="camera" >
 
         <camera>
           <!--============================================================= -->

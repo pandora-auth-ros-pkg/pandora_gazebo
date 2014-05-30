@@ -158,13 +158,9 @@ namespace pandora_gazebo_interface
     
     readJoints ( ) ; 
     
-    if ( ! ( readTime_ .nsec % 20000000 ) ) 
+    readXMEGA ( ) ; 
     
-      readXMEGA ( ) ; 
-    
-    if ( ! ( readTime_ .nsec % 20000000 ) ) 
-    
-      readARM ( ) ; 
+    readARM ( ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -667,16 +663,23 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    // Number of power supplies and range sensors
-    powerSupplyNum_ = 2 ; //FIXME
-    rangeSensorNum_ = 4 ; //FIXME
+    // Number of batteries and range sensors
+    batteryNum_ = 2 ; //FIXME
+    rangeSensorNum_ = 2 ; //FIXME
+    
+    // ------------------------------------------------------------------------
+  
+    // Update rates of read methods
+      
+    batteryUpdateRate_ = 1 ; //FIXME
+    rangeSensorUpdateRate_ = 10 ; //FIXME
     
     // ------------------------------------------------------------------------
     
     // Resize vectors
-    powerSupplyData_ .resize ( powerSupplyNum_ ) ; 
-    powerSupplyName_ .resize ( powerSupplyNum_ ) ; 
-    powerSupplyVoltage_ .resize ( powerSupplyNum_ ) ; 
+    batteryData_ .resize ( batteryNum_ ) ; 
+    batteryName_ .resize ( batteryNum_ ) ; 
+    batteryVoltage_ .resize ( batteryNum_ ) ; 
     
     rangeSensorData_ .resize ( rangeSensorNum_ ) ; 
     rangeSensorName_ .resize ( rangeSensorNum_ ) ; 
@@ -687,13 +690,14 @@ namespace pandora_gazebo_interface
     rangeSensorMaxRange_ .resize ( rangeSensorNum_ ) ; 
     rangeSensorRange_ .resize ( rangeSensorNum_ ) ; 
     rangeSensorBufferCounter_ .resize ( rangeSensorNum_ ) ; 
+    rangeSensorRay_ .resize ( rangeSensorNum_ ) ; 
     
     // ------------------------------------------------------------------------
   
     // Initialize XMEGA data
-    if ( ! initPowerSupplies ( ) ) { 
+    if ( ! initBatteries ( ) ) { 
     
-      ROS_FATAL ( "Could not initialize power supplies." ) ; 
+      ROS_FATAL ( "Could not initialize batteries." ) ; 
     
       return false ; 
       
@@ -718,23 +722,23 @@ namespace pandora_gazebo_interface
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
-  bool GazeboInterface ::initPowerSupplies ( void ) { 
+  bool GazeboInterface ::initBatteries ( void ) { 
     
     // ------------------------------------------------------------------------
   
-    powerSupplyName_ [ 0 ] = "PSU_battery" ; //FIXME
-    powerSupplyData_ [ 0 ] .name = powerSupplyName_ [ 0 ] ; 
+    batteryName_ [ 0 ] = "/PSU_battery" ; //FIXME
+    batteryData_ [ 0 ] .name = batteryName_ [ 0 ] ; 
     
-    powerSupplyVoltage_ [ 0 ] = 24.0 ; //FIXME
-    powerSupplyData_ [ 0 ] .voltage = & powerSupplyVoltage_ [ 0 ] ; 
+    batteryVoltage_ [ 0 ] = 24.0 ; //FIXME
+    batteryData_ [ 0 ] .voltage = & batteryVoltage_ [ 0 ] ; 
     
     // ------------------------------------------------------------------------
     
-    powerSupplyName_ [ 1 ] = "motors_battery" ; //FIXME
-    powerSupplyData_ [ 1 ] .name = powerSupplyName_ [ 1 ] ; 
+    batteryName_ [ 1 ] = "/motors_battery" ; //FIXME
+    batteryData_ [ 1 ] .name = batteryName_ [ 1 ] ; 
     
-    powerSupplyVoltage_ [ 1 ] = 24.0 ; //FIXME
-    powerSupplyData_ [ 1 ] .voltage = & powerSupplyVoltage_ [ 1 ] ; 
+    batteryVoltage_ [ 1 ] = 24.0 ; //FIXME
+    batteryData_ [ 1 ] .voltage = & batteryVoltage_ [ 1 ] ; 
     
     // ------------------------------------------------------------------------
     
@@ -747,59 +751,22 @@ namespace pandora_gazebo_interface
 
   bool GazeboInterface ::initRangeSensors ( void ) { 
     
-    // ------------------------------------------------------------------------
-    
-    rangeSensorName_ [ 0 ] = "default_sonar" ; //FIXME
-    rangeSensorFrameID_ [ 0 ] = "" ; //FIXME
-    
-    rangeSensorRadiationType_ [ 0 ] = 0 ; //FIXME
-    
-    rangeSensorFOV_ [ 0 ] = 80.0 ; //FIXME
-    
-    rangeSensorMinRange_ [ 0 ] = 0.2 ; //FIXME
-    rangeSensorMaxRange_ [ 0 ] = 4.5 ; //FIXME
-    
-    for ( unsigned int i = 0 ; i < 5 ; i ++ ) 
-    
-      rangeSensorRange_ [ 0 ] [ i ] = rangeSensorMaxRange_ [ 0 ] ; 
-    
-    rangeSensorBufferCounter_ [ 0 ] = 0 ; 
     
     // ------------------------------------------------------------------------
     
-    rangeSensorName_ [ 1 ] = "default_ir" ; //FIXME
-    rangeSensorFrameID_ [ 1 ] = "" ; //FIXME
+    rangeSensorName_ [ 0 ] = "/sensors/left_sonar" ; //FIXME
+    rangeSensorData_ [ 0 ] .name = rangeSensorName_ [ 0 ] ; 
     
-    rangeSensorRadiationType_ [ 1 ] = 1 ; //FIXME
+    rangeSensorName_ [ 1 ] = "/sensors/right_sonar" ; //FIXME
+    rangeSensorData_ [ 1 ] .name = rangeSensorName_ [ 1 ] ; 
     
-    rangeSensorFOV_ [ 1 ] = 8.5 ; //FIXME
+    rangeSensorFrameID_ [ 0 ] = "left_sonar" ; //FIXME
+    rangeSensorData_ [ 0 ] .frameId = rangeSensorFrameID_ [ 0 ] ; 
     
-    rangeSensorMinRange_ [ 1 ] = 0.1 ; //FIXME
-    rangeSensorMaxRange_ [ 1 ] = 0.6 ; //FIXME
+    rangeSensorFrameID_ [ 1 ] = "right_sonar" ; //FIXME
+    rangeSensorData_ [ 1 ] .frameId = rangeSensorFrameID_ [ 1 ] ; 
     
-    for ( unsigned int i = 0 ; i < 5 ; i ++ ) 
-    
-      rangeSensorRange_ [ 1 ] [ i ] = rangeSensorMaxRange_ [ 1 ] ; 
-    
-    rangeSensorBufferCounter_ [ 1 ] = 0 ; 
-    
-    
-    
-    // ------------------------------------------------------------------------
-    
-    rangeSensorName_ [ 2 ] = "sensors/left_sonar" ; //FIXME
-    rangeSensorData_ [ 2 ] .name = rangeSensorName_ [ 2 ] ; 
-    
-    rangeSensorName_ [ 3 ] = "sensors/right_sonar" ; //FIXME
-    rangeSensorData_ [ 3 ] .name = rangeSensorName_ [ 3 ] ; 
-    
-    rangeSensorFrameID_ [ 2 ] = "left_sonar" ; //FIXME
-    rangeSensorData_ [ 2 ] .frameId = rangeSensorFrameID_ [ 2 ] ; 
-    
-    rangeSensorFrameID_ [ 3 ] = "right_sonar" ; //FIXME
-    rangeSensorData_ [ 3 ] .frameId = rangeSensorFrameID_ [ 3 ] ; 
-    
-    for ( unsigned int i = 2 ; i < 4 ; i ++ ) { 
+    for ( unsigned int i = 0 ; i < rangeSensorNum_ ; i ++ ) { 
     
       rangeSensorRadiationType_ [ i ] = 0 ; //FIXME
       rangeSensorData_ [ i ] .radiationType = & rangeSensorRadiationType_ [ i ] ; 
@@ -813,15 +780,20 @@ namespace pandora_gazebo_interface
       rangeSensorMaxRange_ [ i ] = 4.5 ; //FIXME
       rangeSensorData_ [ i ] .maxRange = & rangeSensorMaxRange_ [ i ] ; 
       
-      for ( unsigned int j = 0 ; j < 5 ; j ++ ) 
-      
-        rangeSensorRange_ [ i ] [ j ] = rangeSensorMaxRange_ [ i ] ; 
-      
-      rangeSensorData_ [ i ] .range = & rangeSensorRange_ [ i ] ; 
+      rangeSensorRange_ [ i ] .resize ( 5 , rangeSensorMaxRange_ [ i ] ) ; 
+      rangeSensorData_ [ i ] .range = & rangeSensorRange_ [ i ] [ 0 ] ; 
       
       rangeSensorBufferCounter_ [ i ] = 0 ; 
     
     }
+    
+    rangeSensorRay_ [ 0 ] = 
+    boost ::dynamic_pointer_cast < gazebo ::sensors ::RaySensor > 
+     ( gazebo ::sensors ::get_sensor ( "left_sonar" ) ) ; 
+    
+    rangeSensorRay_ [ 1 ] = 
+    boost ::dynamic_pointer_cast < gazebo ::sensors ::RaySensor > 
+     ( gazebo ::sensors ::get_sensor ( "right_sonar" ) ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -840,6 +812,14 @@ namespace pandora_gazebo_interface
     co2SensorNum_ = 1 ; //FIXME
     thermalSensorNum_ = 3 ; //FIXME
     microphoneSensorNum_ = 1 ; //FIXME
+    
+    // ------------------------------------------------------------------------
+  
+    // Update rates of read methods
+      
+    co2SensorUpdateRate_ = 5 ; //FIXME
+    thermalSensorUpdateRate_ = 30 ; //FIXME
+    microphoneSensorUpdateRate_ = 10 ; //FIXME
     
     // ------------------------------------------------------------------------
     
@@ -909,7 +889,7 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    co2SensorName_ [ 0 ] = "sensors/co2" ; //FIXME
+    co2SensorName_ [ 0 ] = "/sensors/co2" ; //FIXME
     co2SensorData_ [ 0 ] .name = co2SensorName_ [ 0 ] ; 
     
     co2SensorFrameID_ [ 0 ] = "co2" ; //FIXME
@@ -935,13 +915,13 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    thermalSensorName_ [ 0 ] = "sensors/left_thermal" ; //FIXME
+    thermalSensorName_ [ 0 ] = "/sensors/left_thermal" ; //FIXME
     thermalSensorData_ [ 0 ] .name = thermalSensorName_ [ 0 ] ; 
     
-    thermalSensorName_ [ 1 ] = "sensors/center_thermal" ; //FIXME
+    thermalSensorName_ [ 1 ] = "/sensors/center_thermal" ; //FIXME
     thermalSensorData_ [ 1 ] .name = thermalSensorName_ [ 1 ] ; 
     
-    thermalSensorName_ [ 2 ] = "sensors/right_thermal" ; //FIXME
+    thermalSensorName_ [ 2 ] = "/sensors/right_thermal" ; //FIXME
     thermalSensorData_ [ 2 ] .name = thermalSensorName_ [ 2 ] ; 
     
     thermalSensorFrameID_ [ 0 ] = "left_thermal" ; //FIXME
@@ -965,10 +945,8 @@ namespace pandora_gazebo_interface
       thermalSensorData_ [ i ] .step = & thermalSensorStep_ [ i ] ; 
       
       int resolution = thermalSensorHeight_ [ i ] * thermalSensorWidth_ [ i ] ; 
-      
-      //FIXME: thermalSensorVector_ [ i ] .resize ( resolution , 0 ) ; 
-      thermalSensorData_ [ i ] .data = 
-      reinterpret_cast < uint8_t * > ( & thermalSensorVector_ [ i ] [ 0 ] ) ; //XXX
+      thermalSensorVector_ [ i ] .resize ( resolution , 0 ) ; 
+      thermalSensorData_ [ i ] .data = & thermalSensorVector_ [ i ] [ 0 ] ; 
     
     }
     
@@ -997,7 +975,7 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    microphoneSensorName_ [ 0 ] = "sensors/microphone" ; //FIXME
+    microphoneSensorName_ [ 0 ] = "/sensors/microphone" ; //FIXME
     
     microphoneSensorFrameID_ [ 0 ] = "microphone" ; 
     
@@ -1073,14 +1051,14 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
     
-    // Connect and register the power supply handles
+    // Connect and register the battery handles
       
-    for ( unsigned int i = 0 ; i < powerSupplyNum_ ; i ++ ) { 
+    for ( unsigned int i = 0 ; i < batteryNum_ ; i ++ ) { 
     
-      pandora_hardware_interface ::xmega ::PowerSupplyHandle 
-       powerSupplyHandle ( powerSupplyData_ [ i ] ) ; 
+      pandora_hardware_interface ::xmega ::BatteryHandle 
+       batteryHandle ( batteryData_ [ i ] ) ; 
     
-      powerSupplyInterface_ .registerHandle ( powerSupplyHandle ) ; 
+      batteryInterface_ .registerHandle ( batteryHandle ) ; 
     
     }
     
@@ -1088,7 +1066,7 @@ namespace pandora_gazebo_interface
     
     // Connect and register the range sensor handles
       
-    for ( unsigned int i = 2 ; i < rangeSensorNum_ ; i ++ ) { 
+    for ( unsigned int i = 0 ; i < rangeSensorNum_ ; i ++ ) { 
     
       pandora_hardware_interface ::xmega ::RangeSensorHandle 
        rangeSensorHandle ( rangeSensorData_ [ i ] ) ; 
@@ -1133,7 +1111,7 @@ namespace pandora_gazebo_interface
     
     registerInterface ( & imuSensorInterface_ ) ; 
     
-    registerInterface ( & powerSupplyInterface_ ) ; 
+    registerInterface ( & batteryInterface_ ) ; 
     registerInterface ( & rangeSensorInterface_ ) ; 
     
     registerInterface ( & co2SensorInterface_ ) ; 
@@ -1206,9 +1184,17 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    readPowerSupplies ( ) ; 
+    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+                  ( 1.0 / batteryUpdateRate_ ) ) )
+    
+      readBatteries ( ) ; 
+    
+    // ------------------------------------------------------------------------
   
-    readRangeSensors ( ) ; 
+    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+                  ( 1.0 / rangeSensorUpdateRate_ ) ) ) 
+  
+      readRangeSensors ( ) ; 
     
     // ------------------------------------------------------------------------
   
@@ -1217,11 +1203,15 @@ namespace pandora_gazebo_interface
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
-  void GazeboInterface ::readPowerSupplies ( void ) { 
+  void GazeboInterface ::readBatteries ( void ) { 
     
     // ------------------------------------------------------------------------
     
-    // TODO
+    for ( unsigned int n = 0 ; n < batteryNum_ ; n ++ ) { 
+    
+      // TODO
+    
+    }
     
     // ------------------------------------------------------------------------
   
@@ -1234,7 +1224,11 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
     
-    // TODO
+    for ( unsigned int n = 0 ; n < rangeSensorNum_ ; n ++ ) { 
+    
+      // TODO
+    
+    }
     
     // ------------------------------------------------------------------------
   
@@ -1246,12 +1240,25 @@ namespace pandora_gazebo_interface
   void GazeboInterface ::readARM ( void ) { 
     
     // ------------------------------------------------------------------------
+  
+    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+                  ( 1.0 / co2SensorUpdateRate_ ) ) ) 
     
-    readCO2Sensors ( ) ; 
+      readCO2Sensors ( ) ; 
     
-    readThermalSensors ( ) ; 
+    // ------------------------------------------------------------------------
+  
+    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+                  ( 1.0 / thermalSensorUpdateRate_ ) ) ) 
     
-    readMicrophoneSensors ( ) ; 
+      readThermalSensors ( ) ; 
+    
+    // ------------------------------------------------------------------------
+  
+    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+                  ( 1.0 / microphoneSensorUpdateRate_ ) ) ) 
+    
+      readMicrophoneSensors ( ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -1346,25 +1353,32 @@ namespace pandora_gazebo_interface
       
     for ( unsigned int n = 0 ; n < thermalSensorNum_ ; n ++ ) { 
 
-      unsigned int width = thermalSensorCamera_ [ n ] ->GetImageWidth ( ) ; 
+      unsigned int cameraWidth = thermalSensorCamera_ [ n ] 
+                                  ->GetImageWidth ( ) ; 
+                                  
+      unsigned int sensorWidth = thermalSensorWidth_ [ n ] ; 
+      
+      unsigned int divWidth = ( cameraWidth / sensorWidth ) ; 
 
-      unsigned int height = thermalSensorCamera_ [ n ] ->GetImageHeight ( ) ; 
-
+      unsigned int cameraHeight = thermalSensorCamera_ [ n ] 
+                                   ->GetImageHeight ( ) ; 
+                                   
+      unsigned int sensorHeight = thermalSensorHeight_ [ n ] ; 
+      
+      unsigned int divHeight = ( cameraHeight / sensorHeight ) ; 
+      
       const unsigned char * data = thermalSensorCamera_ [ n ] 
                                     ->GetImageData ( ) ; 
       
       if ( data == NULL ) 
       
         return ; 
-    
-      unsigned int divWidth = ( width / thermalSensorWidth_ [ n ] ) ; 
-      unsigned int divHeight = ( height / thermalSensorHeight_ [ n ] ) ; 
 
-      double ambientTemp = 25.0 ; 
+      //double ambientTemp = 25.0 ; 
     
-      for ( unsigned int i = 0 ; i < thermalSensorWidth_ [ n ] ; i++ ) { 
+      for ( unsigned int i = 0 ; i < sensorWidth ; i++ ) { 
 
-        for ( unsigned int j = 0 ; j < thermalSensorHeight_ [ n ] ; j++ ) { 
+        for ( unsigned int j = 0 ; j < sensorHeight ; j++ ) { 
         
           double meanTemp = 0 ; 
         
@@ -1374,11 +1388,11 @@ namespace pandora_gazebo_interface
           
               double currentTemp = 0 ; 
 
-              double R = data [ ( ( k + i * divWidth ) * height + 
+              double R = data [ ( ( k + i * divWidth ) * cameraHeight + 
                                  ( l + j * divHeight ) ) * 3 + 0 ] ; 
-              double G = data [ ( ( k + i * divWidth ) * height + 
+              double G = data [ ( ( k + i * divWidth ) * cameraHeight + 
                                  ( l + j * divHeight ) ) * 3 + 1 ] ; 
-              double B = data [ ( ( k + i * divWidth ) * height + 
+              double B = data [ ( ( k + i * divWidth ) * cameraHeight + 
                                  ( l + j * divHeight ) ) * 3 + 2 ] ; 
 
               // temperature is represented by red
@@ -1422,10 +1436,11 @@ namespace pandora_gazebo_interface
           
           meanTemp /= ( divWidth * divHeight ) ; 
 
-          thermalSensorVector_ [ n ] 
-           .push_back ( ( char ) ( meanTemp * 15.0 + ambientTemp ) ) ; 
+          //thermalSensorVector_ [ n ] 
+          // .push_back ( ( char ) ( meanTemp * 15.0 + ambientTemp ) ) ; 
 
-          //thermalSensorVector_ [ n ] .push_back ( ( char ) ( meanTemp ) ) ; 
+          thermalSensorVector_ [ n ] [ j + i * sensorWidth ] = 
+          ( char ) ( meanTemp ) ; //XXX
           
         }
 

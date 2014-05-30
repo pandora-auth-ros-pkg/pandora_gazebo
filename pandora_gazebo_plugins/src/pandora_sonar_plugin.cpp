@@ -225,12 +225,18 @@ void PandoraSonarPlugin::OnNewLaserScans()
 {
   if (this->topic_name_ != "")
   {
-    common::Time sensor_update_time = this->parent_sensor_->GetLastUpdateTime();
-    if (last_update_time_ < sensor_update_time)
-    {
-      this->PutLaserData(sensor_update_time);
-      last_update_time_ = sensor_update_time;
+  
+    if ( this->publish_msg_ ) {
+    
+      common::Time sensor_update_time = this->parent_sensor_->GetLastUpdateTime();
+      if (last_update_time_ < sensor_update_time)
+      {
+        this->PutLaserData(sensor_update_time);
+        last_update_time_ = sensor_update_time;
+      }
+    
     }
+    
   }
   else
   {
@@ -386,13 +392,9 @@ void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
     }
   }
   this->parent_ray_sensor_->SetActive(true);
-
-  if ( this->publish_msg_ ) { 
   
-    // send data out via ros message
-    this->pub_.publish(this->sonar_msg_);
-
-  }
+  // send data out via ros message
+  this->pub_.publish(this->sonar_msg_);
 
 }
 

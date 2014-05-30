@@ -65,8 +65,8 @@
 #include <gazebo_ros_control/robot_hw_sim.h>
 
 // pandora_ros_control
-#include <pandora_xmega_hardware_interface/power_supply_interface.h>
-#include <pandora_xmega_hardware_interface/range_sensor_interface.h>
+#include <xmega_hardware_interface/battery_interface.h>
+#include <xmega_hardware_interface/range_sensor_interface.h>
 #include <arm_hardware_interface/co2_sensor_interface.h>
 #include <arm_hardware_interface/thermal_sensor_interface.h>
 
@@ -126,7 +126,7 @@ namespace pandora_gazebo_interface
                       
       bool initXMEGA ( void ) ; 
                       
-      bool initPowerSupplies ( void ) ; 
+      bool initBatteries ( void ) ; 
                       
       bool initRangeSensors ( void ) ; 
     
@@ -153,7 +153,7 @@ namespace pandora_gazebo_interface
 
       void readXMEGA ( void ) ; 
 
-      void readPowerSupplies ( void ) ; 
+      void readBatteries ( void ) ; 
 
       void readRangeSensors ( void ) ; 
     
@@ -216,8 +216,8 @@ namespace pandora_gazebo_interface
       hardware_interface ::ImuSensorHandle ::Data imuSensorData_ ; 
       
       std ::vector 
-      < pandora_hardware_interface ::xmega ::PowerSupplyHandle ::Data > 
-       powerSupplyData_ ; 
+      < pandora_hardware_interface ::xmega ::BatteryHandle ::Data > 
+       batteryData_ ; 
        
       std ::vector 
       < pandora_hardware_interface ::xmega ::RangeSensorHandle ::Data > 
@@ -240,8 +240,8 @@ namespace pandora_gazebo_interface
 
       hardware_interface ::ImuSensorInterface imuSensorInterface_ ; 
       
-      pandora_hardware_interface ::xmega ::PowerSupplyInterface 
-       powerSupplyInterface_ ; 
+      pandora_hardware_interface ::xmega ::BatteryInterface 
+       batteryInterface_ ; 
       pandora_hardware_interface ::xmega ::RangeSensorInterface 
        rangeSensorInterface_ ; 
       
@@ -290,14 +290,18 @@ namespace pandora_gazebo_interface
       /////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////
       
-      unsigned int powerSupplyNum_ ; 
+      unsigned int batteryNum_ ; 
       
-      std ::vector < std ::string > powerSupplyName_ ; 
-      std ::vector < double > powerSupplyVoltage_ ; 
+      double batteryUpdateRate_ ; 
+      
+      std ::vector < std ::string > batteryName_ ; 
+      std ::vector < double > batteryVoltage_ ; 
     
       // ----------------------------------------------------------------------
       
       unsigned int rangeSensorNum_ ; 
+      
+      double rangeSensorUpdateRate_ ; 
       
       std ::vector < std ::string > rangeSensorName_ ; 
       std ::vector < std ::string > rangeSensorFrameID_ ; 
@@ -308,13 +312,18 @@ namespace pandora_gazebo_interface
       std ::vector < double > rangeSensorMinRange_ ; 
       std ::vector < double > rangeSensorMaxRange_ ; 
       
-      std ::vector < boost ::array < double , 5 > > rangeSensorRange_ ; 
+      std ::vector < std ::vector <  double > > rangeSensorRange_ ; 
       std ::vector < int > rangeSensorBufferCounter_ ; 
+      
+      std ::vector < gazebo ::sensors ::RaySensorPtr > 
+       rangeSensorRay_ ; 
     
       /////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////
       
       unsigned int co2SensorNum_ ; 
+      
+      double co2SensorUpdateRate_ ; 
       
       std ::vector < std ::string > co2SensorName_ ; 
       std ::vector < std ::string > co2SensorFrameID_ ; 
@@ -327,6 +336,8 @@ namespace pandora_gazebo_interface
       // ----------------------------------------------------------------------
       
       unsigned int thermalSensorNum_ ; 
+      
+      double thermalSensorUpdateRate_ ; 
       
       std ::vector < std ::string > thermalSensorName_ ; 
       std ::vector < std ::string > thermalSensorFrameID_ ; 
@@ -343,6 +354,8 @@ namespace pandora_gazebo_interface
       // ----------------------------------------------------------------------
       
       unsigned int microphoneSensorNum_ ; 
+      
+      double microphoneSensorUpdateRate_ ; 
       
       std ::vector < std ::string > microphoneSensorName_ ; 
       std ::vector < std ::string > microphoneSensorFrameID_ ; 
