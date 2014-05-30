@@ -116,11 +116,17 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
     }
     
     ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
-      (this->topic_name_+"/viz/image"),1,
+      (this->topic_name_+"/viz/image/"+this->frame_name_),1,
       boost::bind( &PandoraCo2Plugin::CameraConnect,this),
       boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_viz = this->rosnode_->advertise(ao2);
+    
   }
+  
+  if ( this->publish_msg_ ) 
+  
+    // sensor generation off by default
+    this->parent_camera_sensor_->SetActive(false);
 
   // start custom queue for laser
   this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraCo2Plugin::CameraQueueThread,this ) );

@@ -106,30 +106,35 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   
     if ( this->publish_msg_ ) { 
     
-    // Custom Callback Queue
-    ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<sensor_msgs::Image>(
-      this->topic_name_,1,
-      boost::bind( &PandoraThermalPlugin::CameraConnect,this),
-      boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
-    this->pub_ = this->rosnode_->advertise(ao);
+      // Custom Callback Queue
+      ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<sensor_msgs::Image>(
+        this->topic_name_,1,
+        boost::bind( &PandoraThermalPlugin::CameraConnect,this),
+        boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+      this->pub_ = this->rosnode_->advertise(ao);
     
     }
     
     ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
-      (this->topic_name_+"/viz/image"),1,
+      (this->topic_name_+"/viz/image/"+this->frame_name_),1,
       boost::bind( &PandoraThermalPlugin::CameraConnect,this),
       boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
     this->pub_viz = this->rosnode_->advertise(ao2);
     
     ros::AdvertiseOptions cio =
     ros::AdvertiseOptions::create<sensor_msgs::CameraInfo>(
-    (this->topic_name_+"/viz/camera_info"), 2,
+    (this->topic_name_+"/viz/camera_info/"+this->frame_name_), 2,
     boost::bind(&PandoraThermalPlugin::CameraConnect, this),
     boost::bind(&PandoraThermalPlugin::CameraDisconnect, this),
     ros::VoidPtr(), &this->camera_queue_);
     this->camera_info_pub_ = this->rosnode_->advertise(cio);
     
   }
+  
+  if ( this->publish_msg_ ) 
+  
+    // sensor generation off by default
+    this->parent_camera_sensor_->SetActive(false);
 
   // start custom queue for laser
   this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraThermalPlugin::CameraQueueThread,this ) );

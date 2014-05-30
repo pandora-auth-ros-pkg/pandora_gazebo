@@ -158,9 +158,13 @@ namespace pandora_gazebo_interface
     
     readJoints ( ) ; 
     
-    readXMEGA ( ) ; 
+    if ( ! ( readTime_ .nsec % 20000000 ) ) 
     
-    readARM ( ) ; 
+      readXMEGA ( ) ; 
+    
+    if ( ! ( readTime_ .nsec % 20000000 ) ) 
+    
+      readARM ( ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -1267,6 +1271,10 @@ namespace pandora_gazebo_interface
       unsigned int height = co2SensorCamera_ [ n ] ->GetImageHeight ( ) ; 
 
       const unsigned char * data = co2SensorCamera_ [ n ] ->GetImageData ( ) ; 
+      
+      if ( data == NULL ) 
+      
+        return ; 
 
       double maxPpm = 0 ; 
       
@@ -1344,6 +1352,10 @@ namespace pandora_gazebo_interface
 
       const unsigned char * data = thermalSensorCamera_ [ n ] 
                                     ->GetImageData ( ) ; 
+      
+      if ( data == NULL ) 
+      
+        return ; 
     
       unsigned int divWidth = ( width / thermalSensorWidth_ [ n ] ) ; 
       unsigned int divHeight = ( height / thermalSensorHeight_ [ n ] ) ; 
@@ -1440,6 +1452,10 @@ namespace pandora_gazebo_interface
 
       const unsigned char * data = microphoneSensorCamera_ [ n ] 
                                     ->GetImageData ( ) ; 
+      
+      if ( data == NULL ) 
+      
+        return ; 
 
       double maxCert = 0 ; 
       
