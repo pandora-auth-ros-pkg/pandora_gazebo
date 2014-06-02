@@ -300,6 +300,10 @@ namespace pandora_gazebo_interface
       
       std ::vector < std ::string > batteryName_ ; 
       std ::vector < double > batteryVoltage_ ; 
+      
+      std ::vector < double > batteryVoltageMax_ ; 
+      std ::vector < double > batteryVoltageMin_ ; 
+      std ::vector < double > batteryDuration_ ; 
     
       // ----------------------------------------------------------------------
       

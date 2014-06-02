@@ -682,6 +682,9 @@ namespace pandora_gazebo_interface
     batteryData_ .resize ( batteryNum_ ) ; 
     batteryName_ .resize ( batteryNum_ ) ; 
     batteryVoltage_ .resize ( batteryNum_ ) ; 
+    batteryVoltageMax_ .resize ( batteryNum_ ) ; 
+    batteryVoltageMin_ .resize ( batteryNum_ ) ; 
+    batteryDuration_ .resize ( batteryNum_ ) ; 
     
     rangeSensorData_ .resize ( rangeSensorNum_ ) ; 
     rangeSensorName_ .resize ( rangeSensorNum_ ) ; 
@@ -731,7 +734,11 @@ namespace pandora_gazebo_interface
     batteryName_ [ 0 ] = "/PSU_battery" ; //FIXME
     batteryData_ [ 0 ] .name = batteryName_ [ 0 ] ; 
     
-    batteryVoltage_ [ 0 ] = 24.0 ; //FIXME
+    batteryVoltageMax_ [ 0 ] = 24.0 ; //FIXME
+    batteryVoltageMin_ [ 0 ] = 18.0 ; //FIXME
+    batteryDuration_ [ 0 ] = 45.0 ; //FIXME
+    
+    batteryVoltage_ [ 0 ] = batteryVoltageMax_ [ 0 ] ; 
     batteryData_ [ 0 ] .voltage = & batteryVoltage_ [ 0 ] ; 
     
     // ------------------------------------------------------------------------
@@ -739,7 +746,11 @@ namespace pandora_gazebo_interface
     batteryName_ [ 1 ] = "/motors_battery" ; //FIXME
     batteryData_ [ 1 ] .name = batteryName_ [ 1 ] ; 
     
-    batteryVoltage_ [ 1 ] = 24.0 ; //FIXME
+    batteryVoltageMax_ [ 1 ] = 24.0 ; //FIXME
+    batteryVoltageMin_ [ 1 ] = 18.0 ; //FIXME
+    batteryDuration_ [ 1 ] = 45.0 ; //FIXME
+    
+    batteryVoltage_ [ 1 ] = batteryVoltageMax_ [ 1 ] ; 
     batteryData_ [ 1 ] .voltage = & batteryVoltage_ [ 1 ] ; 
     
     // ------------------------------------------------------------------------
@@ -771,7 +782,8 @@ namespace pandora_gazebo_interface
     for ( unsigned int i = 0 ; i < rangeSensorNum_ ; i ++ ) { 
     
       rangeSensorRadiationType_ [ i ] = 0 ; //FIXME
-      rangeSensorData_ [ i ] .radiationType = & rangeSensorRadiationType_ [ i ] ; 
+      rangeSensorData_ [ i ] .radiationType = 
+      & rangeSensorRadiationType_ [ i ] ; 
       
       rangeSensorFOV_ [ i ] = 80.0 ; //FIXME
       rangeSensorData_ [ i ] .fieldOfView = & rangeSensorFOV_ [ i ] ; 
@@ -1209,10 +1221,22 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
     
-    for ( unsigned int n = 0 ; n < batteryNum_ ; n ++ ) { 
+    for ( unsigned int n = 0 ; n < batteryNum_ ; n ++ ) {
     
-      // TODO
-    
+      double reduction = ( batteryVoltageMax_ [ n ] - batteryVoltageMin_ [ n ] ) 
+                         / ( batteryDuration_ [ n ] * 60.0 ) ; 
+
+      reduction /= batteryUpdateRate_ ; 
+      
+      batteryVoltage_ [ n ] -= reduction ; 
+      
+      //if ( batteryVoltage_ [ n ] < batteryVoltageMin_ [ n ] )
+      
+        //ROS_ERROR ( "WARNING: The battery \"%s\" has died!" , 
+        //            batteryName_ [ n ] .c_str ( ) ) ; 
+        
+        //immobilizeRobot ( batteryName_ [ n ] , batteryVoltage_ [ n ] ) ; // TODO
+     
     }
     
     // ------------------------------------------------------------------------
@@ -1228,10 +1252,110 @@ namespace pandora_gazebo_interface
     
     for ( unsigned int n = 0 ; n < rangeSensorNum_ ; n ++ ) { 
     
+      int i , hja , hjb ; 
+      int j , vja , vjb ; 
+      
+      double vb , hb ; 
+      
+      int    j1 , j2 , j3 , j4 ; 
+      double r1 , r2 , r3 , r4 , r ; 
+    
       gazebo ::math ::Angle maxAngle = rangeSensorRay_ [ n ] ->GetAngleMax ( ) ; 
       gazebo ::math ::Angle minAngle = rangeSensorRay_ [ n ] ->GetAngleMin ( ) ; 
+
+      double maxRange = rangeSensorRay_ [ n ] ->GetRangeMax ( ) ; 
+      double minRange = rangeSensorRay_ [ n ] ->GetRangeMin ( ) ; 
+      int rayCount = rangeSensorRay_ [ n ] ->GetRayCount ( ) ; 
+      int rangeCount = rangeSensorRay_ [ n ] ->GetRangeCount ( ) ; 
+
+      int verticalRayCount = rangeSensorRay_ [ n ] 
+                              ->GetVerticalRayCount ( ) ; 
+      int verticalRangeCount = rangeSensorRay_ [ n ] 
+                                ->GetVerticalRangeCount ( ) ; 
+                                
+      gazebo ::math ::Angle verticalMaxAngle = rangeSensorRay_ [ n ] 
+                                                ->GetVerticalAngleMax ( ) ; 
+      gazebo ::math ::Angle verticalMinAngle = rangeSensorRay_ [ n ] 
+                                                ->GetVerticalAngleMin ( ) ; 
+
+      double yDiff = maxAngle .Radian ( ) - minAngle .Radian ( ) ; 
+      double pDiff = verticalMaxAngle .Radian ( ) - 
+                     verticalMinAngle .Radian ( ) ; 
+    
+      double currentRange = maxRange ; 
+
+      for ( j = 0 ; j < verticalRangeCount ; j++ ) { 
       
-      // TODO
+        vb = ( verticalRangeCount == 1 ) ? 0 : ( double ) j * 
+                                               ( verticalRayCount - 1 ) / 
+                                               ( verticalRangeCount -  1 ) ; 
+        vja = ( int ) floor ( vb ) ; 
+        vjb = std ::min ( vja + 1 , verticalRayCount - 1 ) ; 
+        vb = vb - floor ( vb ) ; 
+
+        assert ( vja >= 0 && vja < verticalRayCount ) ; 
+        assert ( vjb >= 0 && vjb < verticalRayCount ) ; 
+
+        for ( i = 0 ; i < rangeCount ; i++ ) { 
+        
+          hb = ( rangeCount == 1 ) ? 0 : ( double ) i * ( rayCount - 1 ) / 
+                                         ( rangeCount - 1 ) ; 
+          hja = ( int ) floor ( hb ) ; 
+          hjb = std ::min ( hja + 1 , rayCount - 1 ) ; 
+          hb = hb - floor ( hb ) ; 
+
+          assert ( hja >= 0 && hja < rayCount ) ; 
+          assert ( hjb >= 0 && hjb < rayCount ) ; 
+
+          j1 = hja + vja * rayCount ; 
+          j2 = hjb + vja * rayCount ; 
+          j3 = hja + vjb * rayCount ; 
+          j4 = hjb + vjb * rayCount ; 
+          
+          r1 = std ::min ( rangeSensorRay_ [ n ] 
+                            ->GetLaserShape ( ) 
+                             ->GetRange ( j1 ) , 
+                           maxRange - minRange ) ; 
+          r2 = std ::min ( rangeSensorRay_ [ n ] 
+                            ->GetLaserShape ( ) 
+                             ->GetRange ( j2 ) , 
+                           maxRange - minRange ) ; 
+          r3 = std ::min ( rangeSensorRay_ [ n ] 
+                            ->GetLaserShape ( ) 
+                             ->GetRange ( j3 ) , 
+                           maxRange - minRange ) ; 
+          r4 = std ::min ( rangeSensorRay_ [ n ] 
+                            ->GetLaserShape ( ) 
+                             ->GetRange ( j4 ) , 
+                           maxRange - minRange ) ; 
+
+          r = ( 1 - vb ) * ( ( 1 - hb ) * r1 + hb * r2 ) + 
+              vb * ( ( 1 - hb ) * r3 + hb * r4 ) ; 
+          
+          double yAngle = 0.5 * ( hja + hjb ) * yDiff /  ( rayCount - 1 ) 
+                          + minAngle .Radian ( ) ; 
+          double pAngle = 0.5 * ( vja + vjb ) * pDiff / ( verticalRayCount - 1 ) 
+                          + verticalMinAngle .Radian ( ) ; 
+
+          if ( r != maxRange - minRange ) { 
+          
+            double point = ( r + minRange ) * cos ( pAngle ) * cos ( yAngle ) ; 
+            
+            if ( point < currentRange ) 
+            
+			        currentRange = point ; 
+		
+          } 
+          
+        }
+        
+      }
+      
+      rangeSensorRange_ [ n ] [ rangeSensorBufferCounter_ [ n ] ] = 
+      currentRange ; 
+      
+      rangeSensorBufferCounter_ [ n ] = 
+      fmod ( rangeSensorBufferCounter_ [ n ] + 1 , 5 ) ; 
     
     }
     
