@@ -344,11 +344,8 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
         
         meanTemp /= ( divWidth * divHeight ) ; 
 
-        for ( unsigned int m = 0 ; m < 3 ; m++ ) 
-
-          tempMsg_  
-           .data 
-            .push_back ( ( char ) ( meanTemp * 15.0 + ambientTemp ) ) ; 
+        tempMsg_ .data 
+                  .push_back ( ( char ) ( meanTemp * 15.0 + ambientTemp ) ) ; 
         
       }
 

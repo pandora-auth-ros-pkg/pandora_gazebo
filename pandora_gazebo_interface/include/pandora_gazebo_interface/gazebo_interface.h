@@ -255,6 +255,8 @@ namespace pandora_gazebo_interface
       
       unsigned int linkNum_ ; 
       
+      double linkUpdateRate_ ; 
+      
       std ::vector < gazebo ::physics ::LinkPtr > gazeboLink_ ; 
       std ::vector < std ::string > linkName_ ; 
     
@@ -262,6 +264,8 @@ namespace pandora_gazebo_interface
       /////////////////////////////////////////////////////////////////////////
       
       unsigned int jointNum_ ; 
+      
+      double jointUpdateRate_ ; 
       
       std ::vector < gazebo ::physics ::JointPtr > gazeboJoint_ ; 
       std ::vector < std ::string > jointName_ ; 

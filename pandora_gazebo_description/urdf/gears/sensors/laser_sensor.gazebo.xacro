@@ -6,14 +6,10 @@
 
   <xacro:macro name="laser_gazebo_sensor" >
 
-    <gazebo reference="laser_main_link" >
+    <gazebo reference="laser_link" >
 
       <sensor name="laser"
               type="ray" >
-
-        <!--=============================================================== -->
-        <pose>0.0225 0 0.105 0 0 0</pose> <!-- FIXME -->
-        <!--=============================================================== -->
 
         <ray>
           <!--============================================================= -->
@@ -41,7 +37,7 @@
                 filename="libgazebo_ros_laser.so" >
 
           <!--============================================================= -->
-          <frameName>/laser_main_link</frameName>
+          <frameName>/laser_link</frameName>
           <!--============================================================= -->
           <topicName>/laser/scan</topicName>
           <!--============================================================= -->

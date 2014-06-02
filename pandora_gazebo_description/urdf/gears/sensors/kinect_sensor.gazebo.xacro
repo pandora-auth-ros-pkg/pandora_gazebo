@@ -6,14 +6,14 @@
 
   <xacro:macro name="kinect_gazebo_sensor" >
 
-    <gazebo reference="kinect_main_link" >
+    <gazebo reference="kinect_frame" >
 
       <sensor name="kinect"
               type="depth" >
 
         <camera>
           <!--============================================================= -->
-          <horizontal_fov>1.047198</horizontal_fov> <!-- FIXME -->
+          <horizontal_fov>1.012290966</horizontal_fov> <!-- FIXME -->
           <!--============================================================= -->
           <image>
             <width>640</width>
@@ -32,7 +32,7 @@
                 filename="libgazebo_ros_openni_kinect.so" >
 
           <!--============================================================= -->
-          <frameName>kinect_main_link</frameName>
+          <frameName>kinect_optical_frame</frameName>
           <!--============================================================= -->
           <cameraName>kinect</cameraName>
           <!--============================================================= -->

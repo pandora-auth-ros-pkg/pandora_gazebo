@@ -153,7 +153,7 @@ namespace pandora_gazebo_interface
     readPeriod_ = period ; 
     
     // ------------------------------------------------------------------------
-  
+                  
     readLinks ( ) ; 
     
     readJoints ( ) ; 
@@ -195,6 +195,7 @@ namespace pandora_gazebo_interface
   
     // Number of links
     linkNum_ = 1 ; //FIXME
+    linkUpdateRate_ = 50 ; //FIXME
     
     // ------------------------------------------------------------------------
     
@@ -266,6 +267,7 @@ namespace pandora_gazebo_interface
     // Number of joints
     jointNum_ = 13 ; //FIXME
     //jointNum_ = transmissions .size ( ) ; 
+    jointUpdateRate_ = 50 ; //FIXME
     
     // ------------------------------------------------------------------------
     
@@ -760,10 +762,10 @@ namespace pandora_gazebo_interface
     rangeSensorName_ [ 1 ] = "/sensors/right_sonar" ; //FIXME
     rangeSensorData_ [ 1 ] .name = rangeSensorName_ [ 1 ] ; 
     
-    rangeSensorFrameID_ [ 0 ] = "left_sonar" ; //FIXME
+    rangeSensorFrameID_ [ 0 ] = "left_sonar_link" ; //FIXME
     rangeSensorData_ [ 0 ] .frameId = rangeSensorFrameID_ [ 0 ] ; 
     
-    rangeSensorFrameID_ [ 1 ] = "right_sonar" ; //FIXME
+    rangeSensorFrameID_ [ 1 ] = "right_sonar_link" ; //FIXME
     rangeSensorData_ [ 1 ] .frameId = rangeSensorFrameID_ [ 1 ] ; 
     
     for ( unsigned int i = 0 ; i < rangeSensorNum_ ; i ++ ) { 
@@ -892,7 +894,7 @@ namespace pandora_gazebo_interface
     co2SensorName_ [ 0 ] = "/sensors/co2" ; //FIXME
     co2SensorData_ [ 0 ] .name = co2SensorName_ [ 0 ] ; 
     
-    co2SensorFrameID_ [ 0 ] = "co2" ; //FIXME
+    co2SensorFrameID_ [ 0 ] = "co2_link" ; //FIXME
     co2SensorData_ [ 0 ] .frameId = co2SensorFrameID_ [ 0 ] ; 
     
     co2SensorCo2Percentage_ [ 0 ] = 0.0 ; 
@@ -918,19 +920,19 @@ namespace pandora_gazebo_interface
     thermalSensorName_ [ 0 ] = "/sensors/left_thermal" ; //FIXME
     thermalSensorData_ [ 0 ] .name = thermalSensorName_ [ 0 ] ; 
     
-    thermalSensorName_ [ 1 ] = "/sensors/center_thermal" ; //FIXME
+    thermalSensorName_ [ 1 ] = "/sensors/center_thermal" ; //FIXME XXX
     thermalSensorData_ [ 1 ] .name = thermalSensorName_ [ 1 ] ; 
     
     thermalSensorName_ [ 2 ] = "/sensors/right_thermal" ; //FIXME
     thermalSensorData_ [ 2 ] .name = thermalSensorName_ [ 2 ] ; 
     
-    thermalSensorFrameID_ [ 0 ] = "left_thermal" ; //FIXME
+    thermalSensorFrameID_ [ 0 ] = "left_thermal_link" ; //FIXME
     thermalSensorData_ [ 0 ] .frameId = thermalSensorFrameID_ [ 0 ] ; 
     
-    thermalSensorFrameID_ [ 1 ] = "center_thermal" ; //FIXME
+    thermalSensorFrameID_ [ 1 ] = "middle_thermal_link" ; //FIXME
     thermalSensorData_ [ 1 ] .frameId = thermalSensorFrameID_ [ 1 ] ; 
     
-    thermalSensorFrameID_ [ 2 ] = "right_thermal" ; //FIXME
+    thermalSensorFrameID_ [ 2 ] = "right_thermal_link" ; //FIXME
     thermalSensorData_ [ 2 ] .frameId = thermalSensorFrameID_ [ 2 ] ; 
     
     for ( unsigned int i = 0 ; i < thermalSensorNum_ ; i ++ ) { 
@@ -977,7 +979,7 @@ namespace pandora_gazebo_interface
   
     microphoneSensorName_ [ 0 ] = "/sensors/microphone" ; //FIXME
     
-    microphoneSensorFrameID_ [ 0 ] = "microphone" ; 
+    microphoneSensorFrameID_ [ 0 ] = "microphone_link" ; 
     
     microphoneSensorSoundCertainty_ [ 0 ] = 0.0 ; 
     
@@ -1226,6 +1228,9 @@ namespace pandora_gazebo_interface
     
     for ( unsigned int n = 0 ; n < rangeSensorNum_ ; n ++ ) { 
     
+      gazebo ::math ::Angle maxAngle = rangeSensorRay_ [ n ] ->GetAngleMax ( ) ; 
+      gazebo ::math ::Angle minAngle = rangeSensorRay_ [ n ] ->GetAngleMin ( ) ; 
+      
       // TODO
     
     }
@@ -1374,7 +1379,7 @@ namespace pandora_gazebo_interface
       
         return ; 
 
-      //double ambientTemp = 25.0 ; 
+      double ambientTemp = 25.0 ; 
     
       for ( unsigned int i = 0 ; i < sensorWidth ; i++ ) { 
 
@@ -1436,11 +1441,8 @@ namespace pandora_gazebo_interface
           
           meanTemp /= ( divWidth * divHeight ) ; 
 
-          //thermalSensorVector_ [ n ] 
-          // .push_back ( ( char ) ( meanTemp * 15.0 + ambientTemp ) ) ; 
-
           thermalSensorVector_ [ n ] [ j + i * sensorWidth ] = 
-          ( char ) ( meanTemp ) ; //XXX
+          ( char ) ( meanTemp * 15.0 + ambientTemp ) ; 
           
         }
 
