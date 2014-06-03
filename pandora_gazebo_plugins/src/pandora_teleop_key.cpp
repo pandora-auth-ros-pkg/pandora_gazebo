@@ -1,4 +1,6 @@
 #include <ros/ros.h>
+#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
 #include <geometry_msgs/Twist.h>
 #include <signal.h>
 #include <termios.h>
@@ -25,9 +27,12 @@ class Teleoperation {
   public: 
   
     Teleoperation ( double max_linear , double max_angular ) ; 
+    ~Teleoperation ( void ) ; 
     
     double getLinearScale ( void ) ; 
     double getAngularScale ( void ) ; 
+    
+    void publishTwist ( void ) ; 
     
     void keyLoop ( void ) ; 
 
@@ -37,8 +42,11 @@ class Teleoperation {
     
     double linear_ , linear_scale_ ; 
     double angular_ , angular_scale_ ; 
-    
+   
     ros ::Publisher twist_pub_ ; 
+    
+    boost ::thread pub_thread_ ; 
+    boost ::mutex lock_ ; 
   
 } ;
 
@@ -57,6 +65,14 @@ Teleoperation ::Teleoperation ( double max_linear = 0.5 ,
 
   twist_pub_ = nh_ .advertise < geometry_msgs ::Twist > ( "/cmd_vel" , 1 ) ; 
   
+  pub_thread_  = boost ::thread ( & Teleoperation ::publishTwist , this ) ; 
+  
+}
+
+Teleoperation ::~Teleoperation ( void ) { 
+
+  pub_thread_ .join ( ) ; 
+  
 }
 
 double Teleoperation ::getLinearScale ( void ) { 
@@ -69,6 +85,31 @@ double Teleoperation ::getAngularScale ( void ) {
 
   return angular_scale_ ; 
   
+}
+
+void Teleoperation ::publishTwist ( void ) { 
+
+  geometry_msgs ::Twist twist ; 
+  
+  ros ::Rate rate ( 20 ) ; 
+  
+  while ( ros:: ok ) { 
+      
+    twist .linear .x = linear_ * linear_scale_ ; 
+    twist .angular .z = angular_ * angular_scale_ ; 
+    
+    {
+
+      boost ::mutex ::scoped_lock lock ( lock_ ) ; 
+    
+      twist_pub_ .publish ( twist ) ; 
+    
+    }
+    
+    rate .sleep ( ) ; 
+    
+  }
+
 }
 
 void Teleoperation ::keyLoop ( void ) { 
@@ -216,22 +257,12 @@ void Teleoperation ::keyLoop ( void ) {
       if ( angular_ < - 1.0 ) 
       
         angular_ = - 1.0 ; 
-    
-      double linear = linear_ * linear_scale_ ; 
-      double angular = angular_ * angular_scale_ ; 
         
       std ::cout << "Linear  : " << linear_ * 100 << " \% , " 
-                                 << linear << " m/s\n" ; 
+                                 << linear_ * linear_scale_ << " m/s\n" ; 
       std ::cout << "Angular : " << angular_ * 100 << " \% , " 
-                                 << angular << " r/s\n" ; 
+                                 << angular_ * angular_scale_ << " r/s\n" ; 
       std ::cout << "########################" << '\n' ; 
-
-      geometry_msgs ::Twist twist ; 
-      
-      twist .linear .x = linear ; 
-      twist .angular .z = angular ; 
-    
-      twist_pub_ .publish ( twist ) ; 
       
       dirty = false ; 
       
@@ -257,34 +288,34 @@ int main ( int argc , char ** argv )
 
   ros ::init ( argc , argv , "teleoperation" ) ; 
   
-  Teleoperation teleoperation ; 
+  Teleoperation * teleoperation ; 
   
   if ( argc == 3 ) { 
   
-    teleoperation = Teleoperation ( atof ( argv [ 1 ] ) , 
-                                    atof ( argv [ 2 ] ) ) ; 
+    teleoperation = new Teleoperation ( atof ( argv [ 1 ] ) , 
+                                        atof ( argv [ 2 ] ) ) ; 
     
   }
     
   else {
   
-    teleoperation = Teleoperation ( ) ; 
+    teleoperation = new Teleoperation ( ) ; 
     
     std ::cout << "---------------------\n" 
                << "Maximum linear velocity was not specified, defaults to " 
-               << teleoperation .getLinearScale ( ) 
+               << teleoperation ->getLinearScale ( ) 
                << " m/s.\n" ; 
     
     std ::cout << "---------------------\n" 
                << "Maximum angular velocity was not specified, defaults to " 
-               << teleoperation .getAngularScale ( ) 
+               << teleoperation ->getAngularScale ( ) 
                << " r/s.\n" ; 
     
   }
 
   signal ( SIGINT , quit ) ; 
 
-  teleoperation .keyLoop ( ) ; 
+  teleoperation ->keyLoop ( ) ; 
   
   return ( 0 ) ; 
   
