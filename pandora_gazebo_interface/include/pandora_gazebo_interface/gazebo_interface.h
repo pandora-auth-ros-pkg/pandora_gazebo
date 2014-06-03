@@ -284,7 +284,7 @@ namespace pandora_gazebo_interface
       
       std ::vector < double > jointCommand_ ; 
       
-      std ::vector < double > wheel_velocity_multiplier_ ; 
+      std ::vector < double > jointVelocityMultiplier_ ; 
     
       /////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////

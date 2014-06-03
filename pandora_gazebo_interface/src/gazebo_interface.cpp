@@ -290,7 +290,7 @@ namespace pandora_gazebo_interface
     
     jointCommand_ . resize ( jointNum_ ) ; 
     
-    wheel_velocity_multiplier_ . resize ( jointNum_ ) ; 
+    jointVelocityMultiplier_ . resize ( jointNum_ ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -409,7 +409,7 @@ namespace pandora_gazebo_interface
     
       jointControlMethod_ [ i ] = VELOCITY ; //FIXME
       
-      wheel_velocity_multiplier_ [ i ] = 22.5 / 255.0 ; //FIXME
+      jointVelocityMultiplier_ [ i ] = 1.0 ; //FIXME
     
     }
     
@@ -1709,11 +1709,13 @@ namespace pandora_gazebo_interface
     
       // ----------------------------------------------------------------------
 
-      else if ( jointControlMethod_ [ i ] == VELOCITY )  
+      else if ( jointControlMethod_ [ i ] == VELOCITY ) { 
         
         gazeboJoint_ [ i ] 
          ->SetVelocity ( 0 , jointCommand_ [ i ] * 
-                             wheel_velocity_multiplier_ [ i ] ) ; 
+                             jointVelocityMultiplier_ [ i ] ) ; 
+                             
+      }
       
     }
   
