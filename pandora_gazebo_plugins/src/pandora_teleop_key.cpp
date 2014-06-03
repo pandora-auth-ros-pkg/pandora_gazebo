@@ -16,157 +16,276 @@
 #define KEYCODE_S 's'
 #define KEYCODE_D 'd'
 
-class TeleopTurtle
-{
-public:
-  TeleopTurtle();
-  void keyLoop();
+int kfd = 0 ; 
 
-private:
+struct termios cooked , raw ; 
 
+class Teleoperation { 
+
+  public: 
   
-  ros::NodeHandle nh_;
-  double linear_, angular_, l_scale_, a_scale_;
-  ros::Publisher twist_pub_;
+    Teleoperation ( double max_linear , double max_angular ) ; 
+    
+    double getLinearScale ( void ) ; 
+    double getAngularScale ( void ) ; 
+    
+    void keyLoop ( void ) ; 
+
+  private: 
+
+    ros ::NodeHandle nh_ ; 
+    
+    double linear_ , linear_scale_ ; 
+    double angular_ , angular_scale_ ; 
+    
+    ros ::Publisher twist_pub_ ; 
   
-};
+} ;
 
-TeleopTurtle::TeleopTurtle():
-  linear_(0),
-  angular_(0),
-  l_scale_(1),
-  a_scale_(0.5)
+Teleoperation ::Teleoperation ( double max_linear = 0.5 , 
+                                double max_angular = 0.8 ) : 
+                                
+  linear_ ( 0 ) , 
+  angular_ ( 0 ) , 
+  linear_scale_ ( max_linear ) , 
+  angular_scale_ ( max_angular ) 
+  
 {
-  nh_.param("scale_angular", a_scale_, a_scale_);
-  nh_.param("scale_linear", l_scale_, l_scale_);
 
-  twist_pub_ = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
+  nh_ .param ( "scale_linear" , linear_scale_ , linear_scale_ ) ; 
+  nh_ .param ( "scale_angular" , angular_scale_ , angular_scale_ ) ; 
+
+  twist_pub_ = nh_ .advertise < geometry_msgs ::Twist > ( "/cmd_vel" , 1 ) ; 
+  
 }
 
-int kfd = 0;
-struct termios cooked, raw;
+double Teleoperation ::getLinearScale ( void ) { 
 
-void quit(int sig)
-{
-  tcsetattr(kfd, TCSANOW, &cooked);
-  ros::shutdown();
-  exit(0);
-}
-
-
-int main(int argc, char** argv)
-{
-  ros::init(argc, argv, "teleop_turtle");
-  TeleopTurtle teleop_turtle;
-
-  signal(SIGINT,quit);
-
-  teleop_turtle.keyLoop();
+  return linear_scale_ ; 
   
-  return(0);
 }
 
+double Teleoperation ::getAngularScale ( void ) { 
 
-void TeleopTurtle::keyLoop()
-{
-  char c;
-  bool dirty=false;
+  return angular_scale_ ; 
+  
+}
 
+void Teleoperation ::keyLoop ( void ) { 
+
+  char c ; 
+  bool dirty = false ; 
 
   // get the console in raw mode                                                              
-  tcgetattr(kfd, &cooked);
-  memcpy(&raw, &cooked, sizeof(struct termios));
-  raw.c_lflag &=~ (ICANON | ECHO);
+  tcgetattr ( kfd , & cooked ) ; 
+  memcpy ( & raw , & cooked , sizeof ( struct termios ) ) ; 
+  raw .c_lflag &=~ ( ICANON | ECHO ) ; 
+  
   // Setting a new line, then end of file                         
-  raw.c_cc[VEOL] = 1;
-  raw.c_cc[VEOF] = 2;
-  tcsetattr(kfd, TCSANOW, &raw);
+  raw .c_cc [ VEOL ] = 1 ; 
+  raw .c_cc [ VEOF ] = 2 ; 
+  tcsetattr ( kfd , TCSANOW , & raw ) ; 
 
-  puts("Reading from keyboard");
-  puts("---------------------------");
-  puts("Use arrow keys to move the turtle.");
+  puts ( "---------------------" ) ; 
+  puts ( "Reading from keyboard" ) ; 
+  puts ( "---------------------" ) ; 
+  puts ( "\nUse arrow keys to move the robot:\n" ) ; 
 
-
-  for(;;)
-  {
+  for ( ; ; ) { 
+  
     // get the next event from the keyboard  
-    if(read(kfd, &c, 1) < 0)
-    {
-      perror("read():");
-      exit(-1);
+    if ( read ( kfd , & c , 1 ) < 0 ) { 
+    
+      perror ( "read():" ) ; 
+      exit ( - 1 ) ; 
+      
     }
 
     //~ linear_=angular_=0;
-    ROS_DEBUG("value: 0x%02X\n", c);
+    ROS_DEBUG ( "value: 0x%02X\n" , c ) ; 
     
-    switch(c)
-    {
+    switch ( c ) { 
+    
       case KEYCODE_LEFT:
-        ROS_DEBUG("LEFT");
-        angular_ += 0.25;
-        dirty = true;
-        break;
+      
+        ROS_DEBUG ( "LEFT" ) ; 
+        
+        angular_ += 0.1 ; 
+        
+        dirty = true ; 
+        
+        break ; 
+        
       case KEYCODE_A:
-        ROS_DEBUG("LEFT_2");
-        angular_ += 2.0;
-        dirty = true;
-        break;
+      
+        ROS_DEBUG ( "LEFT_MAX" ) ; 
+        
+        angular_ = 1.0 ; 
+        
+        dirty = true ; 
+        
+        break ; 
+        
       case KEYCODE_RIGHT:
-        ROS_DEBUG("RIGHT");
-        angular_ += -0.25;
-        dirty = true;
-        break;
+      
+        ROS_DEBUG ( "RIGHT" ) ; 
+        
+        angular_ += - 0.1 ; 
+        
+        dirty = true ; 
+        
+        break ; 
+        
       case KEYCODE_D:
-        ROS_DEBUG("RIGHT_2");
-        angular_ += -2.0;
-        dirty = true;
-        break;
+      
+        ROS_DEBUG ( "RIGHT_MAX" ) ; 
+        
+        angular_ = - 1.0;
+        
+        dirty = true ; 
+        
+        break ; 
+        
       case KEYCODE_UP:
-        ROS_DEBUG("UP");
-        linear_ += 0.25;
-        dirty = true;
-        break;
+      
+        ROS_DEBUG ( "UP" ) ; 
+        
+        linear_ += 0.2 ; 
+        
+        dirty = true ; 
+        
+        break ; 
+        
       case KEYCODE_W:
-        ROS_DEBUG("UP_2");
-        linear_ += 1.0;
-        dirty = true;
-        break;
+      
+        ROS_DEBUG ( "UP_MAX" ) ; 
+        
+        linear_ = 1.0 ; 
+        
+        dirty = true ; 
+        
+        break ; 
+        
       case KEYCODE_DOWN:
-        ROS_DEBUG("DOWN");
-        linear_ += -0.25;
-        dirty = true;
-        break;
+      
+        ROS_DEBUG ( "DOWN" ) ; 
+        
+        linear_ += - 0.2 ; 
+        
+        dirty = true ; 
+        
+        break ; 
+        
       case KEYCODE_S:
-        ROS_DEBUG("DOWN_2");
-        linear_ += -1.0;
-        dirty = true;
-        break;
+      
+        ROS_DEBUG("DOWN_MAX");
+        
+        linear_ = - 1.0 ; 
+        
+        dirty = true ; 
+        
+        break ; 
+        
       case KEYCODE_H:
-        ROS_DEBUG("HALT");
-        linear_ = 0.0;
-        angular_= 0.0;
-        dirty = true;
-        break;
-      default:
-    std::cout <<std::hex <<  (int)c  << '\n';
+      
+        ROS_DEBUG ( "HALT" ) ; 
         
+        linear_ = 0.0 ; 
+        angular_ = 0.0 ; 
         
-    }
-   
+        dirty = true ; 
+        
+        break ; 
+                
+    } 
+    
+    if ( dirty == true ) { 
+      
+      if ( linear_ > 1.0 ) 
+      
+        linear_ = 1.0 ; 
+      
+      if ( linear_ < - 1.0 ) 
+      
+        linear_ = - 1.0 ; 
+      
+      if ( angular_ > 1.0 ) 
+      
+        angular_ = 1.0 ; 
+      
+      if ( angular_ < - 1.0 ) 
+      
+        angular_ = - 1.0 ; 
+    
+      double linear = linear_ * linear_scale_ ; 
+      double angular = angular_ * angular_scale_ ; 
+        
+      std ::cout << "Linear  : " << linear_ * 100 << " \% , " 
+                                 << linear << " m/s\n" ; 
+      std ::cout << "Angular : " << angular_ * 100 << " \% , " 
+                                 << angular << " r/s\n" ; 
+      std ::cout << "########################" << '\n' ; 
 
-    geometry_msgs::Twist twist;
-    twist.angular.z = a_scale_*angular_;
-    twist.linear.x = l_scale_*linear_;
-    if(dirty ==true)
-    {
-      twist_pub_.publish(twist);    
-      dirty=false;
+      geometry_msgs ::Twist twist ; 
+      
+      twist .linear .x = linear ; 
+      twist .angular .z = angular ; 
+    
+      twist_pub_ .publish ( twist ) ; 
+      
+      dirty = false ; 
+      
     }
+    
   }
-
-
-  return;
+  
+  return ; 
+  
 }
 
+void quit ( int sig ) { 
 
+  tcsetattr ( kfd , TCSANOW , & cooked ) ; 
+  ros ::shutdown ( ) ; 
+  exit ( 0 ) ; 
+  
+}
 
+int main ( int argc , char ** argv ) 
+
+{ 
+
+  ros ::init ( argc , argv , "teleoperation" ) ; 
+  
+  Teleoperation teleoperation ; 
+  
+  if ( argc == 3 ) { 
+  
+    teleoperation = Teleoperation ( atof ( argv [ 1 ] ) , 
+                                    atof ( argv [ 2 ] ) ) ; 
+    
+  }
+    
+  else {
+  
+    teleoperation = Teleoperation ( ) ; 
+    
+    std ::cout << "---------------------\n" 
+               << "Maximum linear velocity was not specified, defaults to " 
+               << teleoperation .getLinearScale ( ) 
+               << " m/s.\n" ; 
+    
+    std ::cout << "---------------------\n" 
+               << "Maximum angular velocity was not specified, defaults to " 
+               << teleoperation .getAngularScale ( ) 
+               << " r/s.\n" ; 
+    
+  }
+
+  signal ( SIGINT , quit ) ; 
+
+  teleoperation .keyLoop ( ) ; 
+  
+  return ( 0 ) ; 
+  
+}
