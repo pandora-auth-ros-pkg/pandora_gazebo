@@ -736,7 +736,7 @@ namespace pandora_gazebo_interface
     
     batteryVoltageMax_ [ 0 ] = 24.0 ; //FIXME
     batteryVoltageMin_ [ 0 ] = 18.0 ; //FIXME
-    batteryDuration_ [ 0 ] = 45.0 ; //FIXME
+    batteryDuration_ [ 0 ] = 60.0 ; //FIXME
     
     batteryVoltage_ [ 0 ] = batteryVoltageMax_ [ 0 ] ; 
     batteryData_ [ 0 ] .voltage = & batteryVoltage_ [ 0 ] ; 
@@ -832,8 +832,8 @@ namespace pandora_gazebo_interface
     // Update rates of read methods
       
     co2SensorUpdateRate_ = 5 ; //FIXME
-    thermalSensorUpdateRate_ = 30 ; //FIXME
-    microphoneSensorUpdateRate_ = 10 ; //FIXME
+    thermalSensorUpdateRate_ = 10 ; //FIXME
+    microphoneSensorUpdateRate_ = 5 ; //FIXME
     
     // ------------------------------------------------------------------------
     
@@ -1198,14 +1198,14 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
                   ( 1.0 / batteryUpdateRate_ ) ) )
     
       readBatteries ( ) ; 
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
                   ( 1.0 / rangeSensorUpdateRate_ ) ) ) 
   
       readRangeSensors ( ) ; 
@@ -1230,10 +1230,10 @@ namespace pandora_gazebo_interface
       
       batteryVoltage_ [ n ] -= reduction ; 
       
-      //if ( batteryVoltage_ [ n ] < batteryVoltageMin_ [ n ] )
+      if ( batteryVoltage_ [ n ] < batteryVoltageMin_ [ n ] )
       
-        //ROS_ERROR ( "WARNING: The battery \"%s\" has died!" , 
-        //            batteryName_ [ n ] .c_str ( ) ) ; 
+        ROS_WARN_ONCE ( "WARNING: The battery \"%s\" has died!" , 
+                         batteryName_ [ n ] .c_str ( ) ) ; 
         
         //immobilizeRobot ( batteryName_ [ n ] , batteryVoltage_ [ n ] ) ; // TODO
      
@@ -1370,21 +1370,21 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
                   ( 1.0 / co2SensorUpdateRate_ ) ) ) 
     
       readCO2Sensors ( ) ; 
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
                   ( 1.0 / thermalSensorUpdateRate_ ) ) ) 
     
       readThermalSensors ( ) ; 
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .nsec / 1000000.0 ) , 
+    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
                   ( 1.0 / microphoneSensorUpdateRate_ ) ) ) 
     
       readMicrophoneSensors ( ) ; 
