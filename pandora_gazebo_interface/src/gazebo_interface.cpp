@@ -78,6 +78,10 @@ namespace pandora_gazebo_interface
     transmissions_ = transmissions ; 
     
     // ------------------------------------------------------------------------
+    
+    world_ = parentModel_ ->GetWorld ( ) ; 
+    
+    // ------------------------------------------------------------------------
   
     if ( ! initLinks ( ) ) {
   
@@ -149,7 +153,7 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    readTime_ = time ; 
+    readTime_ = gazebo ::common ::Time ( time .sec , time .nsec ) ; 
     readPeriod_ = period ; 
     
     // ------------------------------------------------------------------------
@@ -173,7 +177,7 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    writeTime_ = time ; 
+    writeTime_ = gazebo ::common ::Time ( time .sec , time .nsec ) ; 
     writePeriod_ = period ; 
     
     // ------------------------------------------------------------------------
@@ -195,7 +199,9 @@ namespace pandora_gazebo_interface
   
     // Number of links
     linkNum_ = 1 ; //FIXME
-    linkUpdateRate_ = 50 ; //FIXME
+    
+    linkUpdateRate_ = gazebo ::common ::Time ( 1 / 50.0 ) ; //FIXME
+    linkLastUpdateTime_ = world_ ->GetSimTime ( ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -267,7 +273,9 @@ namespace pandora_gazebo_interface
     // Number of joints
     jointNum_ = 13 ; //FIXME
     //jointNum_ = transmissions .size ( ) ; 
-    jointUpdateRate_ = 50 ; //FIXME
+    
+    jointUpdateRate_ = gazebo ::common ::Time ( 1 / 50.0 ) ; //FIXME
+    jointLastUpdateTime_ = world_ ->GetSimTime ( ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -667,14 +675,18 @@ namespace pandora_gazebo_interface
   
     // Number of batteries and range sensors
     batteryNum_ = 2 ; //FIXME
+    
     rangeSensorNum_ = 2 ; //FIXME
     
     // ------------------------------------------------------------------------
   
     // Update rates of read methods
       
-    batteryUpdateRate_ = 1 ; //FIXME
-    rangeSensorUpdateRate_ = 10 ; //FIXME
+    batteryUpdateRate_ = gazebo ::common ::Time ( 1 / 1.0 ) ; //FIXME
+    batteryLastUpdateTime_ = world_ ->GetSimTime ( ) ; 
+    
+    rangeSensorUpdateRate_ = gazebo ::common ::Time ( 1 / 2.0 ) ; //FIXME
+    rangeSensorLastUpdateTime_ = world_ ->GetSimTime ( ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -824,16 +836,23 @@ namespace pandora_gazebo_interface
   
     // Number of co2 , thermal and microphone sensors
     co2SensorNum_ = 1 ; //FIXME
+    
     thermalSensorNum_ = 3 ; //FIXME
+    
     microphoneSensorNum_ = 1 ; //FIXME
     
     // ------------------------------------------------------------------------
   
     // Update rates of read methods
       
-    co2SensorUpdateRate_ = 5 ; //FIXME
-    thermalSensorUpdateRate_ = 10 ; //FIXME
-    microphoneSensorUpdateRate_ = 5 ; //FIXME
+    co2SensorUpdateRate_ = gazebo ::common ::Time ( 1 / 2.0 ) ; //FIXME
+    co2SensorLastUpdateTime_ = world_ ->GetSimTime ( ) ; 
+    
+    thermalSensorUpdateRate_ = gazebo ::common ::Time ( 1 / 1.0 ) ; //FIXME
+    thermalSensorLastUpdateTime_ = world_ ->GetSimTime ( ) ; 
+    
+    microphoneSensorUpdateRate_ = gazebo ::common ::Time ( 1 / 2.0 ) ; //FIXME
+    microphoneSensorLastUpdateTime_ = world_ ->GetSimTime ( ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -1198,17 +1217,25 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
-                  ( 1.0 / batteryUpdateRate_ ) ) )
+    if ( ( batteryLastUpdateTime_ + batteryUpdateRate_ ) < 
+         readTime_ ) { 
     
       readBatteries ( ) ; 
+      
+      batteryLastUpdateTime_ = readTime_ ; 
+      
+    }
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
-                  ( 1.0 / rangeSensorUpdateRate_ ) ) ) 
-  
+    if ( ( rangeSensorLastUpdateTime_ + rangeSensorUpdateRate_ ) < 
+         readTime_ ) { 
+    
       readRangeSensors ( ) ; 
+      
+      rangeSensorLastUpdateTime_ = readTime_ ; 
+      
+    }
     
     // ------------------------------------------------------------------------
   
@@ -1226,7 +1253,8 @@ namespace pandora_gazebo_interface
       double reduction = ( batteryVoltageMax_ [ n ] - batteryVoltageMin_ [ n ] ) 
                          / ( batteryDuration_ [ n ] * 60.0 ) ; 
 
-      reduction /= batteryUpdateRate_ ; 
+      reduction /= batteryUpdateRate_ .sec + 
+                   batteryUpdateRate_ .nsec / pow ( 10 , 9 ) ; 
       
       batteryVoltage_ [ n ] -= reduction ; 
       
@@ -1370,24 +1398,36 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
-                  ( 1.0 / co2SensorUpdateRate_ ) ) ) 
+    if ( ( co2SensorLastUpdateTime_ + co2SensorUpdateRate_ ) < 
+         readTime_ ) { 
     
       readCO2Sensors ( ) ; 
+      
+      co2SensorLastUpdateTime_ = readTime_ ; 
+      
+    }
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
-                  ( 1.0 / thermalSensorUpdateRate_ ) ) ) 
+    if ( ( thermalSensorLastUpdateTime_ + thermalSensorUpdateRate_ ) < 
+         readTime_ ) { 
     
       readThermalSensors ( ) ; 
+      
+      thermalSensorLastUpdateTime_ = readTime_ ; 
+      
+    }
     
     // ------------------------------------------------------------------------
   
-    if ( ! fmod ( ( readTime_ .sec + readTime_ .nsec / 1000000000.0 ) , 
-                  ( 1.0 / microphoneSensorUpdateRate_ ) ) ) 
+    if ( ( microphoneSensorLastUpdateTime_ + microphoneSensorUpdateRate_ ) < 
+         readTime_ ) { 
     
       readMicrophoneSensors ( ) ; 
+      
+      microphoneSensorLastUpdateTime_ = readTime_ ; 
+      
+    }
     
     // ------------------------------------------------------------------------
     

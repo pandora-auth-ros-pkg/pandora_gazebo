@@ -204,15 +204,19 @@ namespace pandora_gazebo_interface
       std ::vector < transmission_interface ::TransmissionInfo > 
        transmissions_ ; 
     
+      // ----------------------------------------------------------------------
+       
+      gazebo ::physics ::WorldPtr world_ ; 
+    
       /////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////
       
-      ros ::Time readTime_ ; 
+      gazebo ::common ::Time readTime_ ; 
       ros ::Duration readPeriod_ ; 
     
       // ----------------------------------------------------------------------
       
-      ros ::Time writeTime_ ; 
+      gazebo ::common ::Time writeTime_ ; 
       ros ::Duration writePeriod_ ; 
     
       /////////////////////////////////////////////////////////////////////////
@@ -260,7 +264,8 @@ namespace pandora_gazebo_interface
       
       unsigned int linkNum_ ; 
       
-      double linkUpdateRate_ ; 
+      gazebo ::common ::Time linkUpdateRate_ ; 
+      gazebo ::common ::Time linkLastUpdateTime_ ; 
       
       std ::vector < gazebo ::physics ::LinkPtr > gazeboLink_ ; 
       std ::vector < std ::string > linkName_ ; 
@@ -270,7 +275,8 @@ namespace pandora_gazebo_interface
       
       unsigned int jointNum_ ; 
       
-      double jointUpdateRate_ ; 
+      gazebo ::common ::Time jointUpdateRate_ ; 
+      gazebo ::common ::Time jointLastUpdateTime_ ; 
       
       std ::vector < gazebo ::physics ::JointPtr > gazeboJoint_ ; 
       std ::vector < std ::string > jointName_ ; 
@@ -303,7 +309,8 @@ namespace pandora_gazebo_interface
       
       unsigned int batteryNum_ ; 
       
-      double batteryUpdateRate_ ; 
+      gazebo ::common ::Time batteryUpdateRate_ ; 
+      gazebo ::common ::Time batteryLastUpdateTime_ ; 
       
       std ::vector < std ::string > batteryName_ ; 
       std ::vector < double > batteryVoltage_ ; 
@@ -316,7 +323,8 @@ namespace pandora_gazebo_interface
       
       unsigned int rangeSensorNum_ ; 
       
-      double rangeSensorUpdateRate_ ; 
+      gazebo ::common ::Time rangeSensorUpdateRate_ ; 
+      gazebo ::common ::Time rangeSensorLastUpdateTime_ ; 
       
       std ::vector < std ::string > rangeSensorName_ ; 
       std ::vector < std ::string > rangeSensorFrameID_ ; 
@@ -338,7 +346,8 @@ namespace pandora_gazebo_interface
       
       unsigned int co2SensorNum_ ; 
       
-      double co2SensorUpdateRate_ ; 
+      gazebo ::common ::Time co2SensorUpdateRate_ ; 
+      gazebo ::common ::Time co2SensorLastUpdateTime_ ; 
       
       std ::vector < std ::string > co2SensorName_ ; 
       std ::vector < std ::string > co2SensorFrameID_ ; 
@@ -352,7 +361,8 @@ namespace pandora_gazebo_interface
       
       unsigned int thermalSensorNum_ ; 
       
-      double thermalSensorUpdateRate_ ; 
+      gazebo ::common ::Time thermalSensorUpdateRate_ ; 
+      gazebo ::common ::Time thermalSensorLastUpdateTime_ ; 
       
       std ::vector < std ::string > thermalSensorName_ ; 
       std ::vector < std ::string > thermalSensorFrameID_ ; 
@@ -370,7 +380,8 @@ namespace pandora_gazebo_interface
       
       unsigned int microphoneSensorNum_ ; 
       
-      double microphoneSensorUpdateRate_ ; 
+      gazebo ::common ::Time microphoneSensorUpdateRate_ ; 
+      gazebo ::common ::Time microphoneSensorLastUpdateTime_ ; 
       
       std ::vector < std ::string > microphoneSensorName_ ; 
       std ::vector < std ::string > microphoneSensorFrameID_ ; 
