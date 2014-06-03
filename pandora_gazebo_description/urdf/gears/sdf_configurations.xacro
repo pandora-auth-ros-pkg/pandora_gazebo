@@ -22,8 +22,8 @@
     <xacro:property name="enable_kinect_gazebo_sensor" value="true" />
     <!-- ================================================================== -->
     <xacro:property name="enable_sonar_gazebo_sensors" value="true" />
-      <xacro:property name="enable_left_rear_sonar_gazebo_sensor" value="true" />
-      <xacro:property name="enable_right_rear_sonar_gazebo_sensor" value="true" />
+      <xacro:property name="enable_left_sonar_gazebo_sensor" value="true" />
+      <xacro:property name="enable_right_sonar_gazebo_sensor" value="true" />
     <!-- ================================================================== -->
     <xacro:property name="enable_thermal_gazebo_sensors" value="true" />
       <xacro:property name="enable_middle_thermal_gazebo_sensor" value="true" />
