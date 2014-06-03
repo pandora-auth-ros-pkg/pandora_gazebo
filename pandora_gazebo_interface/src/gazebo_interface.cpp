@@ -290,7 +290,9 @@ namespace pandora_gazebo_interface
     
     jointCommand_ . resize ( jointNum_ ) ; 
     
-    jointVelocityMultiplier_ . resize ( jointNum_ ) ; 
+    wheelVelocityMultiplier_ = 1.0 ; //FIXME
+    wheelRadius_ = 0.09794 ; //FIXME
+    wheelSeparation_ = 0.344 ; //FIXME
     
     // ------------------------------------------------------------------------
     
@@ -408,8 +410,6 @@ namespace pandora_gazebo_interface
       jointEffortLimit_ [ i ] = 100.0 ; //FIXME
     
       jointControlMethod_ [ i ] = VELOCITY ; //FIXME
-      
-      jointVelocityMultiplier_ [ i ] = 1.0 ; //FIXME
     
     }
     
@@ -1670,6 +1670,8 @@ namespace pandora_gazebo_interface
   /////////////////////////////////////////////////////////////////////////////
 
   void GazeboInterface ::writeJoints ( void ) { 
+  
+    adjustWheelVelocityCommands ( ) ; 
     
     for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
     
@@ -1691,7 +1693,7 @@ namespace pandora_gazebo_interface
                       jointLowerLimit_ [ i ] , 
                       jointUpperLimit_ [ i ] , 
                       error ) ; 
-            
+        
         else
           
           error = jointCommand  - jointPosition_ [ i ] ; 
@@ -1700,11 +1702,11 @@ namespace pandora_gazebo_interface
                              .computeCommand ( error , writePeriod_ ) ; 
 
         double effortLimit = jointEffortLimit_ [ i ] ; 
-                                    
+                      
         double effort = clamp ( pidCommand , - effortLimit , effortLimit ) ; 
-                                    
+                           
         gazeboJoint_ [ i ] ->SetForce ( 0 , effort ) ; 
-            
+        
       }
     
       // ----------------------------------------------------------------------
@@ -1713,12 +1715,49 @@ namespace pandora_gazebo_interface
         
         gazeboJoint_ [ i ] 
          ->SetVelocity ( 0 , jointCommand_ [ i ] * 
-                             jointVelocityMultiplier_ [ i ] ) ; 
-                             
+                             wheelVelocityMultiplier_ ) ; 
+        
       }
       
     }
   
+  }
+    
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+  void GazeboInterface ::adjustWheelVelocityCommands ( void ) { 
+  
+    double leftWheelVelocity = jointCommand_ [ 0 ] ; 
+    double rightWheelVelocity = jointCommand_ [ 2 ] ; 
+    
+    double x = ( rightWheelVelocity + leftWheelVelocity ) * 
+               wheelRadius_ / 2.0 ; 
+                            
+    double z = ( rightWheelVelocity - leftWheelVelocity ) * 
+               wheelRadius_ / wheelSeparation_ ; 
+                             
+    double linearVelocity = ( + 9.617364797 ) * ( 0.100 ) * pow ( x , 1 ) + 
+                            ( + 8.486951654 ) * ( 0.010 ) * pow ( x , 3 ) + 
+                            ( - 4.091102287 ) * ( 0.010 ) * pow ( x , 5 ) + 
+                            ( + 5.217505876 ) * ( 0.001 ) * pow ( x , 7 ) ; 
+                            
+    double angularVelocity = ( + 2.249634826 ) * ( 1.000 ) * pow ( z , 1 ) + 
+                             ( + 3.134651056 ) * ( 0.100 ) * pow ( z , 3 ) + 
+                             ( - 4.487225078 ) * ( 0.010 ) * pow ( z , 5 ) + 
+                             ( + 1.217253477 ) * ( 0.001 ) * pow ( z , 7 ) ; 
+                             
+    double newLeftWheelVelocity = 
+    ( linearVelocity - angularVelocity * wheelSeparation_ / 2 ) / wheelRadius_ ; 
+    
+    double newRightWheelVelocity = 
+    ( linearVelocity + angularVelocity * wheelSeparation_ / 2 ) / wheelRadius_ ; 
+    
+    jointCommand_ [ 0 ] = newLeftWheelVelocity ; 
+    jointCommand_ [ 1 ] = newLeftWheelVelocity ; 
+    jointCommand_ [ 2 ] = newRightWheelVelocity ; 
+    jointCommand_ [ 3 ] = newRightWheelVelocity ; 
+    
   }
     
   /////////////////////////////////////////////////////////////////////////////

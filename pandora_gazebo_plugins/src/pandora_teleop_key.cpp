@@ -91,7 +91,7 @@ void Teleoperation ::publishTwist ( void ) {
 
   geometry_msgs ::Twist twist ; 
   
-  ros ::Rate rate ( 20 ) ; 
+  ros ::Rate rate ( 100 ) ; 
   
   while ( ros:: ok ) { 
       
