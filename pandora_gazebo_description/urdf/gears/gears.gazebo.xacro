@@ -428,19 +428,21 @@
       </xacro:if>
     </xacro:unless>
     
-    <xacro:if value="$(arg control)" >
-      <!-- ================================================================ -->
-      <xacro:if value="$(arg interface)" >
-        <xacro:gazebo_ros_control_plugin namespace="/"
-                                         hardware_interface="pandora_gazebo_interface/GazeboInterface" />
-      </xacro:if>
-      <!-- ================================================================ -->
-      <xacro:unless value="$(arg interface)" >
-        <xacro:gazebo_ros_control_plugin namespace="/"
-                                         hardware_interface="gazebo_ros_control/DefaultRobotHWSim" />
-      </xacro:unless>
-      <!-- ================================================================ -->
+  </xacro:if>
+
+<!-- Load Ros Control ##################################################### -->
+    
+  <xacro:if value="$(arg control)" >
+  
+    <xacro:if value="$(arg interface)" >
+      <xacro:gazebo_ros_control_plugin namespace="/"
+                                       hardware_interface="pandora_gazebo_interface/GazeboInterface" />
     </xacro:if>
+    
+    <xacro:unless value="$(arg interface)" >
+      <xacro:gazebo_ros_control_plugin namespace="/"
+                                       hardware_interface="gazebo_ros_control/DefaultRobotHWSim" />
+    </xacro:unless>
     
   </xacro:if>
 
