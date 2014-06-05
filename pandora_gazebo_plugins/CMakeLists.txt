@@ -54,12 +54,6 @@ catkin_package(
     pandora_p3d_plugin
 )
 
-add_library(motion_plugin src/motion_plugin.cpp  )
-target_link_libraries(motion_plugin 
-      ${catkin_LIBRARIES}
-      ${GAZEBO_LIBRARIES}  
-)
-
 add_library(pandora_sonar_plugin src/pandora_sonar_plugin.cpp)
 target_link_libraries(pandora_sonar_plugin 
     gazebo_ros_camera_utils 
@@ -111,10 +105,6 @@ target_link_libraries(pandora_microphone_plugin
     ${GAZEBO_LIBRARIES}
     ${catkin_LIBRARIES}
 )
-
-
-add_executable(twist_publisher src/twist_publisher.cpp  )
-target_link_libraries(twist_publisher ${catkin_LIBRARIES})
 
 add_executable(pandora_teleop_key src/pandora_teleop_key.cpp )
 target_link_libraries(pandora_teleop_key ${catkin_LIBRARIES})

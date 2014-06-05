@@ -79,6 +79,16 @@ void PandoraMicrophonePlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _
     this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
   }
 
+  if (!_sdf->HasElement("publishViz"))
+  {
+    ROS_INFO("Microphone plugin missing <publishViz>, defaults to true");
+    this->publish_viz_ = true;
+  }
+  else
+  {
+    this->publish_viz_ = _sdf ->Get < std ::string > ( "publishViz" ) == "true" ; 
+  }
+
   this->camera_connect_count_ = 0;
 
   // Make sure the ROS node for Gazebo has already been initialized
@@ -114,12 +124,16 @@ void PandoraMicrophonePlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _
       this->pub_ = this->rosnode_->advertise(ao);
     
     }
+  
+    if ( this->publish_viz_ ) { 
     
-    ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
-      (this->topic_name_+"/viz/image/"+this->frame_name_),1,
-      boost::bind( &PandoraMicrophonePlugin::CameraConnect,this),
-      boost::bind( &PandoraMicrophonePlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
-    this->pub_viz = this->rosnode_->advertise(ao2);
+      ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
+        (this->topic_name_+"/viz/image/"+this->frame_name_),1,
+        boost::bind( &PandoraMicrophonePlugin::CameraConnect,this),
+        boost::bind( &PandoraMicrophonePlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+      this->pub_viz = this->rosnode_->advertise(ao2);
+    
+    }
     
   }
   
@@ -180,114 +194,126 @@ void PandoraMicrophonePlugin::OnNewFrame(const unsigned char *_image,
 void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime ) 
 
 { 
-
-  double hfov = this ->parent_camera_sensor_ 
-                      ->GetCamera ( ) 
-                       ->GetHFOV ( ) 
-                        .Radian ( ) ; 
-
-  unsigned int width = this ->parent_camera_sensor_ 
-                    ->GetImageWidth ( ) ; 
-
-  unsigned int height = this ->parent_camera_sensor_ 
-                     ->GetImageHeight ( ) ; 
-
-  const unsigned char * data = this ->parent_camera_sensor_ 
-                                     ->GetImageData ( ) ; 
   
-  //----------------------------------------------------------------------
-  
-  sensor_msgs:: Image imgviz ; 
+  if ( this->publish_msg_ || this->publish_viz_) { 
 
-  imgviz .header .stamp = ros:: Time:: now ( ) ; 
-  imgviz .header .frame_id = this ->frame_name_ ; 
+    double hfov = this ->parent_camera_sensor_ 
+                        ->GetCamera ( ) 
+                         ->GetHFOV ( ) 
+                          .Radian ( ) ; 
 
-  imgviz .height = height ; 
-  imgviz .width = width ; 
-  imgviz .step = width * 3 ; 
-  imgviz .encoding = "bgr8" ; 
+    unsigned int width = this ->parent_camera_sensor_ 
+                      ->GetImageWidth ( ) ; 
 
-  double maxCert = 0 ; 
-  
-  for ( unsigned int i = 0 ; i < width ; i++ ) { 
+    unsigned int height = this ->parent_camera_sensor_ 
+                       ->GetImageHeight ( ) ; 
 
-    for ( unsigned int j = 0 ; j < height ; j++ ) { 
-      
-      double currentCert = 0 ; 
+    const unsigned char * data = this ->parent_camera_sensor_ 
+                                       ->GetImageData ( ) ; 
+    
+    //----------------------------------------------------------------------
+    
+    if ( this->publish_viz_ ) { 
 
-      double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
-      double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
-      double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+      imgviz_ .header .stamp = ros:: Time:: now ( ) ; 
+      imgviz_ .header .frame_id = this ->frame_name_ ; 
 
-      // sound is represented by blue
-      double B1 = ( B - R ) ; 
-      double B2 = ( B - G ) ; 
-
-      double positiveDiff = 0 ; 
-
-      if ( B1 > 0 ) { 
-
-        currentCert += pow ( B1 , 2 ) ; 
-
-        ++ positiveDiff ; 
-      
-      }
-
-      if ( B2 > 0 ) { 
-
-        currentCert += pow ( B2 , 2 ) ; 
-
-        ++ positiveDiff ; 
-
-      }
-      
-      currentCert = sqrt ( currentCert ) ; 
-
-      if ( positiveDiff == 1 ) 
-
-        currentCert /= 255.0 ; 
-
-      else if ( positiveDiff == 2 )     
-
-        currentCert /= sqrt ( pow ( 255.0 , 2 ) 
-                              + pow ( 255.0 , 2 ) ) ; 
-
-      for ( unsigned int k = 0 ; k < 3 ; k++ ) 
-
-        imgviz 
-         .data 
-          .push_back ( ( char ) ( currentCert  * 255.0 ) ) ; 
-
-      if ( maxCert < currentCert ) 
-
-        maxCert = currentCert ; 
-      
+      imgviz_ .height = height ; 
+      imgviz_ .width = width ; 
+      imgviz_ .step = width * 3 ; 
+      imgviz_ .encoding = "bgr8" ; 
+    
     }
 
-  }
-
-  this ->pub_viz .publish ( imgviz ) ; 
-
-  //----------------------------------------------------------------------
-  
-  if ( this->publish_msg_ ) { 
+    double maxCert = 0 ; 
     
-    //soundMsg_ .header .stamp = ros:: Time:: now ( ) ; 
-    //soundMsg_ .header .frame_id = this ->frame_name_ ; 
+    for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
-    // Sound detection condition
-    if ( maxCert > 0.9 ) 
+      for ( unsigned int j = 0 ; j < height ; j++ ) { 
+        
+        double currentCert = 0 ; 
 
-      soundMsg_ .data = true ; 
+        double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+        double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+        double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
 
-    else 
+        // sound is represented by blue
+        double B1 = ( B - R ) ; 
+        double B2 = ( B - G ) ; 
 
-      soundMsg_ .data = false ; 
+        double positiveDiff = 0 ; 
+
+        if ( B1 > 0 ) { 
+
+          currentCert += pow ( B1 , 2 ) ; 
+
+          ++ positiveDiff ; 
+        
+        }
+
+        if ( B2 > 0 ) { 
+
+          currentCert += pow ( B2 , 2 ) ; 
+
+          ++ positiveDiff ; 
+
+        }
+        
+        currentCert = sqrt ( currentCert ) ; 
+
+        if ( positiveDiff == 1 ) 
+
+          currentCert /= 255.0 ; 
+
+        else if ( positiveDiff == 2 )     
+
+          currentCert /= sqrt ( pow ( 255.0 , 2 ) 
+                                + pow ( 255.0 , 2 ) ) ; 
     
-    //soundMsg_ .certainty = maxCert ; 
+        if ( this->publish_viz_ ) { 
+
+          for ( unsigned int k = 0 ; k < 3 ; k++ ) 
+
+            imgviz_ 
+             .data 
+              .push_back ( ( char ) ( currentCert  * 255.0 ) ) ; 
+            
+        }
+
+        if ( maxCert < currentCert ) 
+
+          maxCert = currentCert ; 
+        
+      }
+
+    }
+    
+    if ( this->publish_viz_ ) 
+
+      this ->pub_viz .publish ( imgviz_ ) ; 
+
+    //----------------------------------------------------------------------
+    
+    if ( this->publish_msg_ ) { 
       
-    this ->pub_ .publish ( this ->soundMsg_ ) ; 
-    
+      //soundMsg_ .header .stamp = ros:: Time:: now ( ) ; 
+      //soundMsg_ .header .frame_id = this ->frame_name_ ; 
+
+      // Sound detection condition
+      if ( maxCert > 0.9 ) 
+
+        soundMsg_ .data = true ; 
+
+      else 
+
+        soundMsg_ .data = false ; 
+      
+      //soundMsg_ .certainty = maxCert ; 
+        
+      this ->pub_ .publish ( this ->soundMsg_ ) ; 
+      
+    }
+  
   }
   
   //----------------------------------------------------------------------

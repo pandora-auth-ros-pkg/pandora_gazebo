@@ -168,14 +168,29 @@
             <xacro:if value="${enable_left_sonar_gazebo_sensor}" >
               <xacro:if value="$(arg control)" >
                 <xacro:if value="$(arg interface)" >
-                  <xacro:sonar_gazebo_sensor name="left" publish_msg="false" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:sonar_gazebo_sensor name="left" publish_msg="false" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:sonar_gazebo_sensor name="left" publish_msg="false" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:if>
                 <xacro:unless value="$(arg interface)" >
-                  <xacro:sonar_gazebo_sensor name="left" publish_msg="true" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:sonar_gazebo_sensor name="left" publish_msg="true" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:sonar_gazebo_sensor name="left" publish_msg="true" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:unless>
               </xacro:if>
               <xacro:unless value="$(arg control)" >
-                  <xacro:sonar_gazebo_sensor name="left" publish_msg="true" />
+                <xacro:if value="$(arg sensors_viz)" >
+                  <xacro:sonar_gazebo_sensor name="left" publish_msg="true" publish_viz="true" />
+                </xacro:if>
+                <xacro:unless value="$(arg sensors_viz)" >
+                  <xacro:sonar_gazebo_sensor name="left" publish_msg="true" publish_viz="false" />
+                </xacro:unless>
               </xacro:unless>
             </xacro:if>
           </xacro:if>
@@ -184,14 +199,29 @@
             <xacro:if value="${enable_right_sonar_gazebo_sensor}" >
               <xacro:if value="$(arg control)" >
                 <xacro:if value="$(arg interface)" >
-                  <xacro:sonar_gazebo_sensor name="right" publish_msg="false" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:sonar_gazebo_sensor name="right" publish_msg="false" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:sonar_gazebo_sensor name="right" publish_msg="false" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:if>
                 <xacro:unless value="$(arg interface)" >
-                  <xacro:sonar_gazebo_sensor name="right" publish_msg="true" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:sonar_gazebo_sensor name="right" publish_msg="true" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:sonar_gazebo_sensor name="right" publish_msg="true" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:unless>
               </xacro:if>
               <xacro:unless value="$(arg control)" >
-                  <xacro:sonar_gazebo_sensor name="right" publish_msg="true" />
+                <xacro:if value="$(arg sensors_viz)" >
+                  <xacro:sonar_gazebo_sensor name="right" publish_msg="true" publish_viz="true" />
+                </xacro:if>
+                <xacro:unless value="$(arg sensors_viz)" >
+                  <xacro:sonar_gazebo_sensor name="right" publish_msg="true" publish_viz="false" />
+                </xacro:unless>
               </xacro:unless>
             </xacro:if>
           </xacro:if>
@@ -203,14 +233,29 @@
         <xacro:if value="${enable_co2_gazebo_sensor}" >
           <xacro:if value="$(arg control)" >
             <xacro:if value="$(arg interface)" >
-              <xacro:co2_gazebo_sensor publish_msg="false" />
+              <xacro:if value="$(arg sensors_viz)" >
+                <xacro:co2_gazebo_sensor publish_msg="false" publish_viz="true" />
+              </xacro:if>
+              <xacro:unless value="$(arg sensors_viz)" >
+                <xacro:co2_gazebo_sensor publish_msg="false" publish_viz="false" />
+              </xacro:unless>
             </xacro:if>
             <xacro:unless value="$(arg interface)" >
-              <xacro:co2_gazebo_sensor publish_msg="true" />
+              <xacro:if value="$(arg sensors_viz)" >
+                <xacro:co2_gazebo_sensor publish_msg="true" publish_viz="true" />
+              </xacro:if>
+              <xacro:unless value="$(arg sensors_viz)" >
+                <xacro:co2_gazebo_sensor publish_msg="true" publish_viz="false" />
+              </xacro:unless>
             </xacro:unless>
           </xacro:if>
           <xacro:unless value="$(arg control)" >
-              <xacro:co2_gazebo_sensor publish_msg="true" />
+            <xacro:if value="$(arg sensors_viz)" >
+              <xacro:co2_gazebo_sensor publish_msg="true" publish_viz="true" />
+            </xacro:if>
+            <xacro:unless value="$(arg sensors_viz)" >
+              <xacro:co2_gazebo_sensor publish_msg="true" publish_viz="false" />
+            </xacro:unless>
           </xacro:unless>
         </xacro:if>
       </xacro:if>
@@ -222,14 +267,29 @@
             <xacro:if value="${enable_middle_thermal_gazebo_sensor}" >
               <xacro:if value="$(arg control)" >
                 <xacro:if value="$(arg interface)" >
-                  <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="false" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="false" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="false" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:if>
                 <xacro:unless value="$(arg interface)" >
-                  <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="true" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="true" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="true" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:unless>
               </xacro:if>
               <xacro:unless value="$(arg control)" >
-                  <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="true" />
+                <xacro:if value="$(arg sensors_viz)" >
+                  <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="true" publish_viz="true" />
+                </xacro:if>
+                <xacro:unless value="$(arg sensors_viz)" >
+                  <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="true" publish_viz="false" />
+                </xacro:unless>
               </xacro:unless>
             </xacro:if>
           </xacro:if>
@@ -238,14 +298,29 @@
             <xacro:if value="${enable_left_thermal_gazebo_sensor}" >
               <xacro:if value="$(arg control)" >
                 <xacro:if value="$(arg interface)" >
-                  <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="false" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="false" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="false" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:if>
                 <xacro:unless value="$(arg interface)" >
-                  <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="true" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="true" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="true" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:unless>
               </xacro:if>
               <xacro:unless value="$(arg control)" >
-                  <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="true" />
+                <xacro:if value="$(arg sensors_viz)" >
+                  <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="true" publish_viz="true" />
+                </xacro:if>
+                <xacro:unless value="$(arg sensors_viz)" >
+                  <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="true" publish_viz="false" />
+                </xacro:unless>
               </xacro:unless>
             </xacro:if>
           </xacro:if>
@@ -254,14 +329,29 @@
             <xacro:if value="${enable_right_thermal_gazebo_sensor}" >
               <xacro:if value="$(arg control)" >
                 <xacro:if value="$(arg interface)" >
-                  <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="false" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="false" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="false" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:if>
                 <xacro:unless value="$(arg interface)" >
-                  <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="true" />
+                  <xacro:if value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="true" publish_viz="true" />
+                  </xacro:if>
+                  <xacro:unless value="$(arg sensors_viz)" >
+                    <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="true" publish_viz="false" />
+                  </xacro:unless>
                 </xacro:unless>
               </xacro:if>
               <xacro:unless value="$(arg control)" >
-                  <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="true" />
+                <xacro:if value="$(arg sensors_viz)" >
+                  <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="true" publish_viz="true" />
+                </xacro:if>
+                <xacro:unless value="$(arg sensors_viz)" >
+                  <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="true" publish_viz="false" />
+                </xacro:unless>
               </xacro:unless>
             </xacro:if>
           </xacro:if>
@@ -273,14 +363,29 @@
         <xacro:if value="${enable_microphone_gazebo_sensor}" >
           <xacro:if value="$(arg control)" >
             <xacro:if value="$(arg interface)" >
-              <xacro:microphone_gazebo_sensor publish_msg="false" />
+              <xacro:if value="$(arg sensors_viz)" >
+                <xacro:microphone_gazebo_sensor publish_msg="false" publish_viz="true" />
+              </xacro:if>
+              <xacro:unless value="$(arg sensors_viz)" >
+                <xacro:microphone_gazebo_sensor publish_msg="false" publish_viz="false" />
+              </xacro:unless>
             </xacro:if>
             <xacro:unless value="$(arg interface)" >
-              <xacro:microphone_gazebo_sensor publish_msg="true" />
+              <xacro:if value="$(arg sensors_viz)" >
+                <xacro:microphone_gazebo_sensor publish_msg="true" publish_viz="true" />
+              </xacro:if>
+              <xacro:unless value="$(arg sensors_viz)" >
+                <xacro:microphone_gazebo_sensor publish_msg="true" publish_viz="false" />
+              </xacro:unless>
             </xacro:unless>
           </xacro:if>
           <xacro:unless value="$(arg control)" >
-              <xacro:microphone_gazebo_sensor publish_msg="true" />
+            <xacro:if value="$(arg sensors_viz)" >
+              <xacro:microphone_gazebo_sensor publish_msg="true" publish_viz="true" />
+            </xacro:if>
+            <xacro:unless value="$(arg sensors_viz)" >
+              <xacro:microphone_gazebo_sensor publish_msg="true" publish_viz="false" />
+            </xacro:unless>
           </xacro:unless>
         </xacro:if>
       </xacro:if>

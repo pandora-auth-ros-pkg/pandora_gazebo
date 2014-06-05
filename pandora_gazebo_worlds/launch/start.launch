@@ -1,14 +1,19 @@
 <launch>
 
+  <arg name="gui" default="true"/>
+  
   <arg name="world" default="empty"/>
+  
   <arg name="robot" default="gears"/>
-  <arg name="control" default="true"/>
-  <arg name="interface" default="true"/>
+  
   <arg name="x" default="0"/>
   <arg name="y" default="0"/>
   <arg name="z" default="0"/>
   <arg name="Y" default="0"/>
-  <arg name="gui" default="true"/>
+  
+  <arg name="control" default="true"/>
+  <arg name="interface" default="true"/>
+  <arg name="sensors_viz" default="false" />
   
   <param name="/use_sim_time" value="true" />
 
@@ -19,6 +24,7 @@
   <include file="$(find pandora_gazebo_description)/launch/$(arg robot)/$(arg robot)_gazebo_description.launch" >
     <arg name="control" value="$(arg control)" />
     <arg name="interface" value="$(arg interface)" />
+    <arg name="sensors_viz" value="$(arg sensors_viz)" />
   </include>
   
   <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" 

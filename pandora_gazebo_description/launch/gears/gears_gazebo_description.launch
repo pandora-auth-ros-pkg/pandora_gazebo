@@ -4,6 +4,7 @@
 
   <arg name="control" default="true" />
   <arg name="interface" default="true" />
+  <arg name="sensors_viz" default="false" />
   
   <group if="$(arg control)" >
   
@@ -18,7 +19,7 @@
   </group>
 
   <param name="robot_description"
-         command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/urdf/gears/gears.gazebo.xacro' control:=$(arg control) interface:=$(arg interface)" />
+         command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/urdf/gears/gears.gazebo.xacro' control:=$(arg control) interface:=$(arg interface) sensors_viz:=$(arg sensors_viz)" />
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
   

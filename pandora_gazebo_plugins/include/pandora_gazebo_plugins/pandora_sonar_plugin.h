@@ -124,6 +124,7 @@ namespace gazebo
     public: void OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
   
     private: bool publish_msg_ ; 
+    private: bool publish_viz_ ; 
 
   };
 

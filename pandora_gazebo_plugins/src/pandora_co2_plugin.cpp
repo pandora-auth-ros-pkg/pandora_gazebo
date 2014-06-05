@@ -79,6 +79,16 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
     this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
   }
 
+  if (!_sdf->HasElement("publishViz"))
+  {
+    ROS_INFO("Co2 plugin missing <publishViz>, defaults to true");
+    this->publish_viz_ = true;
+  }
+  else
+  {
+    this->publish_viz_ = _sdf ->Get < std ::string > ( "publishViz" ) == "true" ; 
+  }
+
   this->camera_connect_count_ = 0;
 
   // Make sure the ROS node for Gazebo has already been initialized
@@ -114,12 +124,16 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
       this->pub_ = this->rosnode_->advertise(ao);
       
     }
+  
+    if ( this->publish_viz_ ) { 
     
-    ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
-      (this->topic_name_+"/viz/image/"+this->frame_name_),1,
-      boost::bind( &PandoraCo2Plugin::CameraConnect,this),
-      boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
-    this->pub_viz = this->rosnode_->advertise(ao2);
+      ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
+        (this->topic_name_+"/viz/image/"+this->frame_name_),1,
+        boost::bind( &PandoraCo2Plugin::CameraConnect,this),
+        boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+      this->pub_viz = this->rosnode_->advertise(ao2);
+      
+    }
     
   }
   
@@ -179,105 +193,117 @@ void PandoraCo2Plugin::OnNewFrame(const unsigned char *_image,
 }
 
 void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) { 
-
-  double hfov = this ->parent_camera_sensor_ 
-                      ->GetCamera ( ) 
-                       ->GetHFOV ( ) 
-                        .Radian ( ) ; 
-
-  unsigned int width = this ->parent_camera_sensor_ 
-                    ->GetImageWidth ( ) ; 
-
-  unsigned int height = this ->parent_camera_sensor_ 
-                     ->GetImageHeight ( ) ; 
-
-  const unsigned char * data = this ->parent_camera_sensor_ 
-                                     ->GetImageData ( ) ; 
   
-  //----------------------------------------------------------------------
-  
-  sensor_msgs:: Image imgviz ; 
+  if ( this->publish_msg_ || this->publish_viz_) { 
 
-  imgviz .header .stamp = ros:: Time:: now ( ) ; 
-  imgviz .header .frame_id = this ->frame_name_ ; 
+    double hfov = this ->parent_camera_sensor_ 
+                        ->GetCamera ( ) 
+                         ->GetHFOV ( ) 
+                          .Radian ( ) ; 
 
-  imgviz .height = height ; 
-  imgviz .width = width ; 
-  imgviz .step = width * 3 ; 
-  imgviz .encoding = "bgr8" ; 
+    unsigned int width = this ->parent_camera_sensor_ 
+                      ->GetImageWidth ( ) ; 
 
-  double maxPpm = 0 ; 
-  
-  for ( unsigned int i = 0 ; i < width ; i++ ) { 
+    unsigned int height = this ->parent_camera_sensor_ 
+                       ->GetImageHeight ( ) ; 
 
-    for ( unsigned int j = 0 ; j < height ; j++ ) { 
-      
-      double currentPpm = 0 ; 
+    const unsigned char * data = this ->parent_camera_sensor_ 
+                                       ->GetImageData ( ) ; 
+    
+    //----------------------------------------------------------------------
+    
+    if ( this->publish_viz_ ) { 
 
-      double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
-      double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
-      double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+      imgviz_ .header .stamp = ros:: Time:: now ( ) ; 
+      imgviz_ .header .frame_id = this ->frame_name_ ; 
 
-      // co2 is represented by green
-      double G1 = ( G - R ) ; 
-      double G2 = ( G - B ) ; 
-
-      double positiveDiff = 0 ; 
-
-      if ( G1 > 0 ) { 
-
-        currentPpm += pow ( G1 , 2 ) ; 
-
-        ++ positiveDiff ; 
-      
-      }
-
-      if ( G2 > 0 ) { 
-
-        currentPpm += pow ( G2 , 2 ) ; 
-
-        ++ positiveDiff ; 
-
-      }
-      
-      currentPpm = sqrt ( currentPpm ) ; 
-
-      if ( positiveDiff == 1 ) 
-
-        currentPpm /= 255.0 ; 
-
-      else if ( positiveDiff == 2 )     
-
-        currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
-                             + pow ( 255.0 , 2 ) ) ;
-
-      for ( unsigned int k = 0 ; k < 3 ; k++ ) 
-
-        imgviz 
-         .data 
-          .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
-
-      if ( maxPpm < currentPpm ) 
-
-        maxPpm = currentPpm ; 
+      imgviz_ .height = height ; 
+      imgviz_ .width = width ; 
+      imgviz_ .step = width * 3 ; 
+      imgviz_ .encoding = "bgr8" ; 
       
     }
 
-  }
-
-  this ->pub_viz .publish ( imgviz ) ; 
-  
-  //----------------------------------------------------------------------
-
-  if ( this->publish_msg_ ) { 
-
-    co2Msg_ .header .stamp = ros:: Time:: now ( ) ; 
-    co2Msg_ .header .frame_id = this ->frame_name_ ; 
+    double maxPpm = 0 ; 
     
-    co2Msg_ .co2_percentage = maxPpm ; 
+    for ( unsigned int i = 0 ; i < width ; i++ ) { 
+
+      for ( unsigned int j = 0 ; j < height ; j++ ) { 
+        
+        double currentPpm = 0 ; 
+
+        double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
+        double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
+        double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+
+        // co2 is represented by green
+        double G1 = ( G - R ) ; 
+        double G2 = ( G - B ) ; 
+
+        double positiveDiff = 0 ; 
+
+        if ( G1 > 0 ) { 
+
+          currentPpm += pow ( G1 , 2 ) ; 
+
+          ++ positiveDiff ; 
+        
+        }
+
+        if ( G2 > 0 ) { 
+
+          currentPpm += pow ( G2 , 2 ) ; 
+
+          ++ positiveDiff ; 
+
+        }
+        
+        currentPpm = sqrt ( currentPpm ) ; 
+
+        if ( positiveDiff == 1 ) 
+
+          currentPpm /= 255.0 ; 
+
+        else if ( positiveDiff == 2 )     
+
+          currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
+                               + pow ( 255.0 , 2 ) ) ;
+    
+        if ( this->publish_viz_ ) { 
+
+          for ( unsigned int k = 0 ; k < 3 ; k++ ) 
+
+            imgviz_ 
+             .data 
+              .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
+              
+        }
+
+        if ( maxPpm < currentPpm ) 
+
+          maxPpm = currentPpm ; 
+        
+      }
+
+    }
+    
+    if ( this->publish_viz_ ) 
+
+      this ->pub_viz .publish ( imgviz_ ) ; 
+    
+    //----------------------------------------------------------------------
+
+    if ( this->publish_msg_ ) { 
+
+      co2Msg_ .header .stamp = ros:: Time:: now ( ) ; 
+      co2Msg_ .header .frame_id = this ->frame_name_ ; 
       
-    this ->pub_ .publish ( this ->co2Msg_ ) ; 
-    
+      co2Msg_ .co2_percentage = maxPpm ; 
+        
+      this ->pub_ .publish ( this ->co2Msg_ ) ; 
+      
+    }
+  
   }
   
   //----------------------------------------------------------------------
