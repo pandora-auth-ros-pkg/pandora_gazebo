@@ -1,8 +1,10 @@
 <launch>
+    
+<!-- ###################################################################### -->
 
   <arg name="robot" default="gears" />
-
-  <!-- Load joint controller configurations from YAML files to parameter server -->
+    
+<!-- ###################################################################### -->
   
   <!-- Joint State -->
   <rosparam command="load" ns="/"
@@ -27,6 +29,8 @@
   <!-- Robot Wheels -->
   <rosparam command="load" ns="/"
             file="$(find pandora_gazebo_controllers)/config/effort_controllers/pandora_$(arg robot)_wheel_controllers.yaml" />
+    
+<!-- ###################################################################### -->
   
   <!-- Load the controllers -->
   <node name="controller_spawner" 
@@ -43,5 +47,7 @@
               $(arg robot)_left_rear_wheel_controller
               $(arg robot)_right_front_wheel_controller
               $(arg robot)_right_rear_wheel_controller" />
+    
+<!-- ###################################################################### -->
               
 </launch>

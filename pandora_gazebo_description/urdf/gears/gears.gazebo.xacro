@@ -63,56 +63,40 @@
   
   <xacro:if value="${enable_gazebo_physics}" >
   
-    <xacro:if value="${enable_side_links}" >
-      <xacro:if value="${enable_side_joint_physics}" >
-        <xacro:side_joint_physics prefix_y="left" />
-        <xacro:side_joint_physics prefix_y="right" />
-      </xacro:if>
+    <xacro:if value="${enable_side_joint_physics}" >
+      <xacro:side_joint_physics prefix_y="left" />
+      <xacro:side_joint_physics prefix_y="right" />
     </xacro:if>
     
-    <xacro:if value="${enable_wheel_links}" >
-      <!-- ================================================================ -->
-      <xacro:if value="${enable_wheel_link_physics}" >
-        <xacro:wheel_link_physics prefix_y="left" prefix_x="front" />
-        <xacro:wheel_link_physics prefix_y="left" prefix_x="rear" />
-        <xacro:wheel_link_physics prefix_y="right" prefix_x="front" />
-        <xacro:wheel_link_physics prefix_y="right" prefix_x="rear" />
-      </xacro:if>
-      <!-- ================================================================ -->
-      <xacro:if value="${enable_wheel_joint_physics}" >
-        <xacro:wheel_joint_physics prefix_y="left" prefix_x="front" />
-        <xacro:wheel_joint_physics prefix_y="left" prefix_x="rear" />
-        <xacro:wheel_joint_physics prefix_y="right" prefix_x="front" />
-        <xacro:wheel_joint_physics prefix_y="right" prefix_x="rear" />
-      </xacro:if>
-      <!-- ================================================================ -->
+    <!-- ================================================================ -->
+    <xacro:if value="${enable_wheel_link_physics}" >
+      <xacro:wheel_link_physics prefix_y="left" prefix_x="front" />
+      <xacro:wheel_link_physics prefix_y="left" prefix_x="rear" />
+      <xacro:wheel_link_physics prefix_y="right" prefix_x="front" />
+      <xacro:wheel_link_physics prefix_y="right" prefix_x="rear" />
     </xacro:if>
+    <!-- ================================================================ -->
+    <xacro:if value="${enable_wheel_joint_physics}" >
+      <xacro:wheel_joint_physics prefix_y="left" prefix_x="front" />
+      <xacro:wheel_joint_physics prefix_y="left" prefix_x="rear" />
+      <xacro:wheel_joint_physics prefix_y="right" prefix_x="front" />
+      <xacro:wheel_joint_physics prefix_y="right" prefix_x="rear" />
+    </xacro:if>
+    <!-- ================================================================ -->
     
-    <xacro:if value="${enable_linear_links}" >
-      <!-- ================================================================ -->
-      <xacro:if value="${enable_linear_elevator_link}" >
-        <xacro:if value="${enable_linear_elevator_joint_physics}" >
-          <xacro:linear_elevator_joint_physics />
-        </xacro:if>
-      </xacro:if>
-      <!-- ================================================================ -->
-      <xacro:if value="${enable_linear_head_links}" >
-        <!-- ============================================================== -->
-        <xacro:if value="${enable_linear_head_base_link}" >
-          <xacro:if value="${enable_linear_head_pitch_joint_physics}" >
-            <xacro:linear_head_pitch_joint_physics />
-          </xacro:if>
-        </xacro:if>
-        <!-- ============================================================== -->
-        <xacro:if value="${enable_linear_head_main_link}" >
-          <xacro:if value="${enable_linear_head_yaw_joint_physics}" >
-            <xacro:linear_head_yaw_joint_physics />
-          </xacro:if>
-        </xacro:if>
-        <!-- ============================================================== -->
-      </xacro:if>
-      <!-- ================================================================ -->
+    <!-- ================================================================ -->
+    <xacro:if value="${enable_linear_elevator_joint_physics}" >
+      <xacro:linear_elevator_joint_physics />
     </xacro:if>
+    <!-- ================================================================ -->
+    <xacro:if value="${enable_linear_head_pitch_joint_physics}" >
+      <xacro:linear_head_pitch_joint_physics />
+    </xacro:if>
+    <!-- ================================================================ -->
+    <xacro:if value="${enable_linear_head_yaw_joint_physics}" >
+      <xacro:linear_head_yaw_joint_physics />
+    </xacro:if>
+    <!-- ================================================================ -->
 
     <xacro:if value="${enable_sensors}" >
       <!-- ================================================================ -->
@@ -397,28 +381,14 @@
   
   <xacro:if value="$(arg control)" >
   
-    <xacro:if value="${enable_wheel_links}" >
-      <xacro:wheel_transmission prefix_y="left" prefix_x="front" />
-      <xacro:wheel_transmission prefix_y="left" prefix_x="rear" />
-      <xacro:wheel_transmission prefix_y="right" prefix_x="front" />
-      <xacro:wheel_transmission prefix_y="right" prefix_x="rear" />
-    </xacro:if>
-    
-    <xacro:if value="${enable_linear_elevator_link}" >
-      <xacro:linear_elevator_transmission />
-    </xacro:if>
-    
-    <xacro:if value="${enable_linear_head_links}" >
-      <!-- ================================================================ -->
-      <xacro:if value="${enable_linear_head_base_link}" >
-        <xacro:linear_head_transmission rotation="pitch" />
-      </xacro:if>
-      <!-- ================================================================ -->
-      <xacro:if value="${enable_linear_head_main_link}" >
-        <xacro:linear_head_transmission rotation="yaw" />
-      </xacro:if>
-      <!-- ================================================================ -->
-    </xacro:if>
+    <xacro:wheel_transmission prefix_y="left" prefix_x="front" />
+    <xacro:wheel_transmission prefix_y="left" prefix_x="rear" />
+    <xacro:wheel_transmission prefix_y="right" prefix_x="front" />
+    <xacro:wheel_transmission prefix_y="right" prefix_x="rear" />
+  
+    <xacro:linear_elevator_transmission />
+    <xacro:linear_head_transmission rotation="pitch" />
+    <xacro:linear_head_transmission rotation="yaw" />
     
     <xacro:if value="${enable_sensors}" >
       <!-- ================================================================ -->

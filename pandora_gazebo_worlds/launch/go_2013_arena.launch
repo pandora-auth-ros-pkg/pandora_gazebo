@@ -3,6 +3,8 @@
   <arg name="gui" default="true"/>
   <arg name="robot" default="gears"/>
   
+  <arg name="simplified" default="true"/>
+  
   <arg name="control" default="true"/>
   <arg name="interface" default="true"/>
   <arg name="sensors_viz" default="false" />
@@ -12,6 +14,7 @@
     <arg name="robot" value="$(arg robot)"/>
     <arg name="gui" value="$(arg gui)"/> 
     <arg name="z" value="0.5"/>
+    <arg name="simplified" value="$(arg simplified)"/>
     <arg name="control" value="$(arg control)"/>
     <arg name="interface" value="$(arg interface)" />
     <arg name="sensors_viz" value="$(arg sensors_viz)" />

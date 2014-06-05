@@ -1,4 +1,6 @@
 <launch>
+    
+<!-- ###################################################################### -->
 
   <arg name="gui" default="true"/>
   
@@ -11,29 +13,45 @@
   <arg name="z" default="0"/>
   <arg name="Y" default="0"/>
   
+  <arg name="simplified" default="true"/>
+  
   <arg name="control" default="true"/>
   <arg name="interface" default="true"/>
   <arg name="sensors_viz" default="false" />
+    
+<!-- ###################################################################### -->
+
+  <group if="$(arg simplified)">
+    <include file="$(find pandora_gazebo_description)/launch/gears/gears_simplified_gazebo_description.launch" />
+  </group>
+  
+  <group unless="$(arg simplified)">
+    <include file="$(find pandora_gazebo_description)/launch/$(arg robot)/$(arg robot)_gazebo_description.launch" >
+      <arg name="control" value="$(arg control)" />
+      <arg name="interface" value="$(arg interface)" />
+      <arg name="sensors_viz" value="$(arg sensors_viz)" />
+    </include>
+  </group>
+  
+  <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" 
+        args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y) -model $(arg robot)_robot -param robot_description" />
+    
+<!-- ###################################################################### -->
+  
+  <!-- Start GUI -->
+  <group if="$(arg gui)">
+    <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen"/>
+  </group>
+    
+<!-- ###################################################################### -->
   
   <param name="/use_sim_time" value="true" />
 
   <node name="gazebo" pkg="gazebo_ros" type="gzserver"
         args="$(find pandora_gazebo_worlds)/worlds/$(arg world)/$(arg world).world"
         respawn="false" output="screen"/>
-  
-  <include file="$(find pandora_gazebo_description)/launch/$(arg robot)/$(arg robot)_gazebo_description.launch" >
-    <arg name="control" value="$(arg control)" />
-    <arg name="interface" value="$(arg interface)" />
-    <arg name="sensors_viz" value="$(arg sensors_viz)" />
-  </include>
-  
-  <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" 
-        args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y) -model $(arg robot)_robot -param robot_description" />
-  
-  <!-- Start GUI -->
-  <group if="$(arg gui)">
-    <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen"/>
-  </group>
+    
+<!-- ###################################################################### -->
 
 </launch>
 
