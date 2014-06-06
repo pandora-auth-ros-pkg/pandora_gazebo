@@ -32,12 +32,12 @@
                 filename="libgazebo_ros_openni_kinect.so" >
 
           <!--============================================================= -->
-          <frameName>kinect_optical_frame</frameName>
+          <frameName>kinect_depth_optical_frame</frameName>
           <!--============================================================= -->
           <cameraName>kinect</cameraName>
           <!--============================================================= -->
-          <pointCloudTopicName>point_cloud</pointCloudTopicName> <!-- FIXME -->
-          <imageTopicName>image</imageTopicName>
+          <pointCloudTopicName>depth_registered/points</pointCloudTopicName> <!-- FIXME -->
+          <imageTopicName>rgb/image_raw</imageTopicName>
           <depthImageTopicName>depth/image</depthImageTopicName>
           <depthImageCameraInfoTopicName>depth/image/info</depthImageCameraInfoTopicName>
           <!--============================================================= -->
@@ -49,7 +49,7 @@
         <!--=============================================================== -->
         <always_on>1</always_on>
         <!--=============================================================== -->
-        <update_rate>20</update_rate>
+        <update_rate>25</update_rate>
         <!--=============================================================== -->
         <visualize>true</visualize>
         <!--=============================================================== -->
