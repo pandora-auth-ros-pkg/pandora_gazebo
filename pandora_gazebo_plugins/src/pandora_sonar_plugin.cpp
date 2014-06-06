@@ -140,16 +140,6 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
     this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
   }
 
-  if (!_sdf->HasElement("publishViz"))
-  {
-    ROS_INFO("Block laser plugin missing <publishViz>, defaults to true");
-    this->publish_viz_ = true;
-  }
-  else
-  {
-    this->publish_viz_ = _sdf ->Get < std ::string > ( "publishViz" ) == "true" ; 
-  }
-
   if (!_sdf->HasElement("gaussianNoise"))
   {
     ROS_INFO("Block laser plugin missing <gaussianNoise>, defaults to 0.0");
@@ -157,16 +147,6 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   }
   else
     this->gaussian_noise_ = _sdf->GetElement("gaussianNoise")->Get<double>();
-
-  if (!_sdf->GetElement("updateRate"))
-  {
-    ROS_INFO("Block laser plugin missing <updateRate>, defaults to 0");
-    this->update_rate_ = 0;
-  }
-  else
-    this->update_rate_ = _sdf->GetElement("updateRate")->Get<double>();
-  // FIXME:  update the update_rate_
-
 
   this->laser_connect_count_ = 0;
 

@@ -194,7 +194,7 @@ void PandoraCo2Plugin::OnNewFrame(const unsigned char *_image,
 
 void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) { 
   
-  if ( this->publish_msg_ || this->publish_viz_) { 
+  if ( this->publish_msg_ || this->publish_viz_ ) { 
 
     double hfov = this ->parent_camera_sensor_ 
                         ->GetCamera ( ) 
@@ -221,6 +221,8 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
       imgviz_ .width = width ; 
       imgviz_ .step = width * 3 ; 
       imgviz_ .encoding = "bgr8" ; 
+      
+      imgviz_ .data .clear ( ) ; 
       
     }
 
@@ -273,9 +275,7 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
 
           for ( unsigned int k = 0 ; k < 3 ; k++ ) 
 
-            imgviz_ 
-             .data 
-              .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
+            imgviz_ .data .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
               
         }
 

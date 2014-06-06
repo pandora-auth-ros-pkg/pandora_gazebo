@@ -100,9 +100,9 @@ namespace gazebo
                      
     private: void PutThermalData(common::Time &_updateTime);
     
-    private: sensor_msgs::Image imgviz_ ; 
+    private: sensor_msgs ::Image imgviz_ ; 
     
-    private: sensor_msgs::Image tempMsg_ ; 
+    private: sensor_msgs ::Image tempMsg_ ; 
     
     private: bool publish_msg_ ; 
     private: bool publish_viz_ ; 

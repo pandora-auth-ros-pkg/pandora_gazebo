@@ -97,9 +97,9 @@ namespace gazebo
                    
     private: void PutMicrophoneData(common::Time &_updateTime);
     
-    private: sensor_msgs::Image imgviz_ ; 
+    private: sensor_msgs ::Image imgviz_ ; 
     
-    private: std_msgs::Bool soundMsg_ ; 
+    private: std_msgs ::Bool soundMsg_ ; 
     
     private: bool publish_msg_ ; 
     private: bool publish_viz_ ; 

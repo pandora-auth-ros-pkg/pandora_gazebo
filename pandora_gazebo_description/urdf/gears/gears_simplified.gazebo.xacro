@@ -56,8 +56,8 @@
   
   <xacro:kinect_gazebo_sensor />
   
-  <xacro:sonar_gazebo_sensor name="left" publish_msg="false" publish_viz="false" />
-  <xacro:sonar_gazebo_sensor name="right" publish_msg="false" publish_viz="false" />
+  <xacro:sonar_gazebo_sensor name="left" publish_msg="false" />
+  <xacro:sonar_gazebo_sensor name="right" publish_msg="false" />
   
   <xacro:co2_gazebo_sensor publish_msg="false" publish_viz="false" />
                 

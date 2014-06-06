@@ -98,9 +98,9 @@ namespace gazebo
                    
     private: void PutCo2Data(common::Time &_updateTime);
     
-    private: sensor_msgs::Image imgviz_ ; 
+    private: sensor_msgs ::Image imgviz_ ; 
     
-    private: pandora_arm_hardware_interface::Co2Msg co2Msg_ ;
+    private: pandora_arm_hardware_interface ::Co2Msg co2Msg_ ;
     
     private: bool publish_msg_ ; 
     private: bool publish_viz_ ; 
