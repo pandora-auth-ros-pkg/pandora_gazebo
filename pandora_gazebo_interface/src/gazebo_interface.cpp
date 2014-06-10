@@ -485,7 +485,7 @@ namespace pandora_gazebo_interface
     jointCommand_ [ 6 ] = 0.0 ; 
     
     jointLowerLimit_ [ 6 ] = 0.0 ; //FIXME
-    jointUpperLimit_ [ 6 ] = 0.23 ; //FIXME
+    jointUpperLimit_ [ 6 ] = 0.18 ; //FIXME
     
     jointEffortLimit_ [ 6 ] = 100.0 ; //FIXME
     //jointEffortLimit_ [ 6 ] = 15.0 ; 
