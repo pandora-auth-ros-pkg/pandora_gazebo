@@ -105,6 +105,3 @@ target_link_libraries(pandora_microphone_plugin
     ${GAZEBO_LIBRARIES}
     ${catkin_LIBRARIES}
 )
-
-add_executable(pandora_teleop_key src/pandora_teleop_key.cpp )
-target_link_libraries(pandora_teleop_key ${catkin_LIBRARIES})
