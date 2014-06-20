@@ -1772,19 +1772,33 @@ namespace pandora_gazebo_interface
     double rightWheelVelocity = jointCommand_ [ 2 ] ; 
     
     double x = ( rightWheelVelocity + leftWheelVelocity ) * 
-               wheelRadius_ / 2.0 ; 
+               wheelRadius_ / 2 ; 
                             
     double z = ( rightWheelVelocity - leftWheelVelocity ) * 
                wheelRadius_ / wheelSeparation_ ; 
+               
+    /*
                              
-    double linearVelocity = ( + 9.617364797 ) * ( 0.100 ) * pow ( x , 1 ) + 
-                            ( + 8.486951654 ) * ( 0.010 ) * pow ( x , 3 ) + 
-                            ( - 4.091102287 ) * ( 0.010 ) * pow ( x , 5 ) + 
-                            ( + 5.217505876 ) * ( 0.001 ) * pow ( x , 7 ) ; 
+    x = ( + 1.001487279 ) * pow ( x , 1 ) + 
+        ( + 0.456332984 ) * pow ( x , 3 ) + 
+        ( - 4.442671017 ) * pow ( x , 5 ) + 
+        ( + 8.289127632 ) * pow ( x , 7 ) ; 
                             
-    double angularVelocity = ( + 2.249634826 ) * ( 1.000 ) * pow ( z , 1 ) + 
-                             ( + 3.134651056 ) * ( 0.100 ) * pow ( z , 3 ) + 
-                             ( - 4.487225078 ) * ( 0.010 ) * pow ( z , 5 ) + 
+    z = ( + 0.556465955 ) * pow ( z , 1 ) + 
+        ( + 2.363328174 ) * pow ( z , 3 ) + 
+        ( - 3.710717148 ) * pow ( z , 5 ) + 
+        ( + 1.595776157 ) * pow ( z , 7 ) ; 
+        
+    */
+               
+    double linearVelocity = ( + 9.617364797 ) * ( 0.100 ) * pow ( x , 1 ) +
+                            ( + 8.486951654 ) * ( 0.010 ) * pow ( x , 3 ) +
+                            ( - 4.091102287 ) * ( 0.010 ) * pow ( x , 5 ) +
+                            ( + 5.217505876 ) * ( 0.001 ) * pow ( x , 7 ) ;
+                            
+    double angularVelocity = ( + 2.249634826 ) * ( 1.000 ) * pow ( z , 1 ) +
+                             ( + 3.134651056 ) * ( 0.100 ) * pow ( z , 3 ) +
+                             ( - 4.487225078 ) * ( 0.010 ) * pow ( z , 5 ) +
                              ( + 1.217253477 ) * ( 0.001 ) * pow ( z , 7 ) ; 
                              
     double newLeftWheelVelocity = 

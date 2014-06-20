@@ -32,11 +32,11 @@
   <!-- XXX: Get from config -->
   <xacro:property name="robot_namespace" value="" />
   
-  <xacro:property name="wheel_mu_1" value="0.675" />
-  <xacro:property name="wheel_mu_2" value="0.675" />
-  <xacro:property name="wheel_k_p" value="1000000.0" />
+  <xacro:property name="wheel_mu_1" value="0.65" />
+  <xacro:property name="wheel_mu_2" value="0.65" />
+  <xacro:property name="wheel_k_p" value="100000000.0" />
   <xacro:property name="wheel_k_d" value="0.8" />
-  <xacro:property name="wheel_min_depth" value="0.001" />
+  <xacro:property name="wheel_min_depth" value="0.00001" />
   <xacro:property name="wheel_max_contacts" value="1" />
 
 <!-- Load URDF ############################################################ -->
