@@ -4,10 +4,10 @@
 
 <!-- ###################################################################### -->
 
-  <xacro:macro name="logitech_gazebo_sensor"
+  <xacro:macro name="camera_gazebo_sensor"
                params="prefix_y" >
   
-    <gazebo reference="${prefix_y}_camera_link" >
+    <gazebo reference="${prefix_y}_camera_frame" >
     
       <sensor name="${prefix_y}_camera"
               type="camera" >
@@ -19,6 +19,7 @@
           <image>
             <width>1280</width>
             <height>720</height>
+            <format>R8G8B8</format> <!-- FIXME -->
           </image>
           <!--============================================================= -->
           <clip>
@@ -32,9 +33,9 @@
                 filename="libgazebo_ros_camera.so" >
 
           <!--============================================================= -->
-          <frameName>${prefix_y}_camera_link</frameName>
+          <frameName>${prefix_y}_camera_optical_frame</frameName>
           <!--============================================================= -->
-          <topicName>${prefix_y}_camera/image</topicName>
+          <imageTopicName>${prefix_y}_camera/image</imageTopicName>
           <!--============================================================= -->
 
         </plugin>
@@ -42,7 +43,7 @@
         <!--=============================================================== -->
         <always_on>1</always_on>
         <!--=============================================================== -->
-        <update_rate>5</update_rate>
+        <update_rate>5</update_rate> <!-- FIXME -->
         <!--=============================================================== -->
         <visualize>false</visualize>
         <!--=============================================================== -->

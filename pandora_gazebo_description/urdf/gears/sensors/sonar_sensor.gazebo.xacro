@@ -5,11 +5,11 @@
 <!-- ###################################################################### -->
 
   <xacro:macro name="sonar_gazebo_sensor"
-               params="name publish_msg" >
+               params="prefix_y publish_msg" >
   
-    <gazebo reference="${name}_sonar_link" >
+    <gazebo reference="${prefix_y}_sonar_link" >
 
-      <sensor name="${name}_sonar"
+      <sensor name="${prefix_y}_sonar"
               type="ray" >
 
         <!--=============================================================== -->
@@ -50,7 +50,7 @@
           <!--============================================================= -->
           <robotNamespace></robotNamespace>
           <!--============================================================= -->
-          <frameName>${name}_sonar_link</frameName>
+          <frameName>${prefix_y}_sonar_link</frameName>
           <!--============================================================= -->
           <topicName>/sensors/sonar</topicName> <!-- FIXME -->
           <!--============================================================= -->

@@ -26,6 +26,7 @@
   <!-- ==================================================================== -->
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/laser_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/kinect_sensor.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/camera_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/sonar_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/thermal_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/co2_sensor.gazebo.xacro" />
@@ -145,6 +146,24 @@
         </xacro:if>
       </xacro:if>
       
+      <xacro:if value="${enable_camera_sensors}" >
+        <xacro:if value="${enable_camera_gazebo_sensors}" >
+          <!-- ============================================================ -->
+          <xacro:if value="${enable_left_camera_sensor}" >
+            <xacro:if value="${enable_left_camera_gazebo_sensor}" >
+              <xacro:camera_gazebo_sensor prefix_y="left" />
+            </xacro:if>
+          </xacro:if>
+          <!-- ============================================================ -->
+          <xacro:if value="${enable_right_camera_sensor}" >
+            <xacro:if value="${enable_right_camera_gazebo_sensor}" >
+              <xacro:camera_gazebo_sensor prefix_y="right" />
+            </xacro:if>
+          </xacro:if>
+          <!-- ============================================================ -->
+        </xacro:if>
+      </xacro:if>
+      
       <xacro:if value="${enable_sonar_sensors}" >
         <xacro:if value="${enable_sonar_gazebo_sensors}" >
           <!-- ============================================================ -->
@@ -152,14 +171,14 @@
             <xacro:if value="${enable_left_sonar_gazebo_sensor}" >
               <xacro:if value="$(arg control)" >
                 <xacro:if value="$(arg interface)" >
-                    <xacro:sonar_gazebo_sensor name="left" publish_msg="false" />
+                  <xacro:sonar_gazebo_sensor prefix_y="left" publish_msg="false" />
                 </xacro:if>
                 <xacro:unless value="$(arg interface)" >
-                    <xacro:sonar_gazebo_sensor name="left" publish_msg="true" />
+                  <xacro:sonar_gazebo_sensor prefix_y="left" publish_msg="true" />
                 </xacro:unless>
               </xacro:if>
               <xacro:unless value="$(arg control)" >
-                  <xacro:sonar_gazebo_sensor name="left" publish_msg="true" />
+                <xacro:sonar_gazebo_sensor prefix_y="left" publish_msg="true" />
               </xacro:unless>
             </xacro:if>
           </xacro:if>
@@ -168,14 +187,14 @@
             <xacro:if value="${enable_right_sonar_gazebo_sensor}" >
               <xacro:if value="$(arg control)" >
                 <xacro:if value="$(arg interface)" >
-                    <xacro:sonar_gazebo_sensor name="right" publish_msg="false" />
+                  <xacro:sonar_gazebo_sensor prefix_y="right" publish_msg="false" />
                 </xacro:if>
                 <xacro:unless value="$(arg interface)" >
-                    <xacro:sonar_gazebo_sensor name="right" publish_msg="true" />
+                  <xacro:sonar_gazebo_sensor prefix_y="right" publish_msg="true" />
                 </xacro:unless>
               </xacro:if>
               <xacro:unless value="$(arg control)" >
-                  <xacro:sonar_gazebo_sensor name="right" publish_msg="true" />
+                <xacro:sonar_gazebo_sensor prefix_y="right" publish_msg="true" />
               </xacro:unless>
             </xacro:if>
           </xacro:if>

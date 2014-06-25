@@ -21,6 +21,10 @@
     <!-- ================================================================== -->
     <xacro:property name="enable_kinect_gazebo_sensor" value="true" />
     <!-- ================================================================== -->
+    <xacro:property name="enable_camera_gazebo_sensors" value="true" />
+      <xacro:property name="enable_left_camera_gazebo_sensor" value="true" />
+      <xacro:property name="enable_right_camera_gazebo_sensor" value="true" />
+    <!-- ================================================================== -->
     <xacro:property name="enable_sonar_gazebo_sensors" value="true" />
       <xacro:property name="enable_left_sonar_gazebo_sensor" value="true" />
       <xacro:property name="enable_right_sonar_gazebo_sensor" value="true" />
@@ -76,11 +80,11 @@
 <!-- Joint Physics ######################################################## -->
 
   <!-- Wheels ============================================================= -->
-  <xacro:property name="wheel_mu_1" value="0.65" />
-  <xacro:property name="wheel_mu_2" value="0.65" />
-  <xacro:property name="wheel_k_p" value="100000000.0" />
-  <xacro:property name="wheel_k_d" value="0.8" />
-  <xacro:property name="wheel_min_depth" value="0.00001" />
+  <xacro:property name="wheel_mu_1" value="0.45" />
+  <xacro:property name="wheel_mu_2" value="0.45" />
+  <xacro:property name="wheel_k_p" value="10000000.0" />
+  <xacro:property name="wheel_k_d" value="1.0" />
+  <xacro:property name="wheel_min_depth" value="0.0001" />
   <xacro:property name="wheel_max_contacts" value="1" />
   <!-- ==================================================================== -->
 

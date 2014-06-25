@@ -12,6 +12,7 @@
   
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/laser_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/kinect_sensor.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/camera_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/sonar_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/thermal_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/sensors/co2_sensor.gazebo.xacro" />
@@ -58,8 +59,11 @@
   
   <xacro:kinect_gazebo_sensor />
   
-  <xacro:sonar_gazebo_sensor name="left" publish_msg="false" />
-  <xacro:sonar_gazebo_sensor name="right" publish_msg="false" />
+  <xacro:camera_gazebo_sensor prefix_y="left" />
+  <xacro:camera_gazebo_sensor prefix_y="right" />
+  
+  <xacro:sonar_gazebo_sensor prefix_y="left" publish_msg="false" />
+  <xacro:sonar_gazebo_sensor prefix_y="right" publish_msg="false" />
   
   <xacro:co2_gazebo_sensor publish_msg="false" publish_viz="false" />
                 
