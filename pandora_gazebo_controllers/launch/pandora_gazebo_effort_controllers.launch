@@ -10,7 +10,7 @@
   <rosparam command="load" ns="/"
             file="$(find pandora_gazebo_controllers)/config/effort_controllers/pandora_joint_state_controller.yaml" />
   
-  <!-- Hokuyo Laser -->
+  <!-- Laser -->
   <rosparam command="load" ns="/"
             file="$(find pandora_gazebo_controllers)/config/effort_controllers/pandora_laser_controllers.yaml" />
   
