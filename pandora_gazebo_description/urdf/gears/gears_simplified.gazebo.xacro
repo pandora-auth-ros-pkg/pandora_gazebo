@@ -33,8 +33,8 @@
   <!-- XXX: Get from config -->
   <xacro:property name="robot_namespace" value="" />
   
-  <xacro:property name="wheel_mu_1" value="0.5" />
-  <xacro:property name="wheel_mu_2" value="0.25" />
+  <xacro:property name="wheel_mu_1" value="0.6" />
+  <xacro:property name="wheel_mu_2" value="0.3" />
   <xacro:property name="wheel_k_p" value="10000000.0" />
   <xacro:property name="wheel_k_d" value="1.0" />
   <xacro:property name="wheel_min_depth" value="0.0001" />

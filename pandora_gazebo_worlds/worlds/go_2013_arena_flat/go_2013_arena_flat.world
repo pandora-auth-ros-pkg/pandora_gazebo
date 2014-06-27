@@ -35,31 +35,6 @@
               <size>100.000000 100.000000</size>
             </plane>
           </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>10.000000</mu>
-                <mu2>10.000000</mu2>
-                <fdir1>0.000000 0.000000 0.000000</fdir1>
-                <slip1>0.000000</slip1>
-                <slip2>0.000000</slip2>
-              </ode>
-            </friction>
-            <bounce>
-              <restitution_coefficient>0.000000</restitution_coefficient>
-              <threshold>1000000.000000</threshold>
-            </bounce>
-            <contact>
-              <ode>
-                <soft_cfm>0.000000</soft_cfm>
-                <soft_erp>0.200000</soft_erp>
-                <kp>10000000000.000000</kp>
-                <kd>1.000000</kd>
-                <max_vel>100.000000</max_vel>
-                <min_depth>0.000100</min_depth>
-              </ode>
-            </contact>
-          </surface>
         </collision>
         <visual name="plane_model_visual">
           <cast_shadows>0</cast_shadows>

@@ -1791,15 +1791,15 @@ namespace pandora_gazebo_interface
         
     */
                
-    double linearVelocity = ( + 9.617364797 ) * ( 0.100 ) * pow ( x , 1 ) +
-                            ( + 8.486951654 ) * ( 0.010 ) * pow ( x , 3 ) +
-                            ( - 4.091102287 ) * ( 0.010 ) * pow ( x , 5 ) +
-                            ( + 5.217505876 ) * ( 0.001 ) * pow ( x , 7 ) ;
+    double linearVelocity = ( + 9.446060513 ) * ( 0.1000 ) * pow ( x , 1 ) +
+                            ( + 1.315202284 ) * ( 1.0000 ) * pow ( x , 3 ) +
+                            ( - 6.404744656 ) * ( 1.0000 ) * pow ( x , 5 ) +
+                            ( + 2.449775997 ) * ( 1.0000 ) * pow ( x , 7 ) ;
                             
-    double angularVelocity = ( + 2.249634826 ) * ( 1.000 ) * pow ( z , 1 ) +
-                             ( + 3.134651056 ) * ( 0.100 ) * pow ( z , 3 ) +
-                             ( - 4.487225078 ) * ( 0.010 ) * pow ( z , 5 ) +
-                             ( + 1.217253477 ) * ( 0.001 ) * pow ( z , 7 ) ; 
+    double angularVelocity = ( + 4.219745338 ) * ( 0.1000 ) * pow ( z , 1 ) +
+                             ( + 3.166949881 ) * ( 0.0100 ) * pow ( z , 3 ) +
+                             ( - 1.104404291 ) * ( 0.0100 ) * pow ( z , 5 ) +
+                             ( + 8.216225035 ) * ( 0.0001 ) * pow ( z , 7 ) ; 
                              
     double newLeftWheelVelocity = 
     ( linearVelocity - angularVelocity * wheelSeparation_ / 2 ) / wheelRadius_ ; 

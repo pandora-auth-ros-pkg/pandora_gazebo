@@ -827,10 +827,10 @@ namespace gazebo {
     //right_front_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , force_multiplier * ( right_front_z - min_z ) ) ) ; 
     //right_rear_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , force_multiplier * ( right_rear_z - min_z ) ) ) ; 
     
-    left_front_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , 0 ) ) ; 
-    left_rear_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , 0 ) ) ; 
-    right_front_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , 0 ) ) ; 
-    right_rear_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , 0 ) ) ; 
+    left_front_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , 20 ) ) ; 
+    left_rear_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , 20 ) ) ; 
+    right_front_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , 20 ) ) ; 
+    right_rear_wheel_link_ ->AddRelativeForce ( math ::Vector3 ( 0 , 0 , 20 ) ) ; 
   
     //ROS_INFO ( "LEFT: %f" , left_front_wheel_link_ ->GetRelativeForce ( ) .z ) ; 
     //ROS_ERROR ( "RIGHT: %f" , right_front_wheel_link_ ->GetRelativeForce ( ) .z ) ; 
@@ -856,7 +856,7 @@ namespace gazebo {
     //GazeboRosDifferential ::AddDifferentialForces ( ) ; 
     
     // Add forces to improve robot's behaviour (due to poorly simulated physics)
-    GazeboRosDifferential ::AddPhysicsForces ( ) ; 
+    //GazeboRosDifferential ::AddPhysicsForces ( ) ; 
     
     // Publish joint states to be used in RViz
     if ( this ->publish_joint_states_ ) 
