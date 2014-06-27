@@ -106,7 +106,9 @@ namespace gazebo {
     
     /// \brief Add force at the side joints to correct base's angle
     private: void AddSideCorrectionForce ( void ) ; 
-    private: void AddSideCorrectionForce2 ( void ) ; 
+    
+    /// \brief Add forces at the robot to improve physics
+    private: void AddPhysicsForces ( void ) ; 
 
     /// \brief Pointer to ros node
     private: ros ::NodeHandle * rosnode_ ; 

@@ -37,7 +37,7 @@
   <xacro:property name="wheel_mu_2" value="0.6" />
   <xacro:property name="wheel_k_p" value="10000000.0" />
   <xacro:property name="wheel_k_d" value="1.0" />
-  <xacro:property name="wheel_min_depth" value="0.00001" />
+  <xacro:property name="wheel_min_depth" value="0.0001" />
   <xacro:property name="wheel_max_contacts" value="1" />
 
 <!-- Load URDF ############################################################ -->
