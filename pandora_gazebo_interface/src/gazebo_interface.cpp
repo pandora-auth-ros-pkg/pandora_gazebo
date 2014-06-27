@@ -1711,7 +1711,7 @@ namespace pandora_gazebo_interface
 
   void GazeboInterface ::writeJoints ( void ) { 
   
-    //adjustWheelVelocityCommands ( ) ; 
+    adjustWheelVelocityCommands ( ) ; 
     
     for ( unsigned int i = 0 ; i < jointNum_ ; i ++ ) { 
     
