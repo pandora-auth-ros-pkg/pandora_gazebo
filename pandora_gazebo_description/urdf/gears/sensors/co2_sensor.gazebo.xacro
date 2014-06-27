@@ -7,7 +7,7 @@
   <xacro:macro name="co2_gazebo_sensor"
                params="publish_msg publish_viz" >
 
-    <gazebo reference="co2_link" >
+    <gazebo reference="co2_frame" >
 
       <sensor name="co2"
               type="camera" >
@@ -22,8 +22,8 @@
           </image>
           <!--============================================================= -->
           <clip> <!-- FIXME -->
-            <near>0.1</near>
-            <far>0.8</far>
+            <near>0.001</near>
+            <far>0.5</far>
           </clip>
           <!--============================================================= -->
         </camera>
@@ -32,9 +32,9 @@
                 filename="libpandora_co2_plugin.so" >
 
           <!--============================================================= -->
-          <frameName>co2_link</frameName>
+          <frameName>co2_frame</frameName>
           <!--============================================================= -->
-          <topicName>sensors/co2</topicName> <!-- FIXME -->
+          <topicName>sensors/co2</topicName>
           <!--============================================================= -->
           <publishMsg>${publish_msg}</publishMsg>
           <!--============================================================= -->

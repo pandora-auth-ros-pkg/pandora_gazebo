@@ -7,7 +7,7 @@
   <xacro:macro name="microphone_gazebo_sensor"
                params="publish_msg publish_viz" >
 
-    <gazebo reference="microphone_link" >
+    <gazebo reference="microphone_frame" >
 
       <sensor name="microphone"
               type="camera" >
@@ -32,9 +32,9 @@
                 filename="libpandora_microphone_plugin.so" >
 
           <!--============================================================= -->
-          <frameName>microphone_link</frameName>
+          <frameName>microphone_frame</frameName>
           <!--============================================================= -->
-          <topicName>sensors/sound</topicName> <!-- FIXME -->
+          <topicName>sensors/sound</topicName>
           <!--============================================================= -->
           <publishMsg>${publish_msg}</publishMsg>
           <!--============================================================= -->

@@ -7,7 +7,7 @@
   <xacro:macro name="thermal_gazebo_sensor"
                params="prefix_y publish_msg publish_viz" >
   
-    <gazebo reference="${prefix_y}_thermal_link" >
+    <gazebo reference="${prefix_y}_thermal_frame" >
     
       <sensor name="${prefix_y}_thermal"
               type="camera" >
@@ -32,9 +32,9 @@
                 filename="libpandora_thermal_plugin.so" >
 
           <!--============================================================= -->
-          <frameName>${prefix_y}_thermal_link</frameName> <!-- FIXME -->
+          <frameName>${prefix_y}_thermal_optical_frame</frameName>
           <!--============================================================= -->
-          <topicName>sensors/thermal</topicName> <!-- FIXME -->
+          <topicName>sensors/thermal</topicName>
           <!--============================================================= -->
           <publishMsg>${publish_msg}</publishMsg>
           <!--============================================================= -->

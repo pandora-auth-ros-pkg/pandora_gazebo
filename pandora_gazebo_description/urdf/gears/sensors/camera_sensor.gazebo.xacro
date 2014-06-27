@@ -37,7 +37,7 @@
           <!--============================================================= -->
           <cameraName>${prefix_y}_camera</cameraName>
           <!--============================================================= -->
-          <imageTopicName>${prefix_y}_camera/image</imageTopicName>
+          <imageTopicName>image</imageTopicName>
           <!--============================================================= -->
 
         </plugin>

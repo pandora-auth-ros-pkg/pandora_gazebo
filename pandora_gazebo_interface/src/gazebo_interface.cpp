@@ -785,10 +785,10 @@ namespace pandora_gazebo_interface
     rangeSensorName_ [ 1 ] = "/sensors/right_sonar" ; //FIXME
     rangeSensorData_ [ 1 ] .name = rangeSensorName_ [ 1 ] ; 
     
-    rangeSensorFrameID_ [ 0 ] = "left_sonar_link" ; //FIXME
+    rangeSensorFrameID_ [ 0 ] = "left_sonar_frame" ; //FIXME
     rangeSensorData_ [ 0 ] .frameId = rangeSensorFrameID_ [ 0 ] ; 
     
-    rangeSensorFrameID_ [ 1 ] = "right_sonar_link" ; //FIXME
+    rangeSensorFrameID_ [ 1 ] = "right_sonar_frame" ; //FIXME
     rangeSensorData_ [ 1 ] .frameId = rangeSensorFrameID_ [ 1 ] ; 
     
     for ( unsigned int i = 0 ; i < rangeSensorNum_ ; i ++ ) { 
@@ -925,7 +925,7 @@ namespace pandora_gazebo_interface
     co2SensorName_ [ 0 ] = "/sensors/co2" ; //FIXME
     co2SensorData_ [ 0 ] .name = co2SensorName_ [ 0 ] ; 
     
-    co2SensorFrameID_ [ 0 ] = "co2_link" ; //FIXME
+    co2SensorFrameID_ [ 0 ] = "co2_frame" ; //FIXME
     co2SensorData_ [ 0 ] .frameId = co2SensorFrameID_ [ 0 ] ; 
     
     co2SensorCo2Percentage_ [ 0 ] = 0.0 ; 
@@ -951,19 +951,19 @@ namespace pandora_gazebo_interface
     thermalSensorName_ [ 0 ] = "/sensors/left_thermal" ; //FIXME
     thermalSensorData_ [ 0 ] .name = thermalSensorName_ [ 0 ] ; 
     
-    thermalSensorName_ [ 1 ] = "/sensors/center_thermal" ; //FIXME XXX
+    thermalSensorName_ [ 1 ] = "/sensors/middle_thermal" ; //FIXME XXX
     thermalSensorData_ [ 1 ] .name = thermalSensorName_ [ 1 ] ; 
     
     thermalSensorName_ [ 2 ] = "/sensors/right_thermal" ; //FIXME
     thermalSensorData_ [ 2 ] .name = thermalSensorName_ [ 2 ] ; 
     
-    thermalSensorFrameID_ [ 0 ] = "left_thermal_link" ; //FIXME
+    thermalSensorFrameID_ [ 0 ] = "left_thermal_optical_frame" ; //FIXME
     thermalSensorData_ [ 0 ] .frameId = thermalSensorFrameID_ [ 0 ] ; 
     
-    thermalSensorFrameID_ [ 1 ] = "middle_thermal_link" ; //FIXME
+    thermalSensorFrameID_ [ 1 ] = "middle_thermal_optical_frame" ; //FIXME
     thermalSensorData_ [ 1 ] .frameId = thermalSensorFrameID_ [ 1 ] ; 
     
-    thermalSensorFrameID_ [ 2 ] = "right_thermal_link" ; //FIXME
+    thermalSensorFrameID_ [ 2 ] = "right_thermal_optical_frame" ; //FIXME
     thermalSensorData_ [ 2 ] .frameId = thermalSensorFrameID_ [ 2 ] ; 
     
     for ( unsigned int i = 0 ; i < thermalSensorNum_ ; i ++ ) { 
@@ -1010,7 +1010,7 @@ namespace pandora_gazebo_interface
   
     microphoneSensorName_ [ 0 ] = "/sensors/microphone" ; //FIXME
     
-    microphoneSensorFrameID_ [ 0 ] = "microphone_link" ; 
+    microphoneSensorFrameID_ [ 0 ] = "microphone_frame" ; 
     
     microphoneSensorSoundCertainty_ [ 0 ] = 0.0 ; 
     
