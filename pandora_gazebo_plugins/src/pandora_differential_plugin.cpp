@@ -856,7 +856,7 @@ namespace gazebo {
     //GazeboRosDifferential ::AddDifferentialForces ( ) ; 
     
     // Add forces to improve robot's behaviour (due to poorly simulated physics)
-    GazeboRosDifferential ::AddPhysicsForces ( ) ; 
+    //GazeboRosDifferential ::AddPhysicsForces ( ) ; 
     
     // Publish joint states to be used in RViz
     if ( this ->publish_joint_states_ ) 
