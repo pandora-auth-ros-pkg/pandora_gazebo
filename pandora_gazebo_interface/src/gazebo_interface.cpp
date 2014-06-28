@@ -676,7 +676,7 @@ namespace pandora_gazebo_interface
     // Number of batteries and range sensors
     batteryNum_ = 2 ; //FIXME
     
-    rangeSensorNum_ = 2 ; //FIXME
+    rangeSensorNum_ = 3 ; //FIXME
     
     // ------------------------------------------------------------------------
   
@@ -779,17 +779,23 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
     
-    rangeSensorName_ [ 0 ] = "/sensors/left_sonar" ; //FIXME
+    rangeSensorName_ [ 0 ] = "/sensors/linear_sonar" ; //FIXME
     rangeSensorData_ [ 0 ] .name = rangeSensorName_ [ 0 ] ; 
     
-    rangeSensorName_ [ 1 ] = "/sensors/right_sonar" ; //FIXME
+    rangeSensorName_ [ 1 ] = "/sensors/left_sonar" ; //FIXME
     rangeSensorData_ [ 1 ] .name = rangeSensorName_ [ 1 ] ; 
     
-    rangeSensorFrameID_ [ 0 ] = "left_sonar_frame" ; //FIXME
+    rangeSensorName_ [ 2 ] = "/sensors/right_sonar" ; //FIXME
+    rangeSensorData_ [ 2 ] .name = rangeSensorName_ [ 2 ] ; 
+    
+    rangeSensorFrameID_ [ 0 ] = "linear_sonar_frame" ; //FIXME
     rangeSensorData_ [ 0 ] .frameId = rangeSensorFrameID_ [ 0 ] ; 
     
-    rangeSensorFrameID_ [ 1 ] = "right_sonar_frame" ; //FIXME
+    rangeSensorFrameID_ [ 1 ] = "left_sonar_frame" ; //FIXME
     rangeSensorData_ [ 1 ] .frameId = rangeSensorFrameID_ [ 1 ] ; 
+    
+    rangeSensorFrameID_ [ 2 ] = "right_sonar_frame" ; //FIXME
+    rangeSensorData_ [ 2 ] .frameId = rangeSensorFrameID_ [ 2 ] ; 
     
     for ( unsigned int i = 0 ; i < rangeSensorNum_ ; i ++ ) { 
     
@@ -815,9 +821,13 @@ namespace pandora_gazebo_interface
     
     rangeSensorRay_ [ 0 ] = 
     boost ::dynamic_pointer_cast < gazebo ::sensors ::RaySensor > 
-     ( gazebo ::sensors ::get_sensor ( "left_sonar" ) ) ; 
+     ( gazebo ::sensors ::get_sensor ( "linear_sonar" ) ) ; 
     
     rangeSensorRay_ [ 1 ] = 
+    boost ::dynamic_pointer_cast < gazebo ::sensors ::RaySensor > 
+     ( gazebo ::sensors ::get_sensor ( "left_sonar" ) ) ; 
+    
+    rangeSensorRay_ [ 2 ] = 
     boost ::dynamic_pointer_cast < gazebo ::sensors ::RaySensor > 
      ( gazebo ::sensors ::get_sensor ( "right_sonar" ) ) ; 
     

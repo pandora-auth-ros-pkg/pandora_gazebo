@@ -167,18 +167,34 @@
       <xacro:if value="${enable_sonar_sensors}" >
         <xacro:if value="${enable_sonar_gazebo_sensors}" >
           <!-- ============================================================ -->
+          <xacro:if value="${enable_linear_sonar_sensor}" >
+            <xacro:if value="${enable_linear_sonar_gazebo_sensor}" >
+              <xacro:if value="$(arg control)" >
+                <xacro:if value="$(arg interface)" >
+                  <xacro:sonar_gazebo_sensor name="linear" publish_msg="false" />
+                </xacro:if>
+                <xacro:unless value="$(arg interface)" >
+                  <xacro:sonar_gazebo_sensor name="linear" publish_msg="true" />
+                </xacro:unless>
+              </xacro:if>
+              <xacro:unless value="$(arg control)" >
+                <xacro:sonar_gazebo_sensor name="linear" publish_msg="true" />
+              </xacro:unless>
+            </xacro:if>
+          </xacro:if>
+          <!-- ============================================================ -->
           <xacro:if value="${enable_left_sonar_sensor}" >
             <xacro:if value="${enable_left_sonar_gazebo_sensor}" >
               <xacro:if value="$(arg control)" >
                 <xacro:if value="$(arg interface)" >
-                  <xacro:sonar_gazebo_sensor prefix_y="left" publish_msg="false" />
+                  <xacro:sonar_gazebo_sensor name="left" publish_msg="false" />
                 </xacro:if>
                 <xacro:unless value="$(arg interface)" >
-                  <xacro:sonar_gazebo_sensor prefix_y="left" publish_msg="true" />
+                  <xacro:sonar_gazebo_sensor name="left" publish_msg="true" />
                 </xacro:unless>
               </xacro:if>
               <xacro:unless value="$(arg control)" >
-                <xacro:sonar_gazebo_sensor prefix_y="left" publish_msg="true" />
+                <xacro:sonar_gazebo_sensor name="left" publish_msg="true" />
               </xacro:unless>
             </xacro:if>
           </xacro:if>
@@ -187,14 +203,14 @@
             <xacro:if value="${enable_right_sonar_gazebo_sensor}" >
               <xacro:if value="$(arg control)" >
                 <xacro:if value="$(arg interface)" >
-                  <xacro:sonar_gazebo_sensor prefix_y="right" publish_msg="false" />
+                  <xacro:sonar_gazebo_sensor name="right" publish_msg="false" />
                 </xacro:if>
                 <xacro:unless value="$(arg interface)" >
-                  <xacro:sonar_gazebo_sensor prefix_y="right" publish_msg="true" />
+                  <xacro:sonar_gazebo_sensor name="right" publish_msg="true" />
                 </xacro:unless>
               </xacro:if>
               <xacro:unless value="$(arg control)" >
-                <xacro:sonar_gazebo_sensor prefix_y="right" publish_msg="true" />
+                <xacro:sonar_gazebo_sensor name="right" publish_msg="true" />
               </xacro:unless>
             </xacro:if>
           </xacro:if>
