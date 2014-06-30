@@ -803,13 +803,13 @@ namespace pandora_gazebo_interface
       rangeSensorData_ [ i ] .radiationType = 
       & rangeSensorRadiationType_ [ i ] ; 
       
-      rangeSensorFOV_ [ i ] = 80.0 ; //FIXME
+      rangeSensorFOV_ [ i ] = 60.0 ; //FIXME
       rangeSensorData_ [ i ] .fieldOfView = & rangeSensorFOV_ [ i ] ; 
       
       rangeSensorMinRange_ [ i ] = 0.2 ; //FIXME
       rangeSensorData_ [ i ] .minRange = & rangeSensorMinRange_ [ i ] ; 
       
-      rangeSensorMaxRange_ [ i ] = 4.5 ; //FIXME
+      rangeSensorMaxRange_ [ i ] = 4.0 ; //FIXME
       rangeSensorData_ [ i ] .maxRange = & rangeSensorMaxRange_ [ i ] ; 
       
       rangeSensorRange_ [ i ] .resize ( 5 , rangeSensorMaxRange_ [ i ] ) ; 
