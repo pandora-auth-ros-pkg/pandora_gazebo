@@ -1462,7 +1462,7 @@ namespace pandora_gazebo_interface
       
         return ; 
 
-      double maxPpm = 0 ; 
+      double totalPpm = 0 ; 
       
       for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
@@ -1507,13 +1507,15 @@ namespace pandora_gazebo_interface
             currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
                                  + pow ( 255.0 , 2 ) ) ;
 
-          if ( maxPpm < currentPpm ) 
-
-            maxPpm = currentPpm ; 
+          totalPpm += currentPpm ; 
           
         }
 
       }
+      
+      totalPpm /= ( width * height ) ; 
+      
+      //totalPpm /= 10 ; 
       
       co2SensorCo2Percentage_ [ n ] = maxPpm ; //FIXME: use mean instead of max
     
@@ -1616,7 +1618,7 @@ namespace pandora_gazebo_interface
           meanTemp /= ( divWidth * divHeight ) ; 
 
           thermalSensorVector_ [ n ] [ i * sensorWidth + j ] = 
-          ( char ) ( meanTemp * 20.0 + ambientTemp ) ; 
+          ( char ) ( meanTemp * 17.0 + ambientTemp ) ; 
           
         }
 
