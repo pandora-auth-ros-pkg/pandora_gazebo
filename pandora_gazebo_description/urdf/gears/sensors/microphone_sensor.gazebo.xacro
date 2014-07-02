@@ -17,8 +17,14 @@
           <horizontal_fov>1.5</horizontal_fov> <!-- FIXME -->
           <!--============================================================= -->
           <image>
-            <width>640</width>
-            <height>480</height>
+            <xacro:if value="${publish_viz}" >
+              <width>640</width>
+              <height>480</height>
+            </xacro:if>
+            <xacro:unless value="${publish_viz}" >
+              <width>8</width>
+              <height>8</height>
+            </xacro:unless>
           </image>
           <!--============================================================= -->
           <clip> <!-- FIXME -->

@@ -1605,7 +1605,7 @@ namespace pandora_gazebo_interface
               else if ( positiveDiff == 2 ) 
 
                 currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
-                                       + pow ( 255.0 , 2 ) ) ; 
+                                      + pow ( 255.0 , 2 ) ) ; 
             
               meanTemp += currentTemp ; 
             
@@ -1615,8 +1615,8 @@ namespace pandora_gazebo_interface
           
           meanTemp /= ( divWidth * divHeight ) ; 
 
-          thermalSensorVector_ [ n ] [ j + i * sensorWidth ] = 
-          ( char ) ( meanTemp * 15.0 + ambientTemp ) ; 
+          thermalSensorVector_ [ n ] [ i * sensorWidth + j ] = 
+          ( char ) ( meanTemp * 20.0 + ambientTemp ) ; 
           
         }
 

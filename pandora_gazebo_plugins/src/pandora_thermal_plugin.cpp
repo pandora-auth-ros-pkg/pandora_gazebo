@@ -368,7 +368,7 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
             else if ( positiveDiff == 2 ) 
 
               currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
-                                     + pow ( 255.0 , 2 ) ) ; 
+                                    + pow ( 255.0 , 2 ) ) ; 
           
             meanTemp += currentTemp ; 
           
@@ -379,7 +379,7 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
         meanTemp /= ( divWidth * divHeight ) ; 
 
         tempMsg_ .data 
-                  .push_back ( ( char ) ( meanTemp * 15.0 + ambientTemp ) ) ; 
+                  .push_back ( ( char ) ( meanTemp * 20.0 + ambientTemp ) ) ; 
         
       }
 
