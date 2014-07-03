@@ -196,11 +196,6 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
   
   if ( this->publish_msg_ || this->publish_viz_ ) { 
 
-    double hfov = this ->parent_camera_sensor_ 
-                        ->GetCamera ( ) 
-                         ->GetHFOV ( ) 
-                          .Radian ( ) ; 
-
     unsigned int width = this ->parent_camera_sensor_ 
                       ->GetImageWidth ( ) ; 
 
@@ -209,6 +204,10 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
 
     const unsigned char * data = this ->parent_camera_sensor_ 
                                        ->GetImageData ( ) ; 
+      
+    if ( data == NULL ) 
+    
+      return ; 
     
     //----------------------------------------------------------------------
     
@@ -225,8 +224,14 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
       imgviz_ .data .clear ( ) ; 
       
     }
+    
+    //----------------------------------------------------------------------
+        
+    double ambientPpm = 400.0 ; 
+    
+    double maxPpm = 40000.0 ; 
 
-    double maxPpm = 0 ; 
+    double totalPpm = 0.0 ; 
     
     for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
@@ -279,13 +284,17 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
               
         }
 
-        if ( maxPpm < currentPpm ) 
-
-          maxPpm = currentPpm ; 
+        totalPpm += currentPpm ; 
         
       }
 
     }
+    
+    totalPpm /= ( width * height ) ; 
+    
+    double percentage = ( ambientPpm + totalPpm * maxPpm ) / 10000.0 ; 
+    
+    //----------------------------------------------------------------------
     
     if ( this->publish_viz_ ) 
 
@@ -298,7 +307,7 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
       co2Msg_ .header .stamp = ros:: Time:: now ( ) ; 
       co2Msg_ .header .frame_id = this ->frame_name_ ; 
       
-      co2Msg_ .co2_percentage = maxPpm ; 
+      co2Msg_ .co2_percentage = percentage ; 
         
       this ->pub_ .publish ( this ->co2Msg_ ) ; 
       

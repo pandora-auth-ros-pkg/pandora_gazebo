@@ -205,11 +205,6 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
   //----------------------------------------------------------------------
   
   if ( this->publish_viz_ ) { 
-  
-    double hfov = this ->parent_camera_sensor_ 
-                        ->GetCamera ( ) 
-                         ->GetHFOV ( ) 
-                          .Radian ( ) ; 
 
     unsigned int width = this ->parent_camera_sensor_ 
                       ->GetImageWidth ( ) ; 
@@ -219,6 +214,12 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
 
     const unsigned char * data = this ->parent_camera_sensor_ 
                                        ->GetImageData ( ) ; 
+      
+    if ( data == NULL ) 
+    
+      return ; 
+    
+    //----------------------------------------------------------------------
 
     imgviz_ .header .stamp = ros:: Time:: now ( ) ; 
     imgviz_ .header .frame_id = this ->frame_name_ ; 
@@ -229,6 +230,8 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
     imgviz_ .encoding = "bgr8" ; 
       
     imgviz_ .data .clear ( ) ; 
+    
+    //----------------------------------------------------------------------
     
     for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
@@ -280,6 +283,8 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
       }
 
     }
+    
+    //----------------------------------------------------------------------
 
     this -> pub_viz .publish ( imgviz_ ) ; 
   
@@ -288,20 +293,6 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
   //----------------------------------------------------------------------
   
   if ( this->publish_msg_ ) { 
-  
-    double hfov = this ->parent_camera_sensor_ 
-                        ->GetCamera ( ) 
-                         ->GetHFOV ( ) 
-                          .Radian ( ) ; 
-
-    unsigned int width = this ->parent_camera_sensor_ 
-                      ->GetImageWidth ( ) ; 
-
-    unsigned int height = this ->parent_camera_sensor_ 
-                       ->GetImageHeight ( ) ; 
-
-    const unsigned char * data = this ->parent_camera_sensor_ 
-                                       ->GetImageData ( ) ; 
 
     tempMsg_ .header .stamp = ros:: Time:: now ( ) ; 
     tempMsg_ .header .frame_id = this ->frame_name_ ; 
@@ -313,14 +304,38 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
       
     tempMsg_ .data .clear ( ) ; 
     
-    unsigned int divWidth = ( width / tempMsg_ .width ) ; 
-    unsigned int divHeight = ( height / tempMsg_ .height ) ; 
+    //----------------------------------------------------------------------
+
+    unsigned int cameraWidth = this ->parent_camera_sensor_ 
+                                ->GetImageWidth ( ) ; 
+                                
+    unsigned int sensorWidth = tempMsg_ .width ; 
+    
+    unsigned int divWidth = ( cameraWidth / sensorWidth ) ; 
+
+    unsigned int cameraHeight = this ->parent_camera_sensor_ 
+                                 ->GetImageHeight ( ) ; 
+                                 
+    unsigned int sensorHeight = tempMsg_ .height ; 
+    
+    unsigned int divHeight = ( cameraHeight / sensorHeight ) ; 
+    
+    const unsigned char * data = this ->parent_camera_sensor_ 
+                                  ->GetImageData ( ) ; 
+      
+    if ( data == NULL ) 
+    
+      return ; 
+    
+    //----------------------------------------------------------------------
 
     double ambientTemp = 25.0 ; 
     
-    for ( unsigned int i = 0 ; i < tempMsg_ .width ; i++ ) { 
+    double maxTemp = 17.0 ; 
+  
+    for ( unsigned int i = 0 ; i < sensorWidth ; i++ ) { 
 
-      for ( unsigned int j = 0 ; j < tempMsg_ .height ; j++ ) { 
+      for ( unsigned int j = 0 ; j < sensorHeight ; j++ ) { 
       
         double meanTemp = 0 ; 
       
@@ -330,11 +345,11 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
         
             double currentTemp = 0 ; 
 
-            double R = data [ ( ( k + i * divWidth ) * height + 
+            double R = data [ ( ( k + i * divWidth ) * cameraHeight + 
                                ( l + j * divHeight ) ) * 3 + 0 ] ; 
-            double G = data [ ( ( k + i * divWidth ) * height + 
+            double G = data [ ( ( k + i * divWidth ) * cameraHeight + 
                                ( l + j * divHeight ) ) * 3 + 1 ] ; 
-            double B = data [ ( ( k + i * divWidth ) * height + 
+            double B = data [ ( ( k + i * divWidth ) * cameraHeight + 
                                ( l + j * divHeight ) ) * 3 + 2 ] ; 
 
             // temperature is represented by red
@@ -377,13 +392,16 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
         }
         
         meanTemp /= ( divWidth * divHeight ) ; 
+        
+        double temp = ambientTemp + meanTemp * maxTemp ; 
 
-        tempMsg_ .data 
-                  .push_back ( ( char ) ( meanTemp * 20.0 + ambientTemp ) ) ; 
+        tempMsg_ .data .push_back ( ( char ) temp ) ; 
         
       }
 
     }
+    
+    //----------------------------------------------------------------------
 
     this ->pub_ .publish ( tempMsg_ ) ; 
   

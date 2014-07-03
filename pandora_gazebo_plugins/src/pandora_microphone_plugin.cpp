@@ -197,11 +197,6 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
   
   if ( this->publish_msg_ || this->publish_viz_ ) { 
 
-    double hfov = this ->parent_camera_sensor_ 
-                        ->GetCamera ( ) 
-                         ->GetHFOV ( ) 
-                          .Radian ( ) ; 
-
     unsigned int width = this ->parent_camera_sensor_ 
                       ->GetImageWidth ( ) ; 
 
@@ -210,6 +205,10 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
 
     const unsigned char * data = this ->parent_camera_sensor_ 
                                        ->GetImageData ( ) ; 
+      
+    if ( data == NULL ) 
+    
+      return ; 
     
     //----------------------------------------------------------------------
     
@@ -226,8 +225,10 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
       imgviz_ .data .clear ( ) ; 
     
     }
+    
+    //----------------------------------------------------------------------
 
-    double maxCert = 0 ; 
+    double totalCert = 0.0 ; 
     
     for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
@@ -279,16 +280,18 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
             imgviz_ 
              .data 
               .push_back ( ( char ) ( currentCert  * 255.0 ) ) ; 
-            
+              
         }
 
-        if ( maxCert < currentCert ) 
-
-          maxCert = currentCert ; 
+        totalCert += currentCert ; 
         
       }
 
     }
+    
+    double certainty = totalCert / ( width * height ) ; 
+    
+    //----------------------------------------------------------------------
     
     if ( this->publish_viz_ ) 
 
@@ -302,7 +305,7 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
       //soundMsg_ .header .frame_id = this ->frame_name_ ; 
 
       // Sound detection condition
-      if ( maxCert > 0.9 ) 
+      if ( certainty > 0.9 ) 
 
         soundMsg_ .data = true ; 
 
@@ -310,7 +313,7 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
 
         soundMsg_ .data = false ; 
       
-      //soundMsg_ .certainty = maxCert ; 
+      //soundMsg_ .certainty = certainty ; 
         
       this ->pub_ .publish ( this ->soundMsg_ ) ; 
       

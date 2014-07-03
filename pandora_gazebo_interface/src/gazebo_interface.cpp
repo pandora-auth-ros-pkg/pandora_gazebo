@@ -1461,8 +1461,12 @@ namespace pandora_gazebo_interface
       if ( data == NULL ) 
       
         return ; 
+        
+      double ambientPpm = 400.0 ; 
+      
+      double maxPpm = 40000.0 ; 
 
-      double totalPpm = 0 ; 
+      double totalPpm = 0.0 ; 
       
       for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
@@ -1515,9 +1519,9 @@ namespace pandora_gazebo_interface
       
       totalPpm /= ( width * height ) ; 
       
-      //totalPpm /= 10 ; 
+      double percentage = ( ambientPpm + totalPpm * maxPpm ) / 10000.0 ; 
       
-      co2SensorCo2Percentage_ [ n ] = maxPpm ; //FIXME: use mean instead of max
+      co2SensorCo2Percentage_ [ n ] = percentage ; 
     
     }
     
@@ -1556,6 +1560,8 @@ namespace pandora_gazebo_interface
         return ; 
 
       double ambientTemp = 25.0 ; 
+      
+      double maxTemp = 17.0 ; 
     
       for ( unsigned int i = 0 ; i < sensorWidth ; i++ ) { 
 
@@ -1616,9 +1622,10 @@ namespace pandora_gazebo_interface
           }
           
           meanTemp /= ( divWidth * divHeight ) ; 
+          
+          double temp = ambientTemp + meanTemp * maxTemp ; 
 
-          thermalSensorVector_ [ n ] [ i * sensorWidth + j ] = 
-          ( char ) ( meanTemp * 17.0 + ambientTemp ) ; 
+          thermalSensorVector_ [ n ] [ i * sensorWidth + j ] = ( char ) temp ; 
           
         }
 
@@ -1650,7 +1657,7 @@ namespace pandora_gazebo_interface
       
         return ; 
 
-      double maxCert = 0 ; 
+      double totalCert = 0.0 ; 
       
       for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
@@ -1695,15 +1702,15 @@ namespace pandora_gazebo_interface
             currentCert /= sqrt ( pow ( 255.0 , 2 ) 
                                   + pow ( 255.0 , 2 ) ) ; 
 
-          if ( maxCert < currentCert ) 
-
-            maxCert = currentCert ; 
+          totalCert += currentCert ; 
           
         }
 
       }
+      
+      double certainty = totalCert / ( width * height ) ; 
     
-      microphoneSensorSoundCertainty_ [ n ] = maxCert ; //FIXME: use mean instead of max
+      microphoneSensorSoundCertainty_ [ n ] = certainty ; 
     
     }
     
