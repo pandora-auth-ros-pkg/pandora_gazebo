@@ -219,8 +219,8 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
 
       imgviz_ .height = height ; 
       imgviz_ .width = width ; 
-      imgviz_ .step = width * 3 ; 
-      imgviz_ .encoding = "bgr8" ; 
+      imgviz_ .step = width ; 
+      imgviz_ .encoding = "mono8" ; 
       
       imgviz_ .data .clear ( ) ; 
     
@@ -273,15 +273,9 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
           currentCert /= sqrt ( pow ( 255.0 , 2 ) 
                                 + pow ( 255.0 , 2 ) ) ; 
     
-        if ( this->publish_viz_ ) { 
+        if ( this->publish_viz_ ) 
 
-          for ( unsigned int k = 0 ; k < 3 ; k++ ) 
-
-            imgviz_ 
-             .data 
-              .push_back ( ( char ) ( currentCert  * 255.0 ) ) ; 
-              
-        }
+          imgviz_ .data .push_back ( ( char ) ( currentCert  * 255.0 ) ) ; 
 
         totalCert += currentCert ; 
         
@@ -305,7 +299,7 @@ void PandoraMicrophonePlugin ::PutMicrophoneData ( common:: Time & _updateTime )
       //soundMsg_ .header .frame_id = this ->frame_name_ ; 
 
       // Sound detection condition
-      if ( certainty > 0.9 ) 
+      if ( certainty > 0.5 ) 
 
         soundMsg_ .data = true ; 
 

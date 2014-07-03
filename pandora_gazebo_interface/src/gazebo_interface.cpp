@@ -1624,8 +1624,10 @@ namespace pandora_gazebo_interface
           meanTemp /= ( divWidth * divHeight ) ; 
           
           double temp = ambientTemp + meanTemp * maxTemp ; 
+          
+          unsigned int mirrored_pixel = ( sensorHeight - i ) * sensorWidth + j ; 
 
-          thermalSensorVector_ [ n ] [ i * sensorWidth + j ] = ( char ) temp ; 
+          thermalSensorVector_ [ n ] [ mirrored_pixel ] = ( char ) temp ; 
           
         }
 

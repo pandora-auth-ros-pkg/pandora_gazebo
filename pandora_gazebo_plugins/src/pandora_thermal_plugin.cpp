@@ -226,8 +226,8 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
 
     imgviz_ .height = height ; 
     imgviz_ .width = width ; 
-    imgviz_ .step = width * 3 ; 
-    imgviz_ .encoding = "bgr8" ; 
+    imgviz_ .step = width ; 
+    imgviz_ .encoding = "mono8" ; 
       
     imgviz_ .data .clear ( ) ; 
     
@@ -276,9 +276,7 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
           currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
                                 + pow ( 255.0 , 2 ) ) ; 
 
-        for ( unsigned int k = 0 ; k < 3 ; k++ ) 
-
-          imgviz_ .data .push_back ( ( char ) ( currentTemp * 255.0 ) ) ; 
+        imgviz_ .data .push_back ( ( char ) ( currentTemp * 255.0 ) ) ; 
         
       }
 
@@ -299,8 +297,8 @@ void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) {
 
     tempMsg_ .height = 8 ; 
     tempMsg_ .width = 8 ; 
-    tempMsg_ .step = tempMsg_ .width * 3 ; 
-    tempMsg_ .encoding = "bgr8" ; 
+    tempMsg_ .step = 8 ; 
+    tempMsg_ .encoding = "mono8" ; 
       
     tempMsg_ .data .clear ( ) ; 
     

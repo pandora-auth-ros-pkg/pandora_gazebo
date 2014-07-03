@@ -218,8 +218,8 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
 
       imgviz_ .height = height ; 
       imgviz_ .width = width ; 
-      imgviz_ .step = width * 3 ; 
-      imgviz_ .encoding = "bgr8" ; 
+      imgviz_ .step = width ; 
+      imgviz_ .encoding = "mono8" ; 
       
       imgviz_ .data .clear ( ) ; 
       
@@ -276,13 +276,9 @@ void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) {
           currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
                                + pow ( 255.0 , 2 ) ) ;
     
-        if ( this->publish_viz_ ) { 
+        if ( this->publish_viz_ )
 
-          for ( unsigned int k = 0 ; k < 3 ; k++ ) 
-
-            imgviz_ .data .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
-              
-        }
+          imgviz_ .data .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
 
         totalPpm += currentPpm ; 
         
