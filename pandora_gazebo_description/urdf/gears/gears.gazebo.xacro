@@ -90,12 +90,12 @@
       <xacro:linear_elevator_joint_physics />
     </xacro:if>
     <!-- ================================================================ -->
-    <xacro:if value="${enable_linear_head_pitch_joint_physics}" >
-      <xacro:linear_head_pitch_joint_physics />
-    </xacro:if>
-    <!-- ================================================================ -->
     <xacro:if value="${enable_linear_head_yaw_joint_physics}" >
       <xacro:linear_head_yaw_joint_physics />
+    </xacro:if>
+    <!-- ================================================================ -->
+    <xacro:if value="${enable_linear_head_pitch_joint_physics}" >
+      <xacro:linear_head_pitch_joint_physics />
     </xacro:if>
     <!-- ================================================================ -->
 
