@@ -39,7 +39,7 @@
 #include <gazebo/gazebo.hh>
 #include <gazebo/sensors/sensors.hh>
 
-#include "pandora_arm_hardware_interface/Co2Msg.h"
+#include "pandora_sensor_msgs/Co2Msg.h"
 
 namespace gazebo
 {
@@ -100,7 +100,7 @@ namespace gazebo
     
     private: sensor_msgs ::Image imgviz_ ; 
     
-    private: pandora_arm_hardware_interface ::Co2Msg co2Msg_ ;
+    private: pandora_sensor_msgs ::Co2Msg co2Msg_ ;
     
     private: bool publish_msg_ ; 
     private: bool publish_viz_ ; 

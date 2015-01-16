@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
       sensor_msgs
       gazebo_ros
       gazebo_plugins
-      pandora_arm_hardware_interface
+      pandora_sensor_msgs
 )
 
 include_directories(include
@@ -41,7 +41,7 @@ catkin_package(
     sensor_msgs
     gazebo_ros
     gazebo_plugins
-    pandora_arm_hardware_interface
+    pandora_sensor_msgs
 #  DEPENDS system_lib
   LIBRARIES
     motion_plugin
@@ -92,7 +92,7 @@ target_link_libraries(pandora_thermal_plugin
 )
 
 add_library(pandora_co2_plugin src/pandora_co2_plugin.cpp)
-add_dependencies(pandora_co2_plugin pandora_arm_hardware_interface_gencpp)
+add_dependencies(pandora_co2_plugin pandora_sensor_msgs_gencpp)
 target_link_libraries(pandora_co2_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}
