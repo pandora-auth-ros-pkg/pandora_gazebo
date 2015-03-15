@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+<!-- ###################################################################### -->
+
+  <xacro:macro name="pandora_differential_plugin"
+               params="publish_joint_states" >
+               
+    <gazebo>
+
+      <plugin name="PandoraDifferantialPlugin"
+              filename="libpandora_differential_plugin.so" >
+
+        <!-- ============================================================== -->
+        <robotNamespace>${robot_namespace}</robotNamespace>
+        <!-- ============================================================== -->
+        <publishJointStates>${publish_joint_states}</publishJointStates>
+        <!-- ============================================================== -->
+        <baseLink>base_link</baseLink>
+        <!-- ============================================================== -->
+        <leftSideJoint>left_side_joint</leftSideJoint>
+        <rightSideJoint>right_side_joint</rightSideJoint>
+        <!-- ============================================================== -->
+        <leftFrontWheelLink>left_front_wheel_link</leftFrontWheelLink>
+        <leftRearWheelLink>left_rear_wheel_link</leftRearWheelLink>
+        <rightFrontWheelLink>right_front_wheel_link</rightFrontWheelLink>
+        <rightRearWheelLink>right_rear_wheel_link</rightRearWheelLink>
+        <!-- ============================================================== -->
+        <maxAngle>${side_joint_max_limit}</maxAngle>
+        <sideJointDamping>${side_joint_damping}</sideJointDamping>
+        <!-- ============================================================== -->
+        <P>120.0</P>
+        <I>0.005</I>
+        <D>8.0</D>
+        <!-- ============================================================== -->
+        <correctionForceModifier>200.0</correctionForceModifier>
+        <!-- ============================================================== -->
+        <maxDownforce>0.0</maxDownforce>
+        <!-- ============================================================== -->
+        <maxDifferentialForceZ>0.0</maxDifferentialForceZ>
+        <maxDifferentialForceY>0.0</maxDifferentialForceY>
+        <!-- ============================================================== -->
+
+      </plugin>
+
+    </gazebo>
+    
+  </xacro:macro>
+
+<!-- ###################################################################### -->
+
+</robot>

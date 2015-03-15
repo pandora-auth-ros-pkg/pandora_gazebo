@@ -1,7 +1,7 @@
 <launch>
   
   <arg name="gui" default="true"/>
-  <arg name="robot" default="gears"/>
+  <arg name="robot" default="woody"/>
   
   <arg name="simplified" default="true"/>
   

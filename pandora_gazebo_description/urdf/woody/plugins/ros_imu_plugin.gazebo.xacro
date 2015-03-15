@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+<!-- ###################################################################### -->
+
+  <xacro:macro name="ros_imu_plugin" >
+  
+    <gazebo>
+
+      <plugin name="RosImuPlugin"
+              filename="libgazebo_ros_imu.so" >
+        
+        <!-- ============================================================== -->
+        <updateRate>50.0</updateRate>
+        <!-- ============================================================== -->
+        <topicName>/sensors/imu</topicName>
+        <serviceName>default_imu</serviceName>
+        <!-- ============================================================== -->
+        <robotNamespace>${robot_namespace}</robotNamespace>
+        <!-- ============================================================== -->
+        <bodyName>base_link</bodyName>
+        <!-- ============================================================== -->
+        <gaussianNoise>0.0</gaussianNoise>
+        <!-- ============================================================== -->
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <!-- ============================================================== -->
+
+      </plugin>
+
+    </gazebo>
+    
+  </xacro:macro>
+
+<!-- ###################################################################### -->
+
+</robot>

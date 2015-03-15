@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+<!-- ###################################################################### -->
+
+  <xacro:macro name="pandora_imu_stabilizer_plugin" >
+  
+    <gazebo>
+
+      <plugin name="PandoraImuStabilizerPlugin"
+              filename="libpandora_imu_stabilizer_plugin.so" >
+        
+        <!-- ============================================================== -->
+        <updateRate>50.0</updateRate>
+        <!-- ============================================================== -->
+        <topicName>/sensors/imu</topicName>
+        <serviceName>default_imu</serviceName>
+        <!-- ============================================================== -->
+        <robotNamespace>${robot_namespace}</robotNamespace>
+        <!-- ============================================================== -->
+        <bodyName>base_link</bodyName>
+        <!-- ============================================================== -->
+        <rollCorrectionJoint>laser_roll_joint</rollCorrectionJoint>
+        <pitchCorrectionJoint>laser_pitch_joint</pitchCorrectionJoint>
+        <!-- ============================================================== -->
+        <gaussianNoise>0.0</gaussianNoise>
+        <!-- ============================================================== -->
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <!-- ============================================================== -->
+
+      </plugin>
+
+    </gazebo>
+    
+  </xacro:macro>
+
+<!-- ###################################################################### -->
+
+</robot>

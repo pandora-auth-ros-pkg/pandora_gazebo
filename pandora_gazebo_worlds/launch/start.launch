@@ -6,7 +6,7 @@
   
   <arg name="world" default="empty"/>
   
-  <arg name="robot" default="gears"/>
+  <arg name="robot" default="woody"/>
   
   <arg name="x" default="0"/>
   <arg name="y" default="0"/>
@@ -22,7 +22,7 @@
 <!-- ###################################################################### -->
 
   <group if="$(arg simplified)">
-    <include file="$(find pandora_gazebo_description)/launch/gears/gears_simplified_gazebo_description.launch" />
+    <include file="$(find pandora_gazebo_description)/launch/woody/woody_simplified_gazebo_description.launch" />
   </group>
   
   <group unless="$(arg simplified)">

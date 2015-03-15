@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+<!-- ###################################################################### -->
+
+  <xacro:macro name="wheel_transmission"
+               params="prefix_y prefix_x" >
+               
+    <transmission name="${prefix_y}_${prefix_x}_wheel_transmission" >
+
+      <!-- ================================================================ -->
+      <type>transmission_interface/SimpleTransmission</type>
+      <!-- ================================================================ -->
+      <joint name="${prefix_y}_${prefix_x}_wheel_joint" />
+      <!-- ================================================================ -->
+      <actuator name="${prefix_y}_${prefix_x}_motor" >
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1.0</mechanicalReduction>
+      </actuator>
+      <!-- ================================================================ -->
+
+    </transmission>
+    
+  </xacro:macro>
+
+<!-- ###################################################################### -->
+
+</robot>
