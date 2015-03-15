@@ -8,7 +8,6 @@
   <xacro:include filename="$(find pandora_robots_description)/urdf/woody/woody.urdf.xacro" />
   
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/physics/wheel_link_physics.gazebo.xacro" />
-  <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/physics/linear_elevator_joint_physics.gazebo.xacro" />
   
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/sensors/laser_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/sensors/kinect_sensor.gazebo.xacro" />
@@ -19,8 +18,6 @@
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/sensors/microphone_sensor.gazebo.xacro" />
   
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/transmissions/wheel_transmission.xacro" />
-  <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/transmissions/linear_elevator_transmission.xacro" />
-  <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/transmissions/linear_head_transmission.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/transmissions/laser_sensor_transmission.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/transmissions/kinect_sensor_transmission.xacro" />
   
@@ -50,10 +47,10 @@
   <xacro:wheel_link_physics prefix_y="left" prefix_x="rear" />
   <xacro:wheel_link_physics prefix_y="right" prefix_x="front" />
   <xacro:wheel_link_physics prefix_y="right" prefix_x="rear" />
-  
-  <xacro:linear_elevator_joint_physics />
 
 <!-- Load Gazebo Sensors ################################################## -->
+
+  <!--
 
   <xacro:laser_gazebo_sensor />
   
@@ -69,38 +66,40 @@
   <xacro:co2_gazebo_sensor publish_msg="false" publish_viz="false" />
                 
   <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="false" publish_viz="false" />
-  <xacro:thermal_gazebo_sensor prefix_y="left" publish_msg="false" publish_viz="false" />
-  <xacro:thermal_gazebo_sensor prefix_y="right" publish_msg="false" publish_viz="false" />
                     
   <xacro:microphone_gazebo_sensor publish_msg="false" publish_viz="false" />
+  
+  -->
       
       
 <!-- Load Transmissions ################################################### -->
+
+  <!--
 
   <xacro:wheel_transmission prefix_y="left" prefix_x="front" />
   <xacro:wheel_transmission prefix_y="left" prefix_x="rear" />
   <xacro:wheel_transmission prefix_y="right" prefix_x="front" />
   <xacro:wheel_transmission prefix_y="right" prefix_x="rear" />
   
-  <xacro:linear_elevator_transmission />
-  
-  <xacro:linear_head_transmission rotation="yaw" />
-  <xacro:linear_head_transmission rotation="pitch" />
-  
   <xacro:laser_sensor_transmission rotation="roll" />
   <xacro:laser_sensor_transmission rotation="pitch" />
   
   <xacro:kinect_sensor_transmission rotation="pitch" />
   <xacro:kinect_sensor_transmission rotation="yaw" />
+  
+  -->
 
 <!-- Load Plugins ######################################################### -->
+  
+  <xacro:ros_skid_steer_drive_plugin />
 
-  <xacro:pandora_differential_plugin publish_joint_states="false" />
+  <xacro:pandora_differential_plugin publish_joint_states="true" />
+  <!-- <xacro:pandora_differential_plugin publish_joint_states="false" /> -->
           
-  <xacro:pandora_p3d_plugin />
+  <!-- <xacro:pandora_p3d_plugin /> -->
       
-  <xacro:gazebo_ros_control_plugin namespace="/"
-                                   hardware_interface="pandora_gazebo_interface/GazeboInterface" />
+  <!-- <xacro:gazebo_ros_control_plugin namespace="/"
+                                   hardware_interface="pandora_gazebo_interface/GazeboInterface" /> -->
 
 <!-- ###################################################################### -->
 

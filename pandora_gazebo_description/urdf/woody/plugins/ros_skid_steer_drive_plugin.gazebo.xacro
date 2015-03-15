@@ -21,7 +21,7 @@
         <leftRearJoint>left_rear_wheel_joint</leftRearJoint>
         <rightRearJoint>right_rear_wheel_joint</rightRearJoint>
         <!-- ============================================================== -->
-        <wheelSeparation>${wheel_separation}</wheelSeparation>
+        <wheelSeparation>${track}</wheelSeparation>
         <wheelDiameter>${ 2 * wheel_radius }</wheelDiameter>
         <!-- ============================================================== -->
         <torque>${wheel_joint_max_torque}</torque>
