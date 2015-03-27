@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>pandora_gazebo_worlds</name>
   <version>0.0.0</version>
   <description>Contains worlds for simulation using Gazebo.</description>
@@ -15,8 +15,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   
-  <run_depend>gazebo_ros</run_depend>
-  <run_depend>pandora_robots_description</run_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>pandora_robots_description</exec_depend>
 
   <export>
     

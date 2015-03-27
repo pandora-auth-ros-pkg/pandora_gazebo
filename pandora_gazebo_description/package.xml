@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>pandora_gazebo_description</name>
   <version>0.0.0</version>
   <description>Contains gazebo references and plugins for pandora robots and sensors descriptions</description>
@@ -15,12 +15,12 @@
   
   <buildtool_depend>catkin</buildtool_depend>
   
-  <run_depend>pandora_robots_description</run_depend>
-  <run_depend>pandora_gazebo_interface</run_depend>
-  <run_depend>pandora_gazebo_plugins</run_depend>
-  <run_depend>pandora_gazebo_controllers</run_depend>
-  <run_depend>gazebo_ros_control</run_depend>
-  <run_depend>gazebo_plugins</run_depend>
+  <exec_depend>pandora_robots_description</exec_depend>
+  <exec_depend>pandora_gazebo_interface</exec_depend>
+  <exec_depend>pandora_gazebo_plugins</exec_depend>
+  <exec_depend>pandora_gazebo_controllers</exec_depend>
+  <exec_depend>gazebo_ros_control</exec_depend>
+  <exec_depend>gazebo_plugins</exec_depend>
   
   <export>
   </export>

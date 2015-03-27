@@ -54,53 +54,53 @@ catkin_package(
     pandora_p3d_plugin
 )
 
-add_library(pandora_sonar_plugin src/pandora_sonar_plugin.cpp)
-target_link_libraries(pandora_sonar_plugin 
+add_library(${PROJECT_NAME}_pandora_sonar_plugin src/pandora_sonar_plugin.cpp)
+target_link_libraries(${PROJECT_NAME}_pandora_sonar_plugin 
     gazebo_ros_camera_utils 
     RayPlugin 
     ${GAZEBO_LIBRARIES} 
     ${catkin_LIBRARIES}
 )
 
-add_library(pandora_imu_stabilizer_plugin src/pandora_imu_stabilizer_plugin.cpp)
-target_link_libraries(pandora_imu_stabilizer_plugin 
+add_library(${PROJECT_NAME}_pandora_imu_stabilizer_plugin src/pandora_imu_stabilizer_plugin.cpp)
+target_link_libraries(${PROJECT_NAME}_pandora_imu_stabilizer_plugin 
     ${GAZEBO_LIBRARIES} 
     ${catkin_LIBRARIES} 
     ${Boost_LIBRARIES}
 )
 
-add_library(pandora_differential_plugin src/pandora_differential_plugin.cpp)
-add_dependencies(pandora_differential_plugin pandora_gazebo_plugins_gencfg)
-target_link_libraries(pandora_differential_plugin 
+add_library(${PROJECT_NAME}_pandora_differential_plugin src/pandora_differential_plugin.cpp)
+add_dependencies(${PROJECT_NAME}_pandora_differential_plugin pandora_gazebo_plugins_gencfg)
+target_link_libraries(${PROJECT_NAME}_pandora_differential_plugin 
     ${GAZEBO_LIBRARIES} 
     ${catkin_LIBRARIES} 
     ${Boost_LIBRARIES}
 )
 
-add_library(pandora_p3d_plugin src/pandora_p3d_plugin.cpp)
-target_link_libraries(pandora_p3d_plugin 
+add_library(${PROJECT_NAME}_pandora_p3d_plugin src/pandora_p3d_plugin.cpp)
+target_link_libraries(${PROJECT_NAME}_pandora_p3d_plugin 
     ${GAZEBO_LIBRARIES} 
     ${catkin_LIBRARIES} 
     ${Boost_LIBRARIES}
 )
 
-add_library(pandora_thermal_plugin src/pandora_thermal_plugin.cpp)
-target_link_libraries(pandora_thermal_plugin
+add_library(${PROJECT_NAME}_pandora_thermal_plugin src/pandora_thermal_plugin.cpp)
+target_link_libraries(${PROJECT_NAME}_pandora_thermal_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}
     ${catkin_LIBRARIES}
 )
 
-add_library(pandora_co2_plugin src/pandora_co2_plugin.cpp)
-add_dependencies(pandora_co2_plugin pandora_sensor_msgs_gencpp)
-target_link_libraries(pandora_co2_plugin
+add_library(${PROJECT_NAME}_pandora_co2_plugin src/pandora_co2_plugin.cpp)
+add_dependencies(${PROJECT_NAME}_pandora_co2_plugin pandora_sensor_msgs_gencpp)
+target_link_libraries(${PROJECT_NAME}_pandora_co2_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}
     ${catkin_LIBRARIES}
 )
 
-add_library(pandora_microphone_plugin src/pandora_microphone_plugin.cpp)
-target_link_libraries(pandora_microphone_plugin
+add_library(${PROJECT_NAME}_pandora_microphone_plugin src/pandora_microphone_plugin.cpp)
+target_link_libraries(${PROJECT_NAME}_pandora_microphone_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}
     ${catkin_LIBRARIES}

@@ -22,7 +22,6 @@ catkin_package(
     gazebo_interface
   CATKIN_DEPENDS
     roscpp
-    roslint
     gazebo_ros
     gazebo_plugins
     gazebo_ros_control
@@ -45,9 +44,9 @@ link_directories(
 set(CMAKE_BUILD_TYPE Debug)
 
 add_library(
-  gazebo_interface
+  ${PROJECT_NAME}
   src/gazebo_interface.cpp)
 target_link_libraries(
-  gazebo_interface
+  ${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES})
