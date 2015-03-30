@@ -13,7 +13,7 @@
   <arg name="z" default="0.175"/>
   <arg name="Y" default="0"/>
   
-  <arg name="simplified" default="false"/>
+  <arg name="simplified" default="true"/>
   
   <arg name="control" default="false"/>
   <arg name="interface" default="false"/>

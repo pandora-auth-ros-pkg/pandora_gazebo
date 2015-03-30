@@ -39,7 +39,8 @@
 
 <!-- Load URDF ############################################################ -->
     
-  <xacro:woody_urdf fixed="false" />
+  <xacro:woody_urdf fixed="true" />
+  <!-- <xacro:woody_urdf fixed="false" /> -->
 
 <!-- Load Physics ######################################################### -->
   
