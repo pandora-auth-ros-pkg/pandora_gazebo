@@ -8,6 +8,7 @@
             
   <!-- Load Skid Steer -->
   <include file="$(find pandora_motor_hardware_interface)/motor_controllers/launch/skid_steer_drive_controller.launch" >
+    <arg name="robot" value="$(arg robot)" />
     <arg name="namespace" value="/" />
   </include>
     

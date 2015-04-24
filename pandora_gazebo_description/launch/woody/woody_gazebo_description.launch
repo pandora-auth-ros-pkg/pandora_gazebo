@@ -14,7 +14,9 @@
   <group if="$(arg control)" >
   
     <group if="$(arg interface)" >
-      <include file="$(find pandora_gazebo_controllers)/launch/pandora_gazebo_position_controllers.launch" />
+      <include file="$(find pandora_gazebo_controllers)/launch/pandora_gazebo_position_controllers.launch" >
+        <arg name="robot" value="woody" />
+      </include>
     </group>
     
     <group unless="$(arg interface)" >
