@@ -14,7 +14,7 @@
 <!-- ###################################################################### -->
             
   <!-- Load IMU -->
-  <include file="$(find pandora_imu_hardware_interface)/launch/imu_controller.launch" >
+  <include file="$(find pandora_imu_hardware_interface)/imu_controllers/launch/imu_controllers.launch" >
     <arg name="namespace" value="/" />
   </include>
     
