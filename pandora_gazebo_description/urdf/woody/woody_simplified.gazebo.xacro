@@ -24,23 +24,25 @@
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/plugins/pandora_differential_plugin.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/plugins/pandora_p3d_plugin.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/plugins/ros_control_plugin.gazebo.xacro" />
+  
+  <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/plugins/ros_skid_steer_drive_plugin.gazebo.xacro" />
 
 <!-- Properties ########################################################### -->
 
   <!-- XXX: Get from config -->
   <xacro:property name="robot_namespace" value="" />
   
-  <xacro:property name="wheel_mu_1" value="0.85" />
-  <xacro:property name="wheel_mu_2" value="0.85" />
+  <xacro:property name="wheel_mu_1" value="0.35" />
+  <xacro:property name="wheel_mu_2" value="0.35" />
   <xacro:property name="wheel_k_p" value="10000000.0" />
   <xacro:property name="wheel_k_d" value="1.0" />
-  <xacro:property name="wheel_min_depth" value="0.0001" />
-  <xacro:property name="wheel_max_contacts" value="10" />
+  <xacro:property name="wheel_min_depth" value="0.001" />
+  <xacro:property name="wheel_max_contacts" value="5" />
 
 <!-- Load URDF ############################################################ -->
     
-  <xacro:woody_urdf fixed="true" />
-  <!-- <xacro:woody_urdf fixed="false" /> -->
+  <xacro:woody_urdf fixed="false" />
+  <!-- <xacro:woody_urdf fixed="true" /> -->
 
 <!-- Load Physics ######################################################### -->
   
@@ -51,8 +53,6 @@
 
 <!-- Load Gazebo Sensors ################################################## -->
 
-  <!--
-
   <xacro:laser_gazebo_sensor />
   
   <xacro:kinect_gazebo_sensor />
@@ -60,13 +60,16 @@
   <xacro:camera_gazebo_sensor prefix_y="left" />
   <xacro:camera_gazebo_sensor prefix_y="right" />
   
-  <xacro:sonar_gazebo_sensor name="linear" publish_msg="false" />
+  <!-- 
+                
+  TODO: <xacro:flir_gazebo_sensor publish_msg="false" publish_viz="false" />
+  
   <xacro:sonar_gazebo_sensor name="left" publish_msg="false" />
   <xacro:sonar_gazebo_sensor name="right" publish_msg="false" />
   
   <xacro:co2_gazebo_sensor publish_msg="false" publish_viz="false" />
                 
-  <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="false" publish_viz="false" />
+  FIXME: <xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="false" publish_viz="false" />
                     
   <xacro:microphone_gazebo_sensor publish_msg="false" publish_viz="false" />
   
@@ -74,8 +77,6 @@
       
       
 <!-- Load Transmissions ################################################### -->
-
-  <!--
 
   <xacro:wheel_transmission prefix_y="left" prefix_x="front" />
   <xacro:wheel_transmission prefix_y="left" prefix_x="rear" />
@@ -87,21 +88,22 @@
   
   <xacro:kinect_sensor_transmission rotation="pitch" />
   <xacro:kinect_sensor_transmission rotation="yaw" />
-  
-  -->
 
 <!-- Load Plugins ######################################################### -->
   
   <xacro:ros_skid_steer_drive_plugin />
+  <xacro:property name="wheel_joint_max_torque" value="50" />
 
   <xacro:pandora_differential_plugin publish_joint_states="true" />
   <!-- <xacro:pandora_differential_plugin publish_joint_states="false" /> -->
-          
+
   <!-- <xacro:pandora_p3d_plugin /> -->
-      
+
+  <xacro:gazebo_ros_control_plugin namespace="/"
+                                   hardware_interface="gazebo_ros_control/DefaultRobotHWSim" />
   <!-- <xacro:gazebo_ros_control_plugin namespace="/"
                                    hardware_interface="pandora_gazebo_interface/GazeboInterface" /> -->
-
+                                   
 <!-- ###################################################################### -->
 
 </robot>

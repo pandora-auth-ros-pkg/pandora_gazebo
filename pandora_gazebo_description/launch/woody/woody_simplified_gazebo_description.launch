@@ -4,11 +4,9 @@
 
 <!-- ###################################################################### -->
 
-  <!--
-  <include file="$(find pandora_gazebo_controllers)/launch/pandora_gazebo_position_controllers.launch" >
+  <include file="$(find pandora_gazebo_controllers)/launch/pandora_gazebo_effort_controllers.launch" >
     <arg name="robot" value="woody" />
   </include>
-  -->
       
 <!-- ###################################################################### -->
 
@@ -16,10 +14,6 @@
          command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/urdf/woody/woody_simplified.gazebo.xacro'" />
     
 <!-- ###################################################################### -->
-
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
-    <rosparam command="load" file="$(find pandora_robots_description)/config/woody/joint_states.yaml" />
-  </node>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
     
