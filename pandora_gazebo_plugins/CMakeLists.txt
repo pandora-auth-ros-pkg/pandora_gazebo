@@ -28,9 +28,12 @@ include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${GAZEB
 link_directories(${GAZEBO_LIBRARY_DIRS} ${catkin_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} )
 
+#dynamic reconfigure API
 generate_dynamic_reconfigure_options(
   cfg/Differential.cfg
+  cfg/FrictionPhysics.cfg
 )
+
 
 catkin_package(
   INCLUDE_DIRS include
@@ -70,6 +73,7 @@ target_link_libraries(${PROJECT_NAME}_pandora_imu_stabilizer_plugin
     ${Boost_LIBRARIES}
 )
 
+
 add_library(${PROJECT_NAME}_pandora_differential_plugin src/pandora_differential_plugin.cpp)
 add_dependencies(${PROJECT_NAME}_pandora_differential_plugin pandora_gazebo_plugins_gencfg)
 target_link_libraries(${PROJECT_NAME}_pandora_differential_plugin 
@@ -105,6 +109,14 @@ target_link_libraries(${PROJECT_NAME}_pandora_microphone_plugin
     CameraPlugin
     ${GAZEBO_LIBRARIES}
     ${catkin_LIBRARIES}
+)
+
+add_library(${PROJECT_NAME}_pandora_wheel_physics_plugin src/pandora_wheel_physics_plugin.cpp)
+add_dependencies(pandora_wheel_physics_plugin pandora_gazebo_plugins_gencfg)
+target_link_libraries(pandora_wheel_physics_plugin 
+    ${GAZEBO_LIBRARIES} 
+    ${catkin_LIBRARIES} 
+    ${Boost_LIBRARIES}
 )
 
 # To check lint : catkin_make roslint_pandora_gazebo_plugins

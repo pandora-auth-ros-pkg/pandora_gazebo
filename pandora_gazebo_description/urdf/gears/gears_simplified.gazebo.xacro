@@ -28,6 +28,7 @@
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/pandora_p3d_plugin.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/ros_control_plugin.gazebo.xacro" />
 
+
 <!-- Properties ########################################################### -->
 
   <!-- XXX: Get from config -->
