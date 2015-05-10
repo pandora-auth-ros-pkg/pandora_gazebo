@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>pandora_gazebo</name> <!-- This is a meta package! -->
   <version>0.1.0</version>
   <description>Packages used for creating a simulated environment for PANDORA ugv.</description>
@@ -12,9 +12,9 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   
-  <run_depend>pandora_gazebo_plugins</run_depend>
-  <run_depend>pandora_gazebo_worlds</run_depend>
-  <run_depend>pandora_gazebo_controllers</run_depend>
+  <exec_depend>pandora_gazebo_plugins</exec_depend>
+  <exec_depend>pandora_gazebo_worlds</exec_depend>
+  <exec_depend>pandora_gazebo_controllers</exec_depend>
  
 
   <export>

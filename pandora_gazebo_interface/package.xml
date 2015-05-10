@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>pandora_gazebo_interface</name>
   <version>0.0.0</version>
   <description>Containts pandora gazebo interface.</description>
@@ -15,27 +15,17 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>roscpp</build_depend>
   <build_depend>roslint</build_depend>
-  <build_depend>gazebo_ros</build_depend>
-  <build_depend>gazebo_plugins</build_depend>
-  <build_depend>gazebo_ros_control</build_depend>
-  <build_depend>control_toolbox</build_depend>
-  <build_depend>pandora_imu_hardware_interface</build_depend>
-  <build_depend>pandora_xmega_hardware_interface</build_depend>
-  <build_depend>pandora_arm_hardware_interface</build_depend>
-  <build_depend>pluginlib</build_depend>
 
-  <run_depend>roscpp</run_depend>
-  <run_depend>roslint</run_depend>
-  <run_depend>gazebo_ros</run_depend>
-  <run_depend>gazebo_plugins</run_depend>
-  <run_depend>gazebo_ros_control</run_depend>
-  <run_depend>control_toolbox</run_depend>
-  <run_depend>pandora_imu_hardware_interface</run_depend>
-  <run_depend>pandora_xmega_hardware_interface</run_depend>
-  <run_depend>pandora_arm_hardware_interface</run_depend>
-  <run_depend>pluginlib</run_depend>
+  <depend>roscpp</depend>
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_plugins</depend>
+  <depend>gazebo_ros_control</depend>
+  <depend>control_toolbox</depend>
+  <depend>pandora_imu_hardware_interface</depend>
+  <depend>pandora_arm_hardware_interface</depend>
+  <depend>pandora_xmega_hardware_interface</depend>
+  <depend>pluginlib</depend>
 
   <export>
     <gazebo_ros_control
