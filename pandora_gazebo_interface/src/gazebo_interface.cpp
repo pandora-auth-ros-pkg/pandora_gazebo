@@ -241,12 +241,7 @@ namespace pandora_gazebo_interface
     
     // ------------------------------------------------------------------------
     
-    linkName_ [ 0 ] = "base_link" ; //FIXME
-    
-    // ------------------------------------------------------------------------
-    
-    imuSensorData_ .name= "/sensors/imu" ; //FIXME
-    imuSensorData_ .frame_id = linkName_ [ 0 ] ; 
+    linkName_ [ 0 ] = "base_link" ; //FIXME XXX
     
     // ------------------------------------------------------------------------
     
@@ -256,6 +251,24 @@ namespace pandora_gazebo_interface
     imuOrientation_ [ 3 ] = 1 ; //FIXME
     
     imuSensorData_. orientation = imuOrientation_ ; 
+    imuSensorData_ .name= "/sensors/imu" ; //FIXME
+    imuSensorData_ .frame_id = linkName_ [ 0 ] ; 
+    
+    // ------------------------------------------------------------------------
+    
+    imuRoll_ = new double;
+    imuPitch_ = new double;
+    imuYaw_ = new double;
+    
+    *imuRoll_ = 0 ; 
+    *imuPitch_ = 0 ; 
+    *imuYaw_ = 0 ; 
+    
+    imuRPYData_. roll = imuRoll_ ; 
+    imuRPYData_. pitch = imuPitch_ ; 
+    imuRPYData_. yaw = imuYaw_ ; 
+    imuRPYData_ .name= "/sensors/imu_rpy" ; //FIXME
+    imuRPYData_ .frame_id = linkName_ [ 0 ] ; 
     
     // ------------------------------------------------------------------------
     
@@ -1091,6 +1104,13 @@ namespace pandora_gazebo_interface
      imuSensorHandle ( imuSensorData_ ) ; 
     
     imuSensorInterface_ .registerHandle ( imuSensorHandle ) ; 
+
+    // Connect and register the imu rpy handle
+
+    pandora_hardware_interface ::imu ::ImuRPYHandle 
+     imuRPYHandle ( imuRPYData_ ) ; 
+    
+    imuRPYInterface_ .registerHandle ( imuRPYHandle ) ; 
     
     // ------------------------------------------------------------------------
     
@@ -1153,6 +1173,7 @@ namespace pandora_gazebo_interface
     registerInterface ( & velocityJointInterface_ ) ; 
     
     registerInterface ( & imuSensorInterface_ ) ; 
+    registerInterface ( & imuRPYInterface_ ) ; 
     
     registerInterface ( & batteryInterface_ ) ; 
     registerInterface ( & rangeSensorInterface_ ) ; 
@@ -1175,12 +1196,24 @@ namespace pandora_gazebo_interface
   
     // Read robot orientation for IMU
     
-    gazebo ::math ::Pose pose = gazeboLink_ [ 0 ] ->GetWorldPose ( ) ; 
+    gazebo ::math ::Quaternion quaternion = gazeboLink_ [ 0 ]
+                                             ->GetWorldPose ( ) .rot ; 
     
-    imuOrientation_ [ 0 ] = pose .rot .x ; 
-    imuOrientation_ [ 1 ] = pose .rot .y ; 
-    imuOrientation_ [ 2 ] = pose .rot .z ; 
-    imuOrientation_ [ 3 ] = pose .rot .w ; 
+    imuOrientation_ [ 0 ] = quaternion .x ; 
+    imuOrientation_ [ 1 ] = quaternion .y ; 
+    imuOrientation_ [ 2 ] = quaternion .z ; 
+    imuOrientation_ [ 3 ] = quaternion .w ; 
+    
+    // ------------------------------------------------------------------------
+  
+    // Read robot rpy for IMU
+      
+    *imuRoll_ = quaternion .GetRoll() * 
+                360 / ( gazebo ::math ::Angle ::TwoPi .Radian() ) ; 
+    *imuPitch_ = quaternion .GetPitch() * 
+                 360 / ( gazebo ::math ::Angle ::TwoPi .Radian() ) ; 
+    *imuYaw_ = quaternion .GetYaw() * 
+               360 / ( gazebo ::math ::Angle ::TwoPi .Radian() ) ; 
     
     // ------------------------------------------------------------------------
     

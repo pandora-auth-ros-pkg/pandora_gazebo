@@ -21,8 +21,9 @@
   <build_depend>gazebo_plugins</build_depend>
   <build_depend>gazebo_ros_control</build_depend>
   <build_depend>control_toolbox</build_depend>
-  <build_depend>pandora_arm_hardware_interface</build_depend>
+  <build_depend>pandora_imu_hardware_interface</build_depend>
   <build_depend>pandora_xmega_hardware_interface</build_depend>
+  <build_depend>pandora_arm_hardware_interface</build_depend>
   <build_depend>pluginlib</build_depend>
 
   <run_depend>roscpp</run_depend>
@@ -31,8 +32,9 @@
   <run_depend>gazebo_plugins</run_depend>
   <run_depend>gazebo_ros_control</run_depend>
   <run_depend>control_toolbox</run_depend>
-  <run_depend>pandora_arm_hardware_interface</run_depend>
+  <run_depend>pandora_imu_hardware_interface</run_depend>
   <run_depend>pandora_xmega_hardware_interface</run_depend>
+  <run_depend>pandora_arm_hardware_interface</run_depend>
   <run_depend>pluginlib</run_depend>
 
   <export>

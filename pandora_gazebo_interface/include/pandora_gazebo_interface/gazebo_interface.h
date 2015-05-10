@@ -65,6 +65,7 @@
 #include <gazebo_ros_control/robot_hw_sim.h>
 
 // pandora_ros_control
+#include <imu_hardware_interface/imu_rpy_interface.h>
 #include <xmega_hardware_interface/battery_interface.h>
 #include <xmega_hardware_interface/range_sensor_interface.h>
 #include <arm_hardware_interface/co2_sensor_interface.h>
@@ -223,6 +224,7 @@ namespace pandora_gazebo_interface
       /////////////////////////////////////////////////////////////////////////
       
       hardware_interface ::ImuSensorHandle ::Data imuSensorData_ ; 
+      pandora_hardware_interface ::imu:: ImuRPYHandle ::Data imuRPYData_ ; 
       
       std ::vector 
       < pandora_hardware_interface ::xmega ::BatteryHandle ::Data > 
@@ -248,6 +250,7 @@ namespace pandora_gazebo_interface
       hardware_interface ::VelocityJointInterface velocityJointInterface_ ; 
 
       hardware_interface ::ImuSensorInterface imuSensorInterface_ ; 
+      pandora_hardware_interface ::imu ::ImuRPYInterface imuRPYInterface_ ; 
       
       pandora_hardware_interface ::xmega ::BatteryInterface 
        batteryInterface_ ; 
@@ -303,6 +306,10 @@ namespace pandora_gazebo_interface
       /////////////////////////////////////////////////////////////////////////
       
       double imuOrientation_ [ 4 ] ; 
+      
+      double *imuRoll_ ; 
+      double *imuPitch_ ; 
+      double *imuYaw_ ; 
     
       /////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////

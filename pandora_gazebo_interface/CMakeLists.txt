@@ -9,6 +9,7 @@ find_package(
   gazebo_plugins
   gazebo_ros_control
   control_toolbox
+  pandora_imu_hardware_interface
   pandora_xmega_hardware_interface
   pandora_arm_hardware_interface
   pluginlib
@@ -27,6 +28,7 @@ catkin_package(
     gazebo_plugins
     gazebo_ros_control
     control_toolbox
+    pandora_imu_hardware_interface
     pandora_xmega_hardware_interface
     pandora_arm_hardware_interface
     pluginlib
