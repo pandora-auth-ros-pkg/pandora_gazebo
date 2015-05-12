@@ -10,7 +10,7 @@
     <gazebo>
 
       <plugin name="PandoraDifferantialPlugin"
-              filename="libpandora_differential_plugin.so" >
+              filename="libpandora_gazebo_plugins_pandora_differential_plugin.so" >
 
         <!-- ============================================================== -->
         <robotNamespace>${robot_namespace}</robotNamespace>

@@ -9,7 +9,7 @@
     <gazebo>
 
       <plugin name="PandoraImuStabilizerPlugin"
-              filename="libpandora_imu_stabilizer_plugin.so" >
+              filename="libpandora_gazebo_plugins_pandora_imu_stabilizer_plugin.so" >
         
         <!-- ============================================================== -->
         <updateRate>50.0</updateRate>

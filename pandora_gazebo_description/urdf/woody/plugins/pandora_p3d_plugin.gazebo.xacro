@@ -9,7 +9,7 @@
     <gazebo>
 
       <plugin name="Pandora3dPosePlugin"
-              filename="libpandora_p3d_plugin.so" >
+              filename="libpandora_gazebo_plugins_pandora_p3d_plugin.so" >
 
         <!-- ============================================================== -->
         <robotNamespace>${robot_namespace}</robotNamespace>
