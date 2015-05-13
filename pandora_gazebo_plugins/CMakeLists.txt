@@ -112,8 +112,8 @@ target_link_libraries(${PROJECT_NAME}_pandora_microphone_plugin
 )
 
 add_library(${PROJECT_NAME}_pandora_wheel_physics_plugin src/pandora_wheel_physics_plugin.cpp)
-add_dependencies(pandora_wheel_physics_plugin pandora_gazebo_plugins_gencfg)
-target_link_libraries(pandora_wheel_physics_plugin 
+add_dependencies(${PROJECT_NAME}_pandora_wheel_physics_plugin pandora_gazebo_plugins_gencfg)
+target_link_libraries(${PROJECT_NAME}_pandora_wheel_physics_plugin 
     ${GAZEBO_LIBRARIES} 
     ${catkin_LIBRARIES} 
     ${Boost_LIBRARIES}
