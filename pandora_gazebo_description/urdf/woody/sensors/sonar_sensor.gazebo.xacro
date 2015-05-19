@@ -41,7 +41,7 @@
         </ray>
 
         <plugin name="sonar2ros"
-                filename="libpandora_sonar_plugin.so" >
+                filename="libpandora_gazebo_plugins_pandora_sonar_plugin.so" >
 
           <!--============================================================= -->
           <robotNamespace></robotNamespace>

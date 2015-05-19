@@ -35,7 +35,7 @@
         </camera>
 
         <plugin name="thermal2ros"
-                filename="libpandora_thermal_plugin.so" >
+                filename="libpandora_gazebo_plugins_pandora_thermal_plugin.so" >
 
           <!--============================================================= -->
           <frameName>${prefix_y}_thermal_optical_frame</frameName>

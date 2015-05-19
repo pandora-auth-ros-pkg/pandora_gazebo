@@ -35,7 +35,7 @@
         </camera>
 
         <plugin name="co2ros"
-                filename="libpandora_co2_plugin.so" >
+                filename="libpandora_gazebo_plugins_pandora_co2_plugin.so" >
 
           <!--============================================================= -->
           <frameName>co2_frame</frameName>

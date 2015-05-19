@@ -35,7 +35,7 @@
         </camera>
 
         <plugin name="microphone2ros"
-                filename="libpandora_microphone_plugin.so" >
+                filename="libpandora_gazebo_plugins_pandora_microphone_plugin.so" >
 
           <!--============================================================= -->
           <frameName>microphone_frame</frameName>
