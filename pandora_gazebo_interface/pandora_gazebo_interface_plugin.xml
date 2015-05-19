@@ -1,4 +1,4 @@
-<library path="lib/libgazebo_interface">
+<library path="lib/libpandora_gazebo_interface">
 
   <class
     name="pandora_gazebo_interface/GazeboInterface"
