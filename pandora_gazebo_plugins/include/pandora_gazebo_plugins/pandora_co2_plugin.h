@@ -1,6 +1,7 @@
 
 #ifndef PANDORA_GAZEBO_PLUGINS_PANDORA_CO2_PLUGIN_H
 #define PANDORA_GAZEBO_PLUGINS_PANDORA_CO2_PLUGIN_H
+
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 

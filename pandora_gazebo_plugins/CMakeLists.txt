@@ -108,6 +108,8 @@ target_link_libraries(${PROJECT_NAME}_pandora_microphone_plugin
 )
 
 # To check lint : catkin_make roslint_pandora_gazebo_plugins
+set(ROSLINT_CPP_OPTS
+  "--filter=-build/include_what_you_use, -runtime/references")
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
   RELATIVE ${PROJECT_SOURCE_DIR}
     pandora_gazebo_plugins/include/*.h

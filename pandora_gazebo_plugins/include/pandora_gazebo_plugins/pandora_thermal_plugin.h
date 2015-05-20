@@ -1,6 +1,6 @@
 
-#ifndef PANDORA_THERMAL_PLUGIN_HH
-#define PANDORA_THERMAL_PLUGIN_HH
+#ifndef PANDORA_GAZEBO_PLUGINS_PANDORA_THERMAL_PLUGIN_H
+#define PANDORA_GAZEBO_PLUGINS_PANDORA_THERMAL_PLUGIN_H
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
@@ -25,7 +25,6 @@
 #include <ros/advertise_options.h>
 
 // ros messages stuff
-#include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <std_msgs/Float64.h>
 
@@ -44,7 +43,6 @@ namespace gazebo
 
 class PandoraThermalPlugin : public CameraPlugin
 {
-
 public:
   PandoraThermalPlugin() {}
 
@@ -71,8 +69,8 @@ private:
   ros::Publisher camera_info_pub_;
 
   /// \brief ros message
-  //~ private: sensor_msgs::PointCloud cloud_msg_;
-  //~ private: sensor_msgs::Range sonar_msg_;
+  // ~ private: sensor_msgs::PointCloud cloud_msg_;
+  // ~ private: sensor_msgs::Range sonar_msg_;
 
   /// \brief topic name
 private:
@@ -136,8 +134,7 @@ private:
   bool publish_msg_;
 private:
   bool publish_viz_;
-
 };
 GZ_REGISTER_SENSOR_PLUGIN(PandoraThermalPlugin)
-}
-#endif
+}  // namespace gazebo
+#endif  // PANDORA_GAZEBO_PLUGINS_PANDORA_THERMAL_PLUGIN_H

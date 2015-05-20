@@ -1,32 +1,6 @@
-/*
- *  Gazebo - Outdoor Multi-Robot Simulator
- *  Copyright (C) 2003
- *     Nate Koenig & Andrew Howard
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- */
-/*
- * Desc: ros laser controller.
- * Author: Nathan Koenig
- * Date: 01 Feb 2007
- * SVN: $Id: gazebo_ros_block_laser.hh 6656 2008-06-20 22:52:19Z natepak $
- */
 
-#ifndef PANDORA_SONAR_PLUGIN_HH
-#define PANDORA_SONAR_PLUGIN_HH
+#ifndef PANDORA_GAZEBO_PLUGINS_PANDORA_SONAR_PLUGIN_H
+#define PANDORA_GAZEBO_PLUGINS_PANDORA_SONAR_PLUGIN_H
 
 // Custom Callback Queue
 #include <ros/ros.h>
@@ -149,13 +123,9 @@ public:
   void OnStats(const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
 
 private:
-  bool publish_msg_ ;
+  bool publish_msg_;
 private:
-  bool publish_viz_ ;
-
+  bool publish_viz_;
 };
-
-}
-
-#endif
-
+}  // namespace gazebo
+#endif  // PANDORA_GAZEBO_PLUGINS_PANDORA_SONAR_PLUGIN_H
