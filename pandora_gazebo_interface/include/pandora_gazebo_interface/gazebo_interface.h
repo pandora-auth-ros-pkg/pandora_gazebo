@@ -59,7 +59,6 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
-#include <gazebo_ros_control/robot_hw_sim.h>
 
 // gazebo_ros_control
 #include <gazebo_ros_control/robot_hw_sim.h>
@@ -82,9 +81,7 @@ class GazeboInterface :
   public gazebo_ros_control ::RobotHWSim
 
 {
-
 public:
-
   ~GazeboInterface(void);
 
   bool initSim(const std ::string & robotnamespace ,
@@ -99,7 +96,6 @@ public:
   void writeSim(ros ::Time time , ros ::Duration period);
 
 private:
-
   bool registerInterfaces(void);
 
   /////////////////////////////////////////////////////////////////////////
@@ -183,7 +179,9 @@ private:
   /////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////
 
-  enum ControlMethod { NONE ,
+  enum ControlMethod
+                     {
+                       NONE ,
                        EFFORT ,
                        POSITION ,
                        POSITION_PID ,
@@ -193,7 +191,9 @@ private:
 
   // ----------------------------------------------------------------------
 
-  enum RadiationType { ULTRASOUND ,
+  enum RadiationType
+                     {
+                       ULTRASOUND ,
                        INFRARED
                      };
 
@@ -402,9 +402,7 @@ private:
 
   /////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////
-
 };
-
 }  // namespace pandora_gazebo_interface
 
 PLUGINLIB_EXPORT_CLASS(pandora_gazebo_interface::GazeboInterface,
