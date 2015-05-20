@@ -74,7 +74,7 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
 
   // Get then name of the parent sensor
   this->parent_sensor_ = _parent;
-  
+
   // Get the world name.
   std::string worldName = _parent->GetWorldName();
   this->world_ = physics::get_world(worldName);
@@ -102,9 +102,9 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   {
     this->frame_name_ = _sdf->GetElement("frameName")->Get<std::string>();
     if (this->parent_sensor_->GetScopedName().find("left") != std::string::npos)
-		this->frame_name_ = std::string("/left")+std::string("_")+this->frame_name_;
-	else
-    	this->frame_name_ = std::string("/right")+std::string("_")+this->frame_name_;
+      this->frame_name_ = std::string("/left") + std::string("_") + this->frame_name_;
+    else
+      this->frame_name_ = std::string("/right") + std::string("_") + this->frame_name_;
   }
 
   if (!_sdf->HasElement("topicName"))
@@ -115,18 +115,20 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   else
   {
     this->topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
-        
-    if (this->parent_sensor_->GetScopedName().find("left") != std::string::npos) {
-	  if (this->parent_sensor_->GetScopedName().find("rear") != std::string::npos) 
-		this->topic_name_ = this->topic_name_+std::string("/rear_left");
-	  else
-		this->topic_name_ = this->topic_name_+std::string("/front_left");
-	}
-    else {
-	  if (this->parent_sensor_->GetScopedName().find("rear") != std::string::npos) 
-		this->topic_name_ = this->topic_name_+std::string("/rear_right");
-	  else
-		this->topic_name_ = this->topic_name_+std::string("/front_right");
+
+    if (this->parent_sensor_->GetScopedName().find("left") != std::string::npos)
+    {
+      if (this->parent_sensor_->GetScopedName().find("rear") != std::string::npos)
+        this->topic_name_ = this->topic_name_ + std::string("/rear_left");
+      else
+        this->topic_name_ = this->topic_name_ + std::string("/front_left");
+    }
+    else
+    {
+      if (this->parent_sensor_->GetScopedName().find("rear") != std::string::npos)
+        this->topic_name_ = this->topic_name_ + std::string("/rear_right");
+      else
+        this->topic_name_ = this->topic_name_ + std::string("/front_right");
     }
   }
 
@@ -137,7 +139,7 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   }
   else
   {
-    this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
+    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true" ;
   }
 
   if (!_sdf->HasElement("gaussianNoise"))
@@ -154,7 +156,7 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   if (!ros::isInitialized())
   {
     ROS_FATAL_STREAM("A ROS node for Gazebo has not been initialized, unable to load plugin. "
-      << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
+                     << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
     return;
   }
 
@@ -164,7 +166,7 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   std::string prefix;
   this->rosnode_->getParam(std::string("tf_prefix"), prefix);
   this->frame_name_ = tf::resolve(prefix, this->frame_name_);
-  
+
   // set size of cloud message, starts at 0!! FIXME: not necessary
   this->cloud_msg_.points.clear();
   this->cloud_msg_.channels.clear();
@@ -172,23 +174,23 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
 
   if (this->topic_name_ != "" && this->publish_msg_)
   {
-    
+
     // Custom Callback Queue
     ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<sensor_msgs::Range>(
-      this->topic_name_,1,
-      boost::bind( &PandoraSonarPlugin::LaserConnect,this),
-      boost::bind( &PandoraSonarPlugin::LaserDisconnect,this), ros::VoidPtr(), &this->laser_queue_);
+                                 this->topic_name_, 1,
+                                 boost::bind(&PandoraSonarPlugin::LaserConnect, this),
+                                 boost::bind(&PandoraSonarPlugin::LaserDisconnect, this), ros::VoidPtr(), &this->laser_queue_);
     this->pub_ = this->rosnode_->advertise(ao);
-    
+
   }
-  
-  if ( this->publish_msg_ ) 
-  
+
+  if (this->publish_msg_)
+
     // sensor generation off by default
     this->parent_ray_sensor_->SetActive(false);
 
   // start custom queue for laser
-  this->callback_laser_queue_thread_ = boost::thread( boost::bind( &PandoraSonarPlugin::LaserQueueThread,this ) );
+  this->callback_laser_queue_thread_ = boost::thread(boost::bind(&PandoraSonarPlugin::LaserQueueThread, this));
 
 }
 
@@ -215,14 +217,14 @@ void PandoraSonarPlugin::OnNewLaserScans()
 {
   if (this->topic_name_ != "")
   {
-    
-      common::Time sensor_update_time = this->parent_sensor_->GetLastUpdateTime();
-      if (last_update_time_ < sensor_update_time)
-      {
-        this->PutLaserData(sensor_update_time);
-        last_update_time_ = sensor_update_time;
-      }
-    
+
+    common::Time sensor_update_time = this->parent_sensor_->GetLastUpdateTime();
+    if (last_update_time_ < sensor_update_time)
+    {
+      this->PutLaserData(sensor_update_time);
+      last_update_time_ = sensor_update_time;
+    }
+
   }
   else
   {
@@ -234,9 +236,10 @@ void PandoraSonarPlugin::OnNewLaserScans()
 // Put laser data to the interface
 void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
 {
-  
-  if ( this->publish_msg_ ) { 
-  
+
+  if (this->publish_msg_)
+  {
+
     int i, hja, hjb;
     int j, vja, vjb;
     double vb, hb;
@@ -283,10 +286,10 @@ void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
     this->sonar_msg_.max_range = maxRange;
     this->sonar_msg_.field_of_view = yDiff;
     this->sonar_msg_.radiation_type = sensor_msgs::Range::ULTRASOUND;
-    
+
     this->sonar_msg_.range = maxRange;
 
-    for (j = 0; j<verticalRangeCount; j++)
+    for (j = 0; j < verticalRangeCount; j++)
     {
       // interpolating in vertical direction
       vb = (verticalRangeCount == 1) ? 0 : (double) j * (verticalRayCount - 1) / (verticalRangeCount - 1);
@@ -297,10 +300,10 @@ void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
       assert(vja >= 0 && vja < verticalRayCount);
       assert(vjb >= 0 && vjb < verticalRayCount);
 
-      for (i = 0; i<rangeCount; i++)
+      for (i = 0; i < rangeCount; i++)
       {
         // Interpolate the range readings from the rays in horizontal direction
-        hb = (rangeCount == 1)? 0 : (double) i * (rayCount - 1) / (rangeCount - 1);
+        hb = (rangeCount == 1) ? 0 : (double) i * (rayCount - 1) / (rangeCount - 1);
         hja = (int) floor(hb);
         hjb = std::min(hja + 1, rayCount - 1);
         hb = hb - floor(hb); // fraction from min
@@ -314,21 +317,21 @@ void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
         j3 = hja + vjb * rayCount;
         j4 = hjb + vjb * rayCount;
         // range readings of 4 corners
-        r1 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j1) , maxRange-minRange);
-        r2 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j2) , maxRange-minRange);
-        r3 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j3) , maxRange-minRange);
-        r4 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j4) , maxRange-minRange);
+        r1 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j1) , maxRange - minRange);
+        r2 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j2) , maxRange - minRange);
+        r3 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j3) , maxRange - minRange);
+        r4 = std::min(this->parent_ray_sensor_->GetLaserShape()->GetRange(j4) , maxRange - minRange);
 
         // Range is linear interpolation if values are close,
         // and min if they are very different
-        r = (1-vb)*((1 - hb) * r1 + hb * r2)
-           +   vb *((1 - hb) * r3 + hb * r4);
+        r = (1 - vb) * ((1 - hb) * r1 + hb * r2)
+            +   vb * ((1 - hb) * r3 + hb * r4);
 
         // Intensity is averaged
-        intensity = 0.25*(this->parent_ray_sensor_->GetLaserShape()->GetRetro(j1) +
-                          this->parent_ray_sensor_->GetLaserShape()->GetRetro(j2) +
-                          this->parent_ray_sensor_->GetLaserShape()->GetRetro(j3) +
-                          this->parent_ray_sensor_->GetLaserShape()->GetRetro(j4));
+        intensity = 0.25 * (this->parent_ray_sensor_->GetLaserShape()->GetRetro(j1) +
+                            this->parent_ray_sensor_->GetLaserShape()->GetRetro(j2) +
+                            this->parent_ray_sensor_->GetLaserShape()->GetRetro(j3) +
+                            this->parent_ray_sensor_->GetLaserShape()->GetRetro(j4));
 
         // std::cout << " block debug "
         //           << "  ij("<<i<<","<<j<<")"
@@ -337,8 +340,8 @@ void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
         //           << std::endl;
 
         // get angles of ray to get xyz for point
-        double yAngle = 0.5*(hja+hjb) * yDiff / (rayCount -1) + minAngle.Radian();
-        double pAngle = 0.5*(vja+vjb) * pDiff / (verticalRayCount -1) + verticalMinAngle.Radian();
+        double yAngle = 0.5 * (hja + hjb) * yDiff / (rayCount - 1) + minAngle.Radian();
+        double pAngle = 0.5 * (vja + vjb) * pDiff / (verticalRayCount - 1) + verticalMinAngle.Radian();
 
         /***************************************************************/
         /*                                                             */
@@ -349,42 +352,43 @@ void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
         {
           // no noise if at max range
           geometry_msgs::Point32 point;
-          point.x = (r+minRange) * cos(pAngle)*cos(yAngle);
-          point.y = -(r+minRange) * sin(yAngle);
-          point.z = (r+minRange) * sin(pAngle)*cos(yAngle);
+          point.x = (r + minRange) * cos(pAngle) * cos(yAngle);
+          point.y = -(r + minRange) * sin(yAngle);
+          point.z = (r + minRange) * sin(pAngle) * cos(yAngle);
 
           //pAngle is rotated by yAngle:
-          point.x = (r+minRange) * cos(pAngle) * cos(yAngle);
-          point.y = -(r+minRange) * cos(pAngle) * sin(yAngle);
-          point.z = (r+minRange) * sin(pAngle);
+          point.x = (r + minRange) * cos(pAngle) * cos(yAngle);
+          point.y = -(r + minRange) * cos(pAngle) * sin(yAngle);
+          point.z = (r + minRange) * sin(pAngle);
 
-          this->cloud_msg_.points.push_back(point); 
-        } 
-        else 
-        { 
-          geometry_msgs::Point32 point;
-          point.x = (r+minRange) * cos(pAngle)*cos(yAngle) + this->GaussianKernel(0,this->gaussian_noise_) ;
-          point.y = -(r+minRange) * sin(yAngle) + this->GaussianKernel(0,this->gaussian_noise_) ;
-          point.z = (r+minRange) * sin(pAngle)*cos(yAngle) + this->GaussianKernel(0,this->gaussian_noise_) ;
-          //pAngle is rotated by yAngle:
-          point.x = (r+minRange) * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
-          point.y = -(r+minRange) * cos(pAngle) * sin(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
-          point.z = (r+minRange) * sin(pAngle) + this->GaussianKernel(0,this->gaussian_noise_);
           this->cloud_msg_.points.push_back(point);
-          if (point.x < sonar_msg_.range) {
-			      sonar_msg_.range = point.x;
-		      }
-		
-        } // only 1 channel 
+        }
+        else
+        {
+          geometry_msgs::Point32 point;
+          point.x = (r + minRange) * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0, this->gaussian_noise_) ;
+          point.y = -(r + minRange) * sin(yAngle) + this->GaussianKernel(0, this->gaussian_noise_) ;
+          point.z = (r + minRange) * sin(pAngle) * cos(yAngle) + this->GaussianKernel(0, this->gaussian_noise_) ;
+          //pAngle is rotated by yAngle:
+          point.x = (r + minRange) * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0, this->gaussian_noise_);
+          point.y = -(r + minRange) * cos(pAngle) * sin(yAngle) + this->GaussianKernel(0, this->gaussian_noise_);
+          point.z = (r + minRange) * sin(pAngle) + this->GaussianKernel(0, this->gaussian_noise_);
+          this->cloud_msg_.points.push_back(point);
+          if (point.x < sonar_msg_.range)
+          {
+            sonar_msg_.range = point.x;
+          }
 
-        this->cloud_msg_.channels[0].values.push_back(intensity + this->GaussianKernel(0,this->gaussian_noise_)) ;
+        } // only 1 channel
+
+        this->cloud_msg_.channels[0].values.push_back(intensity + this->GaussianKernel(0, this->gaussian_noise_)) ;
       }
     }
     this->parent_ray_sensor_->SetActive(true);
-  
+
     // send data out via ros message
     this->pub_.publish(this->sonar_msg_);
-    
+
   }
 
 }
@@ -392,13 +396,13 @@ void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
 
 //////////////////////////////////////////////////////////////////////////////
 // Utility for adding noise
-double PandoraSonarPlugin::GaussianKernel(double mu,double sigma)
+double PandoraSonarPlugin::GaussianKernel(double mu, double sigma)
 {
   // using Box-Muller transform to generate two independent standard normally disbributed normal variables
   // see wikipedia
-  double U = (double)rand()/(double)RAND_MAX; // normalized uniform random variable
-  double V = (double)rand()/(double)RAND_MAX; // normalized uniform random variable
-  double X = sqrt(-2.0 * ::log(U)) * cos( 2.0*M_PI * V);
+  double U = (double)rand() / (double)RAND_MAX; // normalized uniform random variable
+  double V = (double)rand() / (double)RAND_MAX; // normalized uniform random variable
+  double X = sqrt(-2.0 * ::log(U)) * cos(2.0 * M_PI * V);
   //double Y = sqrt(-2.0 * ::log(U)) * sin( 2.0*M_PI * V); // the other indep. normal variable
   // we'll just use X
   // scale to our mu and sigma
@@ -419,12 +423,12 @@ void PandoraSonarPlugin::LaserQueueThread()
   }
 }
 
-void PandoraSonarPlugin::OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg)
+void PandoraSonarPlugin::OnStats(const boost::shared_ptr<msgs::WorldStatistics const> &_msg)
 {
-  this->sim_time_  = msgs::Convert( _msg->sim_time() );
+  this->sim_time_  = msgs::Convert(_msg->sim_time());
 
   math::Pose pose;
-  pose.pos.x = 0.5*sin(0.01*this->sim_time_.Double());
+  pose.pos.x = 0.5 * sin(0.01 * this->sim_time_.Double());
   gzdbg << "plugin simTime [" << this->sim_time_.Double() << "] update pose [" << pose.pos.x << "]\n";
 }
 

@@ -37,101 +37,142 @@
 
 namespace gazebo
 {
-  class GazeboRosIMU : public ModelPlugin
-  {
-    /// \brief Constructor
-    public: GazeboRosIMU();
+class GazeboRosIMU : public ModelPlugin
+{
+  /// \brief Constructor
+public:
+  GazeboRosIMU();
 
-    /// \brief Destructor
-    public: virtual ~GazeboRosIMU();
+  /// \brief Destructor
+public:
+  virtual ~GazeboRosIMU();
 
-    /// \brief Load the controller
-    /// \param node XML config node
-    public: void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf);
+  /// \brief Load the controller
+  /// \param node XML config node
+public:
+  void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf);
 
-    /// \brief Update the controller
-    protected: virtual void UpdateChild();
+  /// \brief Update the controller
+protected:
+  virtual void UpdateChild();
 
-    /// \brief The parent World
-    private: physics::WorldPtr world_;
+  /// \brief The parent World
+private:
+  physics::WorldPtr world_;
 
-    /// \brief The link referred to by this plugin
-    private: physics::LinkPtr link;
+  /// \brief The link referred to by this plugin
+private:
+  physics::LinkPtr link;
 
-    /// \brief pointer to ros node
-    private: ros::NodeHandle* rosnode_;
-    private: ros::Publisher pub_;
-    private: ros::Publisher joint_state_pub_;
-    private: PubQueue<sensor_msgs::Imu>::Ptr pub_Queue;
-    private: PubQueue<sensor_msgs::JointState>::Ptr joint_state_pub_Queue;
+  /// \brief pointer to ros node
+private:
+  ros::NodeHandle* rosnode_;
+private:
+  ros::Publisher pub_;
+private:
+  ros::Publisher joint_state_pub_;
+private:
+  PubQueue<sensor_msgs::Imu>::Ptr pub_Queue;
+private:
+  PubQueue<sensor_msgs::JointState>::Ptr joint_state_pub_Queue;
 
-    /// \brief ros Imu message
-    private: sensor_msgs::Imu imu_msg_;
-    
-    /// \brief ros JointState message
-    private: sensor_msgs::JointState joint_state_msg_;
+  /// \brief ros Imu message
+private:
+  sensor_msgs::Imu imu_msg_;
 
-    /// \brief store link name
-    private: std::string link_name_;
+  /// \brief ros JointState message
+private:
+  sensor_msgs::JointState joint_state_msg_;
 
-    /// \brief topic name
-    private: std::string topic_name_;
+  /// \brief store link name
+private:
+  std::string link_name_;
 
-    /// \brief allow specifying constant xyz and rpy offsets
-    private: math::Pose offset_;
+  /// \brief topic name
+private:
+  std::string topic_name_;
 
-    /// \brief A mutex to lock access to fields
-    /// that are used in message callbacks
-    private: boost::mutex lock_;
+  /// \brief allow specifying constant xyz and rpy offsets
+private:
+  math::Pose offset_;
 
-    /// \brief save last_time
-    private: common::Time last_time_;
-    private: math::Vector3 last_vpos_;
-    private: math::Vector3 last_veul_;
-    private: math::Vector3 apos_;
-    private: math::Vector3 aeul_;
+  /// \brief A mutex to lock access to fields
+  /// that are used in message callbacks
+private:
+  boost::mutex lock_;
 
-    /// \brief: keep initial pose to offset orientation in imu message
-    private: math::Pose initial_pose_;
+  /// \brief save last_time
+private:
+  common::Time last_time_;
+private:
+  math::Vector3 last_vpos_;
+private:
+  math::Vector3 last_veul_;
+private:
+  math::Vector3 apos_;
+private:
+  math::Vector3 aeul_;
 
-    /// \brief Gaussian noise
-    private: double gaussian_noise_;
+  /// \brief: keep initial pose to offset orientation in imu message
+private:
+  math::Pose initial_pose_;
 
-    /// \brief Gaussian noise generator
-    private: double GaussianKernel(double mu, double sigma);
+  /// \brief Gaussian noise
+private:
+  double gaussian_noise_;
 
-    /// \brief for setting ROS name space
-    private: std::string robot_namespace_;
+  /// \brief Gaussian noise generator
+private:
+  double GaussianKernel(double mu, double sigma);
 
-    /// \brief call back when using service
-    private: bool ServiceCallback(std_srvs::Empty::Request &req,
-                                  std_srvs::Empty::Response &res);
+  /// \brief for setting ROS name space
+private:
+  std::string robot_namespace_;
 
-    private: ros::ServiceServer srv_;
-    private: std::string service_name_;
+  /// \brief call back when using service
+private:
+  bool ServiceCallback(std_srvs::Empty::Request &req,
+                       std_srvs::Empty::Response &res);
 
-    private: ros::CallbackQueue imu_queue_;
-    private: void IMUQueueThread();
-    private: boost::thread callback_queue_thread_;
+private:
+  ros::ServiceServer srv_;
+private:
+  std::string service_name_;
 
-    // Pointer to the update event connection
-    private: event::ConnectionPtr update_connection_;
+private:
+  ros::CallbackQueue imu_queue_;
+private:
+  void IMUQueueThread();
+private:
+  boost::thread callback_queue_thread_;
 
-    // deferred load in case ros is blocking
-    private: sdf::ElementPtr sdf;
-    private: void LoadThread();
-    private: boost::thread deferred_load_thread_;
-    private: unsigned int seed;
+  // Pointer to the update event connection
+private:
+  event::ConnectionPtr update_connection_;
 
-    // ros publish multi queue, prevents publish() blocking
-    private: PubMultiQueue pmq;
-    
-    private: gazebo::physics::JointPtr jointRoll_;
-    private: gazebo::physics::JointPtr jointPitch_;
-    private: gazebo::physics::ModelPtr model_;
-    
-    
-  };
+  // deferred load in case ros is blocking
+private:
+  sdf::ElementPtr sdf;
+private:
+  void LoadThread();
+private:
+  boost::thread deferred_load_thread_;
+private:
+  unsigned int seed;
+
+  // ros publish multi queue, prevents publish() blocking
+private:
+  PubMultiQueue pmq;
+
+private:
+  gazebo::physics::JointPtr jointRoll_;
+private:
+  gazebo::physics::JointPtr jointPitch_;
+private:
+  gazebo::physics::ModelPtr model_;
+
+
+};
 }
 #endif
 

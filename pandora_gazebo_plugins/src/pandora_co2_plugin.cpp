@@ -30,7 +30,7 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
 
   // Get then name of the parent sensor
   this->parent_sensor_ = _parent;
-  
+
   // Get the world name.
   std::string worldName = _parent->GetWorldName();
   this->world_ = physics::get_world(worldName);
@@ -76,7 +76,7 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   }
   else
   {
-    this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
+    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true" ;
   }
 
   if (!_sdf->HasElement("publishViz"))
@@ -86,7 +86,7 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   }
   else
   {
-    this->publish_viz_ = _sdf ->Get < std ::string > ( "publishViz" ) == "true" ; 
+    this->publish_viz_ = _sdf ->Get < std ::string > ("publishViz") == "true" ;
   }
 
   this->camera_connect_count_ = 0;
@@ -95,7 +95,7 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   if (!ros::isInitialized())
   {
     ROS_FATAL_STREAM("A ROS node for Gazebo has not been initialized, unable to load plugin. "
-      << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
+                     << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
     return;
   }
 
@@ -105,7 +105,7 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   std::string prefix;
   this->rosnode_->getParam(std::string("tf_prefix"), prefix);
   this->frame_name_ = tf::resolve(prefix, this->frame_name_);
-  
+
   // set size of cloud message, starts at 0!! FIXME: not necessary
   //~ this->cloud_msg_.points.clear();
   //~ this->cloud_msg_.channels.clear();
@@ -113,38 +113,40 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
 
   if (this->topic_name_ != "")
   {
-  
-    if ( this->publish_msg_ ) { 
-  
+
+    if (this->publish_msg_)
+    {
+
       // Custom Callback Queue
       ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<pandora_sensor_msgs::Co2Msg>(
-        this->topic_name_,1,
-        boost::bind( &PandoraCo2Plugin::CameraConnect,this),
-        boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+                                   this->topic_name_, 1,
+                                   boost::bind(&PandoraCo2Plugin::CameraConnect, this),
+                                   boost::bind(&PandoraCo2Plugin::CameraDisconnect, this), ros::VoidPtr(), &this->camera_queue_);
       this->pub_ = this->rosnode_->advertise(ao);
-      
+
     }
-  
-    if ( this->publish_viz_ ) { 
-    
+
+    if (this->publish_viz_)
+    {
+
       ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
-        (this->topic_name_+"/viz/image/"+this->frame_name_),1,
-        boost::bind( &PandoraCo2Plugin::CameraConnect,this),
-        boost::bind( &PandoraCo2Plugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+                                    (this->topic_name_ + "/viz/image/" + this->frame_name_), 1,
+                                    boost::bind(&PandoraCo2Plugin::CameraConnect, this),
+                                    boost::bind(&PandoraCo2Plugin::CameraDisconnect, this), ros::VoidPtr(), &this->camera_queue_);
       this->pub_viz = this->rosnode_->advertise(ao2);
-      
+
     }
-    
+
   }
-  
-  if ( this->publish_msg_ ) 
-  
+
+  if (this->publish_msg_)
+
     // sensor generation off by default
     this->parent_camera_sensor_->SetActive(false);
 
   // start custom queue for laser
-  this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraCo2Plugin::CameraQueueThread,this ) );
-  
+  this->callback_camera_queue_thread_ = boost::thread(boost::bind(&PandoraCo2Plugin::CameraQueueThread, this));
+
 }
 
 // Increment count
@@ -174,8 +176,8 @@ void PandoraCo2Plugin::CameraQueueThread()
 }
 
 void PandoraCo2Plugin::OnNewFrame(const unsigned char *_image,
-                   unsigned int _width, unsigned int _height,
-                   unsigned int _depth, const std::string &_format)
+                                  unsigned int _width, unsigned int _height,
+                                  unsigned int _depth, const std::string &_format)
 {
   if (this->topic_name_ != "")
   {
@@ -192,128 +194,136 @@ void PandoraCo2Plugin::OnNewFrame(const unsigned char *_image,
   }
 }
 
-void PandoraCo2Plugin:: PutCo2Data ( common:: Time & _updateTime ) { 
-  
-  if ( this->publish_msg_ || this->publish_viz_ ) { 
+void PandoraCo2Plugin:: PutCo2Data(common:: Time & _updateTime)
+{
 
-    unsigned int width = this ->parent_camera_sensor_ 
-                      ->GetImageWidth ( ) ; 
+  if (this->publish_msg_ || this->publish_viz_)
+  {
 
-    unsigned int height = this ->parent_camera_sensor_ 
-                       ->GetImageHeight ( ) ; 
+    unsigned int width = this ->parent_camera_sensor_
+                         ->GetImageWidth() ;
 
-    const unsigned char * data = this ->parent_camera_sensor_ 
-                                       ->GetImageData ( ) ; 
-      
-    if ( data == NULL ) 
-    
-      return ; 
-    
+    unsigned int height = this ->parent_camera_sensor_
+                          ->GetImageHeight() ;
+
+    const unsigned char * data = this ->parent_camera_sensor_
+                                 ->GetImageData() ;
+
+    if (data == NULL)
+
+      return ;
+
     //----------------------------------------------------------------------
-    
-    if ( this->publish_viz_ ) { 
 
-      imgviz_ .header .stamp = ros:: Time:: now ( ) ; 
-      imgviz_ .header .frame_id = this ->frame_name_ ; 
+    if (this->publish_viz_)
+    {
 
-      imgviz_ .height = height ; 
-      imgviz_ .width = width ; 
-      imgviz_ .step = width ; 
-      imgviz_ .encoding = "mono8" ; 
-      
-      imgviz_ .data .clear ( ) ; 
-      
+      imgviz_ .header .stamp = ros:: Time:: now() ;
+      imgviz_ .header .frame_id = this ->frame_name_ ;
+
+      imgviz_ .height = height ;
+      imgviz_ .width = width ;
+      imgviz_ .step = width ;
+      imgviz_ .encoding = "mono8" ;
+
+      imgviz_ .data .clear() ;
+
     }
-    
+
     //----------------------------------------------------------------------
-        
-    double ambientPpm = 400.0 ; 
-    
-    double maxPpm = 40000.0 ; 
 
-    double totalPpm = 0.0 ; 
-    
-    for ( unsigned int i = 0 ; i < width ; i++ ) { 
+    double ambientPpm = 400.0 ;
 
-      for ( unsigned int j = 0 ; j < height ; j++ ) { 
-        
-        double currentPpm = 0 ; 
+    double maxPpm = 40000.0 ;
 
-        double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
-        double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
-        double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+    double totalPpm = 0.0 ;
+
+    for (unsigned int i = 0 ; i < width ; i++)
+    {
+
+      for (unsigned int j = 0 ; j < height ; j++)
+      {
+
+        double currentPpm = 0 ;
+
+        double R = data [((i * height) + j) * 3 + 0 ] ;
+        double G = data [((i * height) + j) * 3 + 1 ] ;
+        double B = data [((i * height) + j) * 3 + 2 ] ;
 
         // co2 is represented by green
-        double G1 = ( G - R ) ; 
-        double G2 = ( G - B ) ; 
+        double G1 = (G - R) ;
+        double G2 = (G - B) ;
 
-        double positiveDiff = 0 ; 
+        double positiveDiff = 0 ;
 
-        if ( G1 > 0 ) { 
+        if (G1 > 0)
+        {
 
-          currentPpm += pow ( G1 , 2 ) ; 
+          currentPpm += pow(G1 , 2) ;
 
-          ++ positiveDiff ; 
-        
-        }
-
-        if ( G2 > 0 ) { 
-
-          currentPpm += pow ( G2 , 2 ) ; 
-
-          ++ positiveDiff ; 
+          ++ positiveDiff ;
 
         }
-        
-        currentPpm = sqrt ( currentPpm ) ; 
 
-        if ( positiveDiff == 1 ) 
+        if (G2 > 0)
+        {
 
-          currentPpm /= 255.0 ; 
+          currentPpm += pow(G2 , 2) ;
 
-        else if ( positiveDiff == 2 )     
+          ++ positiveDiff ;
 
-          currentPpm /= sqrt ( pow ( 255.0 , 2 ) 
-                               + pow ( 255.0 , 2 ) ) ;
-    
-        if ( this->publish_viz_ )
+        }
 
-          imgviz_ .data .push_back ( ( char ) ( currentPpm * 255.0 ) ) ; 
+        currentPpm = sqrt(currentPpm) ;
 
-        totalPpm += currentPpm ; 
-        
+        if (positiveDiff == 1)
+
+          currentPpm /= 255.0 ;
+
+        else if (positiveDiff == 2)
+
+          currentPpm /= sqrt(pow(255.0 , 2)
+                             + pow(255.0 , 2)) ;
+
+        if (this->publish_viz_)
+
+          imgviz_ .data .push_back((char)(currentPpm * 255.0)) ;
+
+        totalPpm += currentPpm ;
+
       }
 
     }
-    
-    totalPpm /= ( width * height ) ; 
-    
-    double percentage = ( ambientPpm + totalPpm * maxPpm ) / 10000.0 ; 
-    
-    //----------------------------------------------------------------------
-    
-    if ( this->publish_viz_ ) 
 
-      this ->pub_viz .publish ( imgviz_ ) ; 
-    
+    totalPpm /= (width * height) ;
+
+    double percentage = (ambientPpm + totalPpm * maxPpm) / 10000.0 ;
+
     //----------------------------------------------------------------------
 
-    if ( this->publish_msg_ ) { 
+    if (this->publish_viz_)
 
-      co2Msg_ .header .stamp = ros:: Time:: now ( ) ; 
-      co2Msg_ .header .frame_id = this ->frame_name_ ; 
-      
-      co2Msg_ .co2_percentage = percentage ; 
-        
-      this ->pub_ .publish ( this ->co2Msg_ ) ; 
-      
+      this ->pub_viz .publish(imgviz_) ;
+
+    //----------------------------------------------------------------------
+
+    if (this->publish_msg_)
+    {
+
+      co2Msg_ .header .stamp = ros:: Time:: now() ;
+      co2Msg_ .header .frame_id = this ->frame_name_ ;
+
+      co2Msg_ .co2_percentage = percentage ;
+
+      this ->pub_ .publish(this ->co2Msg_) ;
+
     }
-  
+
   }
-  
+
   //----------------------------------------------------------------------
-  
-  usleep ( 100000 ) ; 
+
+  usleep(100000) ;
 
 }
 

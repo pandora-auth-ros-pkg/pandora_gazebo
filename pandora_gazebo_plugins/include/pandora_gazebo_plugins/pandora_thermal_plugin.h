@@ -42,72 +42,102 @@
 namespace gazebo
 {
 
-  class PandoraThermalPlugin : public CameraPlugin
-  {
-	
-	  public: PandoraThermalPlugin(){}
-	
-	  public: void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
-	
-	  private: physics::WorldPtr world_;
-	
-    /// \brief The parent sensor
-    private: sensors::SensorPtr parent_sensor_;
-    private: sensors::CameraSensorPtr parent_camera_sensor_;
+class PandoraThermalPlugin : public CameraPlugin
+{
 
-    /// \brief pointer to ros node
-    private: ros::NodeHandle* rosnode_;
-    private: ros::Publisher pub_;
-    private: ros::Publisher pub_viz;
-    private: ros::Publisher camera_info_pub_;
-    
-    /// \brief ros message
-    //~ private: sensor_msgs::PointCloud cloud_msg_;
-    //~ private: sensor_msgs::Range sonar_msg_;
-   
-    /// \brief topic name
-    private: std::string topic_name_;
+public:
+  PandoraThermalPlugin() {}
 
-    /// \brief frame transform name, should match link name
-    private: std::string frame_name_;
+public:
+  void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
 
-    /// \brief A mutex to lock access to fields that are used in message callbacks
-    private: boost::mutex lock;
+private:
+  physics::WorldPtr world_;
 
-    /// update rate of this sensor
-    private: double update_rate_;
-    
-    private: int camera_connect_count_;
-    private: void CameraConnect();
-    private: void CameraDisconnect();
+  /// \brief The parent sensor
+private:
+  sensors::SensorPtr parent_sensor_;
+private:
+  sensors::CameraSensorPtr parent_camera_sensor_;
 
-    /// \brief for setting ROS name space
-    private: std::string robot_namespace_;
-    
-    private: common::Time last_update_time_;
-    
-    private: ros::CallbackQueue camera_queue_;
-    private: void CameraQueueThread();
-    private: boost::thread callback_camera_queue_thread_;
-    
-    private: transport::NodePtr node_;
-    private: common::Time sim_time_;
-    public: void OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
+  /// \brief pointer to ros node
+private:
+  ros::NodeHandle* rosnode_;
+private:
+  ros::Publisher pub_;
+private:
+  ros::Publisher pub_viz;
+private:
+  ros::Publisher camera_info_pub_;
 
-	  protected: virtual void OnNewFrame(const unsigned char *_image,
-                     unsigned int _width, unsigned int _height,
-                     unsigned int _depth, const std::string &_format);
-                     
-    private: void PutThermalData(common::Time &_updateTime);
-    
-    private: sensor_msgs ::Image imgviz_ ; 
-    
-    private: sensor_msgs ::Image tempMsg_ ; 
-    
-    private: bool publish_msg_ ; 
-    private: bool publish_viz_ ; 
+  /// \brief ros message
+  //~ private: sensor_msgs::PointCloud cloud_msg_;
+  //~ private: sensor_msgs::Range sonar_msg_;
 
-	};
-  GZ_REGISTER_SENSOR_PLUGIN(PandoraThermalPlugin)
+  /// \brief topic name
+private:
+  std::string topic_name_;
+
+  /// \brief frame transform name, should match link name
+private:
+  std::string frame_name_;
+
+  /// \brief A mutex to lock access to fields that are used in message callbacks
+private:
+  boost::mutex lock;
+
+  /// update rate of this sensor
+private:
+  double update_rate_;
+
+private:
+  int camera_connect_count_;
+private:
+  void CameraConnect();
+private:
+  void CameraDisconnect();
+
+  /// \brief for setting ROS name space
+private:
+  std::string robot_namespace_;
+
+private:
+  common::Time last_update_time_;
+
+private:
+  ros::CallbackQueue camera_queue_;
+private:
+  void CameraQueueThread();
+private:
+  boost::thread callback_camera_queue_thread_;
+
+private:
+  transport::NodePtr node_;
+private:
+  common::Time sim_time_;
+public:
+  void OnStats(const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
+
+protected:
+  virtual void OnNewFrame(const unsigned char *_image,
+                          unsigned int _width, unsigned int _height,
+                          unsigned int _depth, const std::string &_format);
+
+private:
+  void PutThermalData(common::Time &_updateTime);
+
+private:
+  sensor_msgs ::Image imgviz_ ;
+
+private:
+  sensor_msgs ::Image tempMsg_ ;
+
+private:
+  bool publish_msg_ ;
+private:
+  bool publish_viz_ ;
+
+};
+GZ_REGISTER_SENSOR_PLUGIN(PandoraThermalPlugin)
 }
 #endif

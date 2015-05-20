@@ -30,7 +30,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
 
   // Get then name of the parent sensor
   this->parent_sensor_ = _parent;
-  
+
   // Get the world name.
   std::string worldName = _parent->GetWorldName();
   this->world_ = physics::get_world(worldName);
@@ -76,7 +76,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   }
   else
   {
-    this->publish_msg_ = _sdf ->Get < std ::string > ( "publishMsg" ) == "true" ; 
+    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true" ;
   }
 
   if (!_sdf->HasElement("publishViz"))
@@ -86,7 +86,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   }
   else
   {
-    this->publish_viz_ = _sdf ->Get < std ::string > ( "publishViz" ) == "true" ; 
+    this->publish_viz_ = _sdf ->Get < std ::string > ("publishViz") == "true" ;
   }
 
   this->camera_connect_count_ = 0;
@@ -95,7 +95,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   if (!ros::isInitialized())
   {
     ROS_FATAL_STREAM("A ROS node for Gazebo has not been initialized, unable to load plugin. "
-      << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
+                     << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
     return;
   }
 
@@ -105,7 +105,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   std::string prefix;
   this->rosnode_->getParam(std::string("tf_prefix"), prefix);
   this->frame_name_ = tf::resolve(prefix, this->frame_name_);
-  
+
   // set size of cloud message, starts at 0!! FIXME: not necessary
   //~ this->cloud_msg_.points.clear();
   //~ this->cloud_msg_.channels.clear();
@@ -113,46 +113,48 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
 
   if (this->topic_name_ != "")
   {
-  
-    if ( this->publish_msg_ ) { 
-    
+
+    if (this->publish_msg_)
+    {
+
       // Custom Callback Queue
       ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<sensor_msgs::Image>(
-        this->topic_name_,1,
-        boost::bind( &PandoraThermalPlugin::CameraConnect,this),
-        boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+                                   this->topic_name_, 1,
+                                   boost::bind(&PandoraThermalPlugin::CameraConnect, this),
+                                   boost::bind(&PandoraThermalPlugin::CameraDisconnect, this), ros::VoidPtr(), &this->camera_queue_);
       this->pub_ = this->rosnode_->advertise(ao);
-    
+
     }
-  
-    if ( this->publish_viz_ ) { 
-    
+
+    if (this->publish_viz_)
+    {
+
       ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
-        (this->topic_name_+"/viz/image/"+this->frame_name_),1,
-        boost::bind( &PandoraThermalPlugin::CameraConnect,this),
-        boost::bind( &PandoraThermalPlugin::CameraDisconnect,this), ros::VoidPtr(), &this->camera_queue_);
+                                    (this->topic_name_ + "/viz/image/" + this->frame_name_), 1,
+                                    boost::bind(&PandoraThermalPlugin::CameraConnect, this),
+                                    boost::bind(&PandoraThermalPlugin::CameraDisconnect, this), ros::VoidPtr(), &this->camera_queue_);
       this->pub_viz = this->rosnode_->advertise(ao2);
-      
+
       ros::AdvertiseOptions cio =
-      ros::AdvertiseOptions::create<sensor_msgs::CameraInfo>(
-      (this->topic_name_+"/viz/camera_info/"+this->frame_name_), 2,
-      boost::bind(&PandoraThermalPlugin::CameraConnect, this),
-      boost::bind(&PandoraThermalPlugin::CameraDisconnect, this),
-      ros::VoidPtr(), &this->camera_queue_);
+        ros::AdvertiseOptions::create<sensor_msgs::CameraInfo>(
+          (this->topic_name_ + "/viz/camera_info/" + this->frame_name_), 2,
+          boost::bind(&PandoraThermalPlugin::CameraConnect, this),
+          boost::bind(&PandoraThermalPlugin::CameraDisconnect, this),
+          ros::VoidPtr(), &this->camera_queue_);
       this->camera_info_pub_ = this->rosnode_->advertise(cio);
-    
+
     }
-    
+
   }
-  
-  if ( this->publish_msg_ ) 
-  
+
+  if (this->publish_msg_)
+
     // sensor generation off by default
     this->parent_camera_sensor_->SetActive(false);
 
   // start custom queue for laser
-  this->callback_camera_queue_thread_ = boost::thread( boost::bind( &PandoraThermalPlugin::CameraQueueThread,this ) );
-  
+  this->callback_camera_queue_thread_ = boost::thread(boost::bind(&PandoraThermalPlugin::CameraQueueThread, this));
+
 }
 
 // Increment count
@@ -182,8 +184,8 @@ void PandoraThermalPlugin::CameraQueueThread()
 }
 
 void PandoraThermalPlugin::OnNewFrame(const unsigned char *_image,
-                   unsigned int _width, unsigned int _height,
-                   unsigned int _depth, const std::string &_format)
+                                      unsigned int _width, unsigned int _height,
+                                      unsigned int _depth, const std::string &_format)
 {
   if (this->topic_name_ != "")
   {
@@ -200,214 +202,227 @@ void PandoraThermalPlugin::OnNewFrame(const unsigned char *_image,
   }
 }
 
-void PandoraThermalPlugin:: PutThermalData ( common:: Time & _updateTime ) { 
-  
+void PandoraThermalPlugin:: PutThermalData(common:: Time & _updateTime)
+{
+
   //----------------------------------------------------------------------
-  
-  if ( this->publish_viz_ ) { 
 
-    unsigned int width = this ->parent_camera_sensor_ 
-                      ->GetImageWidth ( ) ; 
+  if (this->publish_viz_)
+  {
 
-    unsigned int height = this ->parent_camera_sensor_ 
-                       ->GetImageHeight ( ) ; 
+    unsigned int width = this ->parent_camera_sensor_
+                         ->GetImageWidth() ;
 
-    const unsigned char * data = this ->parent_camera_sensor_ 
-                                       ->GetImageData ( ) ; 
-      
-    if ( data == NULL ) 
-    
-      return ; 
-    
+    unsigned int height = this ->parent_camera_sensor_
+                          ->GetImageHeight() ;
+
+    const unsigned char * data = this ->parent_camera_sensor_
+                                 ->GetImageData() ;
+
+    if (data == NULL)
+
+      return ;
+
     //----------------------------------------------------------------------
 
-    imgviz_ .header .stamp = ros:: Time:: now ( ) ; 
-    imgviz_ .header .frame_id = this ->frame_name_ ; 
+    imgviz_ .header .stamp = ros:: Time:: now() ;
+    imgviz_ .header .frame_id = this ->frame_name_ ;
 
-    imgviz_ .height = height ; 
-    imgviz_ .width = width ; 
-    imgviz_ .step = width ; 
-    imgviz_ .encoding = "mono8" ; 
-      
-    imgviz_ .data .clear ( ) ; 
-    
+    imgviz_ .height = height ;
+    imgviz_ .width = width ;
+    imgviz_ .step = width ;
+    imgviz_ .encoding = "mono8" ;
+
+    imgviz_ .data .clear() ;
+
     //----------------------------------------------------------------------
-    
-    for ( unsigned int i = 0 ; i < width ; i++ ) { 
 
-      for ( unsigned int j = 0 ; j < height ; j++ ) { 
-        
-        double currentTemp = 0 ; 
+    for (unsigned int i = 0 ; i < width ; i++)
+    {
 
-        double R = data [ ( ( i * height ) + j ) * 3 + 0 ] ; 
-        double G = data [ ( ( i * height ) + j ) * 3 + 1 ] ; 
-        double B = data [ ( ( i * height ) + j ) * 3 + 2 ] ; 
+      for (unsigned int j = 0 ; j < height ; j++)
+      {
+
+        double currentTemp = 0 ;
+
+        double R = data [((i * height) + j) * 3 + 0 ] ;
+        double G = data [((i * height) + j) * 3 + 1 ] ;
+        double B = data [((i * height) + j) * 3 + 2 ] ;
 
         // temperature is represented by red
-        double R1 = ( R - G ) ; 
-        double R2 = ( R - B ) ; 
+        double R1 = (R - G) ;
+        double R2 = (R - B) ;
 
-        double positiveDiff = 0 ; 
+        double positiveDiff = 0 ;
 
-        if ( R1 > 0 ) { 
+        if (R1 > 0)
+        {
 
-          currentTemp += pow ( R1 , 2 ) ; 
+          currentTemp += pow(R1 , 2) ;
 
-          ++ positiveDiff ; 
-        
-        }
-
-        if ( R2 > 0 ) { 
-
-          currentTemp += pow ( R2 , 2 ) ; 
-
-          ++ positiveDiff ; 
+          ++ positiveDiff ;
 
         }
-        
-        currentTemp = sqrt ( currentTemp ) ; 
 
-        if ( positiveDiff == 1 ) 
+        if (R2 > 0)
+        {
 
-          currentTemp /= 255.0 ; 
+          currentTemp += pow(R2 , 2) ;
 
-        else if ( positiveDiff == 2 )     
+          ++ positiveDiff ;
 
-          currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
-                                + pow ( 255.0 , 2 ) ) ; 
+        }
 
-        imgviz_ .data .push_back ( ( char ) ( currentTemp * 255.0 ) ) ; 
-        
+        currentTemp = sqrt(currentTemp) ;
+
+        if (positiveDiff == 1)
+
+          currentTemp /= 255.0 ;
+
+        else if (positiveDiff == 2)
+
+          currentTemp /= sqrt(pow(255.0 , 2)
+                              + pow(255.0 , 2)) ;
+
+        imgviz_ .data .push_back((char)(currentTemp * 255.0)) ;
+
       }
 
     }
-    
+
     //----------------------------------------------------------------------
 
-    this -> pub_viz .publish ( imgviz_ ) ; 
-  
+    this -> pub_viz .publish(imgviz_) ;
+
   }
 
   //----------------------------------------------------------------------
-  
-  if ( this->publish_msg_ ) { 
 
-    tempMsg_ .header .stamp = ros:: Time:: now ( ) ; 
-    tempMsg_ .header .frame_id = this ->frame_name_ ; 
+  if (this->publish_msg_)
+  {
 
-    tempMsg_ .height = 8 ; 
-    tempMsg_ .width = 8 ; 
-    tempMsg_ .step = 8 ; 
-    tempMsg_ .encoding = "mono8" ; 
-      
-    tempMsg_ .data .clear ( ) ; 
-    
+    tempMsg_ .header .stamp = ros:: Time:: now() ;
+    tempMsg_ .header .frame_id = this ->frame_name_ ;
+
+    tempMsg_ .height = 8 ;
+    tempMsg_ .width = 8 ;
+    tempMsg_ .step = 8 ;
+    tempMsg_ .encoding = "mono8" ;
+
+    tempMsg_ .data .clear() ;
+
     //----------------------------------------------------------------------
 
-    unsigned int cameraWidth = this ->parent_camera_sensor_ 
-                                ->GetImageWidth ( ) ; 
-                                
-    unsigned int sensorWidth = tempMsg_ .width ; 
-    
-    unsigned int divWidth = ( cameraWidth / sensorWidth ) ; 
+    unsigned int cameraWidth = this ->parent_camera_sensor_
+                               ->GetImageWidth() ;
 
-    unsigned int cameraHeight = this ->parent_camera_sensor_ 
-                                 ->GetImageHeight ( ) ; 
-                                 
-    unsigned int sensorHeight = tempMsg_ .height ; 
-    
-    unsigned int divHeight = ( cameraHeight / sensorHeight ) ; 
-    
-    const unsigned char * data = this ->parent_camera_sensor_ 
-                                  ->GetImageData ( ) ; 
-      
-    if ( data == NULL ) 
-    
-      return ; 
-    
+    unsigned int sensorWidth = tempMsg_ .width ;
+
+    unsigned int divWidth = (cameraWidth / sensorWidth) ;
+
+    unsigned int cameraHeight = this ->parent_camera_sensor_
+                                ->GetImageHeight() ;
+
+    unsigned int sensorHeight = tempMsg_ .height ;
+
+    unsigned int divHeight = (cameraHeight / sensorHeight) ;
+
+    const unsigned char * data = this ->parent_camera_sensor_
+                                 ->GetImageData() ;
+
+    if (data == NULL)
+
+      return ;
+
     //----------------------------------------------------------------------
 
-    double ambientTemp = 25.0 ; 
-    
-    double maxTemp = 17.0 ; 
-  
-    for ( unsigned int i = 0 ; i < sensorWidth ; i++ ) { 
+    double ambientTemp = 25.0 ;
 
-      for ( unsigned int j = 0 ; j < sensorHeight ; j++ ) { 
-      
-        double meanTemp = 0 ; 
-      
-        for ( unsigned int k = 0 ; k < divWidth ; k++ ) { 
-      
-          for ( unsigned int l = 0 ; l < divHeight ; l++ ) { 
-        
-            double currentTemp = 0 ; 
+    double maxTemp = 17.0 ;
 
-            double R = data [ ( ( k + i * divWidth ) * cameraHeight + 
-                               ( l + j * divHeight ) ) * 3 + 0 ] ; 
-            double G = data [ ( ( k + i * divWidth ) * cameraHeight + 
-                               ( l + j * divHeight ) ) * 3 + 1 ] ; 
-            double B = data [ ( ( k + i * divWidth ) * cameraHeight + 
-                               ( l + j * divHeight ) ) * 3 + 2 ] ; 
+    for (unsigned int i = 0 ; i < sensorWidth ; i++)
+    {
+
+      for (unsigned int j = 0 ; j < sensorHeight ; j++)
+      {
+
+        double meanTemp = 0 ;
+
+        for (unsigned int k = 0 ; k < divWidth ; k++)
+        {
+
+          for (unsigned int l = 0 ; l < divHeight ; l++)
+          {
+
+            double currentTemp = 0 ;
+
+            double R = data [((k + i * divWidth) * cameraHeight +
+                              (l + j * divHeight)) * 3 + 0 ] ;
+            double G = data [((k + i * divWidth) * cameraHeight +
+                              (l + j * divHeight)) * 3 + 1 ] ;
+            double B = data [((k + i * divWidth) * cameraHeight +
+                              (l + j * divHeight)) * 3 + 2 ] ;
 
             // temperature is represented by red
-            double R1 = ( R - G ) ; 
-            double R2 = ( R - B ) ; 
+            double R1 = (R - G) ;
+            double R2 = (R - B) ;
 
-            double positiveDiff = 0 ; 
+            double positiveDiff = 0 ;
 
-            if ( R1 > 0 ) { 
+            if (R1 > 0)
+            {
 
-              currentTemp += pow ( R1 , 2 ) ; 
+              currentTemp += pow(R1 , 2) ;
 
-              ++ positiveDiff ; 
-            
-            }
-
-            if ( R2 > 0 ) { 
-
-              currentTemp += pow ( R2 , 2 ) ; 
-
-              ++ positiveDiff ; 
+              ++ positiveDiff ;
 
             }
-            
-            currentTemp = sqrt ( currentTemp ) ; 
 
-            if ( positiveDiff == 1 ) 
+            if (R2 > 0)
+            {
 
-              currentTemp /= 255.0 ; 
+              currentTemp += pow(R2 , 2) ;
 
-            else if ( positiveDiff == 2 ) 
+              ++ positiveDiff ;
 
-              currentTemp /= sqrt ( pow ( 255.0 , 2 ) 
-                                    + pow ( 255.0 , 2 ) ) ; 
-          
-            meanTemp += currentTemp ; 
-          
+            }
+
+            currentTemp = sqrt(currentTemp) ;
+
+            if (positiveDiff == 1)
+
+              currentTemp /= 255.0 ;
+
+            else if (positiveDiff == 2)
+
+              currentTemp /= sqrt(pow(255.0 , 2)
+                                  + pow(255.0 , 2)) ;
+
+            meanTemp += currentTemp ;
+
           }
-        
-        }
-        
-        meanTemp /= ( divWidth * divHeight ) ; 
-        
-        double temp = ambientTemp + meanTemp * maxTemp ; 
 
-        tempMsg_ .data .push_back ( ( char ) temp ) ; 
-        
+        }
+
+        meanTemp /= (divWidth * divHeight) ;
+
+        double temp = ambientTemp + meanTemp * maxTemp ;
+
+        tempMsg_ .data .push_back((char) temp) ;
+
       }
 
     }
-    
+
     //----------------------------------------------------------------------
 
-    this ->pub_ .publish ( tempMsg_ ) ; 
-  
+    this ->pub_ .publish(tempMsg_) ;
+
   }
-  
+
   //----------------------------------------------------------------------
-  
-  usleep ( 100000 ) ; 
+
+  usleep(100000) ;
 
 }
 
