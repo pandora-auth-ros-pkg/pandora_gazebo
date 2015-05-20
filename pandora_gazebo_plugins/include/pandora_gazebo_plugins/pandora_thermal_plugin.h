@@ -127,15 +127,15 @@ private:
   void PutThermalData(common::Time &_updateTime);
 
 private:
-  sensor_msgs ::Image imgviz_ ;
+  sensor_msgs ::Image imgviz_;
 
 private:
-  sensor_msgs ::Image tempMsg_ ;
+  sensor_msgs ::Image tempMsg_;
 
 private:
-  bool publish_msg_ ;
+  bool publish_msg_;
 private:
-  bool publish_viz_ ;
+  bool publish_viz_;
 
 };
 GZ_REGISTER_SENSOR_PLUGIN(PandoraThermalPlugin)

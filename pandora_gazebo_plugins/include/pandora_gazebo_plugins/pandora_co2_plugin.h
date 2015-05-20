@@ -1,6 +1,6 @@
 
-#ifndef PANDORA_CO2_PLUGIN_HH
-#define PANDORA_CO2_PLUGIN_HH
+#ifndef PANDORA_GAZEBO_PLUGINS_PANDORA_CO2_PLUGIN_H
+#define PANDORA_GAZEBO_PLUGINS_PANDORA_CO2_PLUGIN_H
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
@@ -25,7 +25,6 @@
 #include <ros/advertise_options.h>
 
 // ros messages stuff
-#include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <std_msgs/Float64.h>
 
@@ -46,7 +45,6 @@ namespace gazebo
 
 class PandoraCo2Plugin : public CameraPlugin
 {
-
 public:
   PandoraCo2Plugin() {}
 
@@ -125,17 +123,16 @@ private:
   void PutCo2Data(common::Time &_updateTime);
 
 private:
-  sensor_msgs ::Image imgviz_ ;
+  sensor_msgs ::Image imgviz_;
 
 private:
-  pandora_sensor_msgs ::Co2Msg co2Msg_ ;
+  pandora_sensor_msgs ::Co2Msg co2Msg_;
 
 private:
-  bool publish_msg_ ;
+  bool publish_msg_;
 private:
-  bool publish_viz_ ;
-
+  bool publish_viz_;
 };
 GZ_REGISTER_SENSOR_PLUGIN(PandoraCo2Plugin)
-}
-#endif
+}  // namespace gazebo
+#endif  // PANDORA_GAZEBO_PLUGINS_PANDORA_CO2_PLUGIN_H

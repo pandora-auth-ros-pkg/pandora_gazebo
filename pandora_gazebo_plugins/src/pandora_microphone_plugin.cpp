@@ -76,7 +76,7 @@ void PandoraMicrophonePlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _
   }
   else
   {
-    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true" ;
+    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true";
   }
 
   if (!_sdf->HasElement("publishViz"))
@@ -86,7 +86,7 @@ void PandoraMicrophonePlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _
   }
   else
   {
-    this->publish_viz_ = _sdf ->Get < std ::string > ("publishViz") == "true" ;
+    this->publish_viz_ = _sdf ->Get < std ::string > ("publishViz") == "true";
   }
 
   this->camera_connect_count_ = 0;
@@ -201,124 +201,124 @@ void PandoraMicrophonePlugin ::PutMicrophoneData(common:: Time & _updateTime)
   {
 
     unsigned int width = this ->parent_camera_sensor_
-                         ->GetImageWidth() ;
+                         ->GetImageWidth();
 
     unsigned int height = this ->parent_camera_sensor_
-                          ->GetImageHeight() ;
+                          ->GetImageHeight();
 
     const unsigned char * data = this ->parent_camera_sensor_
-                                 ->GetImageData() ;
+                                 ->GetImageData();
 
     if (data == NULL)
 
-      return ;
+      return;
 
     //----------------------------------------------------------------------
 
     if (this->publish_viz_)
     {
 
-      imgviz_ .header .stamp = ros:: Time:: now() ;
-      imgviz_ .header .frame_id = this ->frame_name_ ;
+      imgviz_ .header .stamp = ros:: Time:: now();
+      imgviz_ .header .frame_id = this ->frame_name_;
 
-      imgviz_ .height = height ;
-      imgviz_ .width = width ;
-      imgviz_ .step = width ;
-      imgviz_ .encoding = "mono8" ;
+      imgviz_ .height = height;
+      imgviz_ .width = width;
+      imgviz_ .step = width;
+      imgviz_ .encoding = "mono8";
 
-      imgviz_ .data .clear() ;
+      imgviz_ .data .clear();
 
     }
 
     //----------------------------------------------------------------------
 
-    double totalCert = 0.0 ;
+    double totalCert = 0.0;
 
-    for (unsigned int i = 0 ; i < width ; i++)
+    for (unsigned int i = 0; i < width; i++)
     {
 
-      for (unsigned int j = 0 ; j < height ; j++)
+      for (unsigned int j = 0; j < height; j++)
       {
 
-        double currentCert = 0 ;
+        double currentCert = 0;
 
-        double R = data [((i * height) + j) * 3 + 0 ] ;
-        double G = data [((i * height) + j) * 3 + 1 ] ;
-        double B = data [((i * height) + j) * 3 + 2 ] ;
+        double R = data [((i * height) + j) * 3 + 0 ];
+        double G = data [((i * height) + j) * 3 + 1 ];
+        double B = data [((i * height) + j) * 3 + 2 ];
 
         // sound is represented by blue
-        double B1 = (B - R) ;
-        double B2 = (B - G) ;
+        double B1 = (B - R);
+        double B2 = (B - G);
 
-        double positiveDiff = 0 ;
+        double positiveDiff = 0;
 
         if (B1 > 0)
         {
 
-          currentCert += pow(B1 , 2) ;
+          currentCert += pow(B1 , 2);
 
-          ++ positiveDiff ;
+          ++ positiveDiff;
 
         }
 
         if (B2 > 0)
         {
 
-          currentCert += pow(B2 , 2) ;
+          currentCert += pow(B2 , 2);
 
-          ++ positiveDiff ;
+          ++ positiveDiff;
 
         }
 
-        currentCert = sqrt(currentCert) ;
+        currentCert = sqrt(currentCert);
 
         if (positiveDiff == 1)
 
-          currentCert /= 255.0 ;
+          currentCert /= 255.0;
 
         else if (positiveDiff == 2)
 
           currentCert /= sqrt(pow(255.0 , 2)
-                              + pow(255.0 , 2)) ;
+                              + pow(255.0 , 2));
 
         if (this->publish_viz_)
 
-          imgviz_ .data .push_back((char)(currentCert  * 255.0)) ;
+          imgviz_ .data .push_back((char)(currentCert  * 255.0));
 
-        totalCert += currentCert ;
+        totalCert += currentCert;
 
       }
 
     }
 
-    double certainty = totalCert / (width * height) ;
+    double certainty = totalCert / (width * height);
 
     //----------------------------------------------------------------------
 
     if (this->publish_viz_)
 
-      this ->pub_viz .publish(imgviz_) ;
+      this ->pub_viz .publish(imgviz_);
 
     //----------------------------------------------------------------------
 
     if (this->publish_msg_)
     {
 
-      //soundMsg_ .header .stamp = ros:: Time:: now ( ) ;
-      //soundMsg_ .header .frame_id = this ->frame_name_ ;
+      //soundMsg_ .header .stamp = ros:: Time:: now ( );
+      //soundMsg_ .header .frame_id = this ->frame_name_;
 
       // Sound detection condition
       if (certainty > 0.5)
 
-        soundMsg_ .data = true ;
+        soundMsg_ .data = true;
 
       else
 
-        soundMsg_ .data = false ;
+        soundMsg_ .data = false;
 
-      //soundMsg_ .certainty = certainty ;
+      //soundMsg_ .certainty = certainty;
 
-      this ->pub_ .publish(this ->soundMsg_) ;
+      this ->pub_ .publish(this ->soundMsg_);
 
     }
 
@@ -326,7 +326,7 @@ void PandoraMicrophonePlugin ::PutMicrophoneData(common:: Time & _updateTime)
 
   //----------------------------------------------------------------------
 
-  usleep(100000) ;
+  usleep(100000);
 
 }
 

@@ -76,7 +76,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   }
   else
   {
-    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true" ;
+    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true";
   }
 
   if (!_sdf->HasElement("publishViz"))
@@ -86,7 +86,7 @@ void PandoraThermalPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf
   }
   else
   {
-    this->publish_viz_ = _sdf ->Get < std ::string > ("publishViz") == "true" ;
+    this->publish_viz_ = _sdf ->Get < std ::string > ("publishViz") == "true";
   }
 
   this->camera_connect_count_ = 0;
@@ -211,80 +211,80 @@ void PandoraThermalPlugin:: PutThermalData(common:: Time & _updateTime)
   {
 
     unsigned int width = this ->parent_camera_sensor_
-                         ->GetImageWidth() ;
+                         ->GetImageWidth();
 
     unsigned int height = this ->parent_camera_sensor_
-                          ->GetImageHeight() ;
+                          ->GetImageHeight();
 
     const unsigned char * data = this ->parent_camera_sensor_
-                                 ->GetImageData() ;
+                                 ->GetImageData();
 
     if (data == NULL)
 
-      return ;
+      return;
 
     //----------------------------------------------------------------------
 
-    imgviz_ .header .stamp = ros:: Time:: now() ;
-    imgviz_ .header .frame_id = this ->frame_name_ ;
+    imgviz_ .header .stamp = ros:: Time:: now();
+    imgviz_ .header .frame_id = this ->frame_name_;
 
-    imgviz_ .height = height ;
-    imgviz_ .width = width ;
-    imgviz_ .step = width ;
-    imgviz_ .encoding = "mono8" ;
+    imgviz_ .height = height;
+    imgviz_ .width = width;
+    imgviz_ .step = width;
+    imgviz_ .encoding = "mono8";
 
-    imgviz_ .data .clear() ;
+    imgviz_ .data .clear();
 
     //----------------------------------------------------------------------
 
-    for (unsigned int i = 0 ; i < width ; i++)
+    for (unsigned int i = 0; i < width; i++)
     {
 
-      for (unsigned int j = 0 ; j < height ; j++)
+      for (unsigned int j = 0; j < height; j++)
       {
 
-        double currentTemp = 0 ;
+        double currentTemp = 0;
 
-        double R = data [((i * height) + j) * 3 + 0 ] ;
-        double G = data [((i * height) + j) * 3 + 1 ] ;
-        double B = data [((i * height) + j) * 3 + 2 ] ;
+        double R = data [((i * height) + j) * 3 + 0 ];
+        double G = data [((i * height) + j) * 3 + 1 ];
+        double B = data [((i * height) + j) * 3 + 2 ];
 
         // temperature is represented by red
-        double R1 = (R - G) ;
-        double R2 = (R - B) ;
+        double R1 = (R - G);
+        double R2 = (R - B);
 
-        double positiveDiff = 0 ;
+        double positiveDiff = 0;
 
         if (R1 > 0)
         {
 
-          currentTemp += pow(R1 , 2) ;
+          currentTemp += pow(R1 , 2);
 
-          ++ positiveDiff ;
+          ++ positiveDiff;
 
         }
 
         if (R2 > 0)
         {
 
-          currentTemp += pow(R2 , 2) ;
+          currentTemp += pow(R2 , 2);
 
-          ++ positiveDiff ;
+          ++ positiveDiff;
 
         }
 
-        currentTemp = sqrt(currentTemp) ;
+        currentTemp = sqrt(currentTemp);
 
         if (positiveDiff == 1)
 
-          currentTemp /= 255.0 ;
+          currentTemp /= 255.0;
 
         else if (positiveDiff == 2)
 
           currentTemp /= sqrt(pow(255.0 , 2)
-                              + pow(255.0 , 2)) ;
+                              + pow(255.0 , 2));
 
-        imgviz_ .data .push_back((char)(currentTemp * 255.0)) ;
+        imgviz_ .data .push_back((char)(currentTemp * 255.0));
 
       }
 
@@ -292,7 +292,7 @@ void PandoraThermalPlugin:: PutThermalData(common:: Time & _updateTime)
 
     //----------------------------------------------------------------------
 
-    this -> pub_viz .publish(imgviz_) ;
+    this -> pub_viz .publish(imgviz_);
 
   }
 
@@ -301,114 +301,114 @@ void PandoraThermalPlugin:: PutThermalData(common:: Time & _updateTime)
   if (this->publish_msg_)
   {
 
-    tempMsg_ .header .stamp = ros:: Time:: now() ;
-    tempMsg_ .header .frame_id = this ->frame_name_ ;
+    tempMsg_ .header .stamp = ros:: Time:: now();
+    tempMsg_ .header .frame_id = this ->frame_name_;
 
-    tempMsg_ .height = 8 ;
-    tempMsg_ .width = 8 ;
-    tempMsg_ .step = 8 ;
-    tempMsg_ .encoding = "mono8" ;
+    tempMsg_ .height = 8;
+    tempMsg_ .width = 8;
+    tempMsg_ .step = 8;
+    tempMsg_ .encoding = "mono8";
 
-    tempMsg_ .data .clear() ;
+    tempMsg_ .data .clear();
 
     //----------------------------------------------------------------------
 
     unsigned int cameraWidth = this ->parent_camera_sensor_
-                               ->GetImageWidth() ;
+                               ->GetImageWidth();
 
-    unsigned int sensorWidth = tempMsg_ .width ;
+    unsigned int sensorWidth = tempMsg_ .width;
 
-    unsigned int divWidth = (cameraWidth / sensorWidth) ;
+    unsigned int divWidth = (cameraWidth / sensorWidth);
 
     unsigned int cameraHeight = this ->parent_camera_sensor_
-                                ->GetImageHeight() ;
+                                ->GetImageHeight();
 
-    unsigned int sensorHeight = tempMsg_ .height ;
+    unsigned int sensorHeight = tempMsg_ .height;
 
-    unsigned int divHeight = (cameraHeight / sensorHeight) ;
+    unsigned int divHeight = (cameraHeight / sensorHeight);
 
     const unsigned char * data = this ->parent_camera_sensor_
-                                 ->GetImageData() ;
+                                 ->GetImageData();
 
     if (data == NULL)
 
-      return ;
+      return;
 
     //----------------------------------------------------------------------
 
-    double ambientTemp = 25.0 ;
+    double ambientTemp = 25.0;
 
-    double maxTemp = 17.0 ;
+    double maxTemp = 17.0;
 
-    for (unsigned int i = 0 ; i < sensorWidth ; i++)
+    for (unsigned int i = 0; i < sensorWidth; i++)
     {
 
-      for (unsigned int j = 0 ; j < sensorHeight ; j++)
+      for (unsigned int j = 0; j < sensorHeight; j++)
       {
 
-        double meanTemp = 0 ;
+        double meanTemp = 0;
 
-        for (unsigned int k = 0 ; k < divWidth ; k++)
+        for (unsigned int k = 0; k < divWidth; k++)
         {
 
-          for (unsigned int l = 0 ; l < divHeight ; l++)
+          for (unsigned int l = 0; l < divHeight; l++)
           {
 
-            double currentTemp = 0 ;
+            double currentTemp = 0;
 
             double R = data [((k + i * divWidth) * cameraHeight +
-                              (l + j * divHeight)) * 3 + 0 ] ;
+                              (l + j * divHeight)) * 3 + 0 ];
             double G = data [((k + i * divWidth) * cameraHeight +
-                              (l + j * divHeight)) * 3 + 1 ] ;
+                              (l + j * divHeight)) * 3 + 1 ];
             double B = data [((k + i * divWidth) * cameraHeight +
-                              (l + j * divHeight)) * 3 + 2 ] ;
+                              (l + j * divHeight)) * 3 + 2 ];
 
             // temperature is represented by red
-            double R1 = (R - G) ;
-            double R2 = (R - B) ;
+            double R1 = (R - G);
+            double R2 = (R - B);
 
-            double positiveDiff = 0 ;
+            double positiveDiff = 0;
 
             if (R1 > 0)
             {
 
-              currentTemp += pow(R1 , 2) ;
+              currentTemp += pow(R1 , 2);
 
-              ++ positiveDiff ;
+              ++ positiveDiff;
 
             }
 
             if (R2 > 0)
             {
 
-              currentTemp += pow(R2 , 2) ;
+              currentTemp += pow(R2 , 2);
 
-              ++ positiveDiff ;
+              ++ positiveDiff;
 
             }
 
-            currentTemp = sqrt(currentTemp) ;
+            currentTemp = sqrt(currentTemp);
 
             if (positiveDiff == 1)
 
-              currentTemp /= 255.0 ;
+              currentTemp /= 255.0;
 
             else if (positiveDiff == 2)
 
               currentTemp /= sqrt(pow(255.0 , 2)
-                                  + pow(255.0 , 2)) ;
+                                  + pow(255.0 , 2));
 
-            meanTemp += currentTemp ;
+            meanTemp += currentTemp;
 
           }
 
         }
 
-        meanTemp /= (divWidth * divHeight) ;
+        meanTemp /= (divWidth * divHeight);
 
-        double temp = ambientTemp + meanTemp * maxTemp ;
+        double temp = ambientTemp + meanTemp * maxTemp;
 
-        tempMsg_ .data .push_back((char) temp) ;
+        tempMsg_ .data .push_back((char) temp);
 
       }
 
@@ -416,13 +416,13 @@ void PandoraThermalPlugin:: PutThermalData(common:: Time & _updateTime)
 
     //----------------------------------------------------------------------
 
-    this ->pub_ .publish(tempMsg_) ;
+    this ->pub_ .publish(tempMsg_);
 
   }
 
   //----------------------------------------------------------------------
 
-  usleep(100000) ;
+  usleep(100000);
 
 }
 

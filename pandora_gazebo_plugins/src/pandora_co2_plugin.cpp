@@ -76,7 +76,7 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   }
   else
   {
-    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true" ;
+    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true";
   }
 
   if (!_sdf->HasElement("publishViz"))
@@ -86,7 +86,7 @@ void PandoraCo2Plugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   }
   else
   {
-    this->publish_viz_ = _sdf ->Get < std ::string > ("publishViz") == "true" ;
+    this->publish_viz_ = _sdf ->Get < std ::string > ("publishViz") == "true";
   }
 
   this->camera_connect_count_ = 0;
@@ -201,121 +201,121 @@ void PandoraCo2Plugin:: PutCo2Data(common:: Time & _updateTime)
   {
 
     unsigned int width = this ->parent_camera_sensor_
-                         ->GetImageWidth() ;
+                         ->GetImageWidth();
 
     unsigned int height = this ->parent_camera_sensor_
-                          ->GetImageHeight() ;
+                          ->GetImageHeight();
 
     const unsigned char * data = this ->parent_camera_sensor_
-                                 ->GetImageData() ;
+                                 ->GetImageData();
 
     if (data == NULL)
 
-      return ;
+      return;
 
     //----------------------------------------------------------------------
 
     if (this->publish_viz_)
     {
 
-      imgviz_ .header .stamp = ros:: Time:: now() ;
-      imgviz_ .header .frame_id = this ->frame_name_ ;
+      imgviz_ .header .stamp = ros:: Time:: now();
+      imgviz_ .header .frame_id = this ->frame_name_;
 
-      imgviz_ .height = height ;
-      imgviz_ .width = width ;
-      imgviz_ .step = width ;
-      imgviz_ .encoding = "mono8" ;
+      imgviz_ .height = height;
+      imgviz_ .width = width;
+      imgviz_ .step = width;
+      imgviz_ .encoding = "mono8";
 
-      imgviz_ .data .clear() ;
+      imgviz_ .data .clear();
 
     }
 
     //----------------------------------------------------------------------
 
-    double ambientPpm = 400.0 ;
+    double ambientPpm = 400.0;
 
-    double maxPpm = 40000.0 ;
+    double maxPpm = 40000.0;
 
-    double totalPpm = 0.0 ;
+    double totalPpm = 0.0;
 
-    for (unsigned int i = 0 ; i < width ; i++)
+    for (unsigned int i = 0; i < width; i++)
     {
 
-      for (unsigned int j = 0 ; j < height ; j++)
+      for (unsigned int j = 0; j < height; j++)
       {
 
-        double currentPpm = 0 ;
+        double currentPpm = 0;
 
-        double R = data [((i * height) + j) * 3 + 0 ] ;
-        double G = data [((i * height) + j) * 3 + 1 ] ;
-        double B = data [((i * height) + j) * 3 + 2 ] ;
+        double R = data [((i * height) + j) * 3 + 0 ];
+        double G = data [((i * height) + j) * 3 + 1 ];
+        double B = data [((i * height) + j) * 3 + 2 ];
 
         // co2 is represented by green
-        double G1 = (G - R) ;
-        double G2 = (G - B) ;
+        double G1 = (G - R);
+        double G2 = (G - B);
 
-        double positiveDiff = 0 ;
+        double positiveDiff = 0;
 
         if (G1 > 0)
         {
 
-          currentPpm += pow(G1 , 2) ;
+          currentPpm += pow(G1 , 2);
 
-          ++ positiveDiff ;
+          ++ positiveDiff;
 
         }
 
         if (G2 > 0)
         {
 
-          currentPpm += pow(G2 , 2) ;
+          currentPpm += pow(G2 , 2);
 
-          ++ positiveDiff ;
+          ++ positiveDiff;
 
         }
 
-        currentPpm = sqrt(currentPpm) ;
+        currentPpm = sqrt(currentPpm);
 
         if (positiveDiff == 1)
 
-          currentPpm /= 255.0 ;
+          currentPpm /= 255.0;
 
         else if (positiveDiff == 2)
 
           currentPpm /= sqrt(pow(255.0 , 2)
-                             + pow(255.0 , 2)) ;
+                             + pow(255.0 , 2));
 
         if (this->publish_viz_)
 
-          imgviz_ .data .push_back((char)(currentPpm * 255.0)) ;
+          imgviz_ .data .push_back((char)(currentPpm * 255.0));
 
-        totalPpm += currentPpm ;
+        totalPpm += currentPpm;
 
       }
 
     }
 
-    totalPpm /= (width * height) ;
+    totalPpm /= (width * height);
 
-    double percentage = (ambientPpm + totalPpm * maxPpm) / 10000.0 ;
+    double percentage = (ambientPpm + totalPpm * maxPpm) / 10000.0;
 
     //----------------------------------------------------------------------
 
     if (this->publish_viz_)
 
-      this ->pub_viz .publish(imgviz_) ;
+      this ->pub_viz .publish(imgviz_);
 
     //----------------------------------------------------------------------
 
     if (this->publish_msg_)
     {
 
-      co2Msg_ .header .stamp = ros:: Time:: now() ;
-      co2Msg_ .header .frame_id = this ->frame_name_ ;
+      co2Msg_ .header .stamp = ros:: Time:: now();
+      co2Msg_ .header .frame_id = this ->frame_name_;
 
-      co2Msg_ .co2_percentage = percentage ;
+      co2Msg_ .co2_percentage = percentage;
 
-      this ->pub_ .publish(this ->co2Msg_) ;
+      this ->pub_ .publish(this ->co2Msg_);
 
     }
 
@@ -323,7 +323,7 @@ void PandoraCo2Plugin:: PutCo2Data(common:: Time & _updateTime)
 
   //----------------------------------------------------------------------
 
-  usleep(100000) ;
+  usleep(100000);
 
 }
 

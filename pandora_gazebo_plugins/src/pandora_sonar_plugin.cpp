@@ -139,7 +139,7 @@ void PandoraSonarPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   }
   else
   {
-    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true" ;
+    this->publish_msg_ = _sdf ->Get < std ::string > ("publishMsg") == "true";
   }
 
   if (!_sdf->HasElement("gaussianNoise"))
@@ -366,9 +366,9 @@ void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
         else
         {
           geometry_msgs::Point32 point;
-          point.x = (r + minRange) * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0, this->gaussian_noise_) ;
-          point.y = -(r + minRange) * sin(yAngle) + this->GaussianKernel(0, this->gaussian_noise_) ;
-          point.z = (r + minRange) * sin(pAngle) * cos(yAngle) + this->GaussianKernel(0, this->gaussian_noise_) ;
+          point.x = (r + minRange) * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0, this->gaussian_noise_);
+          point.y = -(r + minRange) * sin(yAngle) + this->GaussianKernel(0, this->gaussian_noise_);
+          point.z = (r + minRange) * sin(pAngle) * cos(yAngle) + this->GaussianKernel(0, this->gaussian_noise_);
           //pAngle is rotated by yAngle:
           point.x = (r + minRange) * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0, this->gaussian_noise_);
           point.y = -(r + minRange) * cos(pAngle) * sin(yAngle) + this->GaussianKernel(0, this->gaussian_noise_);
@@ -381,7 +381,7 @@ void PandoraSonarPlugin::PutLaserData(common::Time &_updateTime)
 
         } // only 1 channel
 
-        this->cloud_msg_.channels[0].values.push_back(intensity + this->GaussianKernel(0, this->gaussian_noise_)) ;
+        this->cloud_msg_.channels[0].values.push_back(intensity + this->GaussianKernel(0, this->gaussian_noise_));
       }
     }
     this->parent_ray_sensor_->SetActive(true);
