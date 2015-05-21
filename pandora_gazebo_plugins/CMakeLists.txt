@@ -5,6 +5,7 @@ project(pandora_gazebo_plugins)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+      roslint
       roscpp
       roslint
       tf
@@ -128,3 +129,4 @@ FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
     pandora_gazebo_plugins/src/*.cpp
 )
 roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})
+

@@ -27,6 +27,7 @@
   <depend>gazebo_plugins</depend>
   <depend>pandora_sensor_msgs</depend>
   <depend>dynamic_reconfigure</depend>
+  <depend>roslint</depend>
 
   <export>
     <gazebo_ros plugin_path="${prefix}/lib" gazebo_media_path="${prefix}" />
