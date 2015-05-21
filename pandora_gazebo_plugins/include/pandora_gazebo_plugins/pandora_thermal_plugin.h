@@ -114,21 +114,21 @@ private:
 private:
   common::Time sim_time_;
 public:
-  void OnStats(const boost::shared_ptr<msgs::WorldStatistics const> &_msg);
+  void OnStats(const boost::shared_ptr<msgs::WorldStatistics const>& _msg);
 
 protected:
-  virtual void OnNewFrame(const unsigned char *_image,
+  virtual void OnNewFrame(const unsigned char* _image,
                           unsigned int _width, unsigned int _height,
-                          unsigned int _depth, const std::string &_format);
+                          unsigned int _depth, const std::string& _format);
 
 private:
-  void PutThermalData(common::Time &_updateTime);
+  void PutThermalData(common::Time& _updateTime);
 
 private:
-  sensor_msgs ::Image imgviz_;
+  sensor_msgs::Image imgviz_;
 
 private:
-  sensor_msgs ::Image tempMsg_;
+  sensor_msgs::Image tempMsg_;
 
 private:
   bool publish_msg_;

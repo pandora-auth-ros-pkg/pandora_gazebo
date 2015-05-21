@@ -58,7 +58,6 @@ void GazeboRosIMU::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
                                   boost::bind(&GazeboRosIMU::LoadThread, this));
 
   this->model_ = _parent;
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -326,7 +325,6 @@ void GazeboRosIMU::UpdateChild()
     // publish to ros
     this->joint_state_pub_Queue->push(this->joint_state_msg_, this->joint_state_pub_);
   }
-
 }
 
 
@@ -365,4 +363,4 @@ void GazeboRosIMU::IMUQueueThread()
     this->imu_queue_.callAvailable(ros::WallDuration(timeout));
   }
 }
-}
+}  // namespace gazebo

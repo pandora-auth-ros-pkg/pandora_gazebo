@@ -116,8 +116,8 @@ private:
 
   /// \brief call back when using service
 private:
-  bool ServiceCallback(std_srvs::Empty::Request &req,
-                       std_srvs::Empty::Response &res);
+  bool ServiceCallback(std_srvs::Empty::Request& req,
+                       std_srvs::Empty::Response& res);
 
 private:
   ros::ServiceServer srv_;

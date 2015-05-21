@@ -382,4 +382,4 @@ void GazeboRosP3D::P3DQueueThread()
     this->p3d_queue_.callAvailable(ros::WallDuration(timeout));
   }
 }
-}
+}  // namespace gazebo

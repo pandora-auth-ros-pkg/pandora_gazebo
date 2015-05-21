@@ -69,7 +69,7 @@ private:
   nav_msgs::Odometry pose_msg_;
 
 private:
-  tf::TransformBroadcaster *transform_broadcaster_;
+  tf::TransformBroadcaster* transform_broadcaster_;
 
   /// \brief store bodyname
 private:
