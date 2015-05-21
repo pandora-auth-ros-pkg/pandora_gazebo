@@ -4,31 +4,31 @@
 /* Implementations */
 namespace gazebo
 {
-  
+
   void PhysicsReconfigure::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   {
-    //Load Parameters 
+    // Load Parameters
     this->model_ = _model;
     this->sdf = _sdf;
 
-    //Load SDF Parameters
-    if (!LoadParameters())
+    // Load SDF Parameters
+    if (!LoadParameters()) 
     {
       ROS_FATAL("Loading Parameters failed :( ");
     }
 
-    //Initiallize NodeHandle for Dynamic Reconfigure Namespace
+    // Initiallize NodeHandle for Dynamic Reconfigure Namespace
     ros::NodeHandle n("~physics");
 
-    //Set Up dynamic Reconfgure Server
+    // Set Up dynamic Reconfgure Server
     reconfig_server = new dynamic_reconfigure::Server<pandora_gazebo_plugins::WheelPhysicsConfig>(n);
     f = boost::bind(&PhysicsReconfigure::reconfigCallback, this, _1, _2);
     reconfig_server->setCallback(f);
 
   }
 
-  bool PhysicsReconfigure::LoadParameters(){
-
+  bool PhysicsReconfigure::LoadParameters()
+  {
     uint32_t zero = 0;
 
 
@@ -42,7 +42,7 @@ namespace gazebo
      return false;
     }
 
-    //Load Namespace from sdf
+    // Load Namespace from sdf
     if ( this ->sdf ->HasElement ( "robotNamespace" ) ) 
       this ->robot_namespace_ = this ->sdf ->Get < std ::string > ( "robotNamespace" ) + "/" ; 
 
@@ -61,21 +61,20 @@ namespace gazebo
       this ->left_front_wheel_link_ = this ->model_ ->
                                       GetLink ( this ->sdf ->Get < std ::string >( "leftFrontWheelLink" ) ) ; 
 
-      //Load Surface Parameters
+      // Load Surface Parameters
       this ->left_front_wheel_params_ = this ->left_front_wheel_link_
                                                                       -> GetCollision(zero)
                                                                                           ->GetSurface(); 
     }
   
-    /*######################### LEFT REAR WHEEL #########################*/
-    if ( ! this ->sdf ->HasElement ( "leftRearWheelLink" ) ) { 
-  
-      ROS_FATAL ( "Physics Plugin missing <leftRearWheelLink>." ) ; 
-      return false ; 
+    /* ######################### LEFT REAR WHEEL #########################*/
+    if (!this ->sdf ->HasElement("leftRearWheelLink" )) {
+      ROS_FATAL ( "Physics Plugin missing <leftRearWheelLink>." ) ;
+      return false;
     
     }
-  
-    else { 
+
+    else {
     
       //Load Link
       this ->left_rear_wheel_link_ = 
@@ -99,18 +98,18 @@ namespace gazebo
       
     else { 
     
-      //Load Link
+      // Load Link
       this ->right_front_wheel_link_ = 
       this ->model_ ->GetLink ( this ->sdf ->Get < std ::string > 
                                              ( "rightFrontWheelLink" ) ) ;
 
-      //Load Surface Parameters
+      // Load Surface Parameters
       this ->right_front_wheel_params_ = this ->right_front_wheel_link_
                                                                     -> GetCollision(zero)
                                                                                         ->GetSurface();
-    
+
     }
-  
+
     /*######################### RIGHT REAR WHEEL #########################*/
     if ( ! this ->sdf ->HasElement ( "rightRearWheelLink" ) ) { 
   

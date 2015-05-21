@@ -18,6 +18,7 @@
   <arg name="control" default="false"/>
   <arg name="interface" default="false"/>
   <arg name="sensors_viz" default="false" />
+  <arg name="tune" default="false" />
     
 <!-- ###################################################################### -->
 
@@ -30,6 +31,7 @@
       <arg name="control" value="$(arg control)" />
       <arg name="interface" value="$(arg interface)" />
       <arg name="sensors_viz" value="$(arg sensors_viz)" />
+      <arg name="tune" value="$(arg tune)" />
     </include>
   </group>
   
