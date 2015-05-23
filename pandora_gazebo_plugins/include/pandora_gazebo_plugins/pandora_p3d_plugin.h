@@ -3,12 +3,14 @@
 #define PANDORA_GAZEBO_PLUGINS_PANDORA_P3D_PLUGIN_H
 
 #include <string>
+#include <stdlib.h>
 
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
+#include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 
 #include <ros/callback_queue.h>

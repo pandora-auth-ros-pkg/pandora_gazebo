@@ -15,10 +15,6 @@
  *
 */
 
-#include <string>
-#include <tf/tf.h>
-#include <stdlib.h>
-
 #include "pandora_gazebo_plugins/pandora_p3d_plugin.h"
 
 namespace gazebo

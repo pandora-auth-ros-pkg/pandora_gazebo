@@ -7,21 +7,37 @@
 #include <ros/callback_queue.h>
 #include <ros/advertise_options.h>
 
+#include <sdf/sdf.hh>
 #include <sdf/Param.hh>
+
 #include <gazebo/physics/physics.hh>
+#include <gazebo/physics/World.hh>
+#include <gazebo/physics/HingeJoint.hh>
+#include <gazebo/transport/Node.hh>
 #include <gazebo/transport/TransportTypes.hh>
 #include <gazebo/msgs/MessageTypes.hh>
 #include <gazebo/common/Time.hh>
 #include <gazebo/common/Plugin.hh>
+#include <gazebo/common/Exception.hh>
+#include <gazebo/sensors/Sensor.hh>
 #include <gazebo/sensors/SensorTypes.hh>
+#include <gazebo/sensors/RaySensor.hh>
 #include <gazebo/plugins/RayPlugin.hh>
 
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
+#include <algorithm>
+#include <assert.h>
+
 #include <sensor_msgs/PointCloud.h>
 #include <sensor_msgs/Range.h>
+#include <sensor_msgs/ChannelFloat32.h>
+
+#include <geometry_msgs/Point32.h>
+
+#include <tf/tf.h>
 
 namespace gazebo
 {
