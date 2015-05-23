@@ -20,6 +20,7 @@
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/physics/laser_pitch_joint_physics.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/physics/kinect_pitch_joint_physics.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/physics/kinect_yaw_joint_physics.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/physics/differential_side_joint.gazebo.xacro" />
   <!-- ==================================================================== -->
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/sensors/laser_sensor.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/sensors/kinect_sensor.gazebo.xacro" />
@@ -42,7 +43,9 @@
   <!-- ==================================================================== -->
 
 <!-- Load URDF ############################################################ -->
-    
+  <xacro:differential_side_joint prefix_y="right" reflect_y="-1"/>
+  <xacro:differential_side_joint prefix_y="left" reflect_y="1"/>
+
   <!-- ==================================================================== -->
   <xacro:if value="$(arg control)" >
     <xacro:woody_urdf fixed="false" />
@@ -325,7 +328,7 @@
       </xacro:if>
       
       <xacro:unless value="$(arg control)" >
-        <xacro:pandora_differential_plugin publish_joint_states="true" />
+        <!--<xacro:pandora_differential_plugin publish_joint_states="true" />-->
       </xacro:unless>
       
     </xacro:if>
@@ -375,6 +378,7 @@
     </xacro:unless>
     
   </xacro:if>
+
 
 <!-- ###################################################################### -->
 
