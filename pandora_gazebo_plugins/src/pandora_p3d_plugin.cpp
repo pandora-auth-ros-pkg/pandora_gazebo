@@ -15,10 +15,6 @@
  *
 */
 
-#include <string>
-#include <tf/tf.h>
-#include <stdlib.h>
-
 #include "pandora_gazebo_plugins/pandora_p3d_plugin.h"
 
 namespace gazebo
@@ -72,7 +68,7 @@ void GazeboRosP3D::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   if (!this->link_)
   {
     ROS_FATAL("gazebo_ros_p3d plugin error: bodyName: %s does not exist\n",
-      this->link_name_.c_str());
+              this->link_name_.c_str());
     return;
   }
 
@@ -93,11 +89,14 @@ void GazeboRosP3D::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
     this->frame_name_ = _sdf->GetElement("frameName")->Get<std::string>();
 
   this->broadcast_tf_ = false;
-  if (!_sdf->HasElement("broadcastTF")) {
+  if (!_sdf->HasElement("broadcastTF"))
+  {
     if (!this->broadcast_tf_)
       ROS_INFO("Pandora 3DP plugin missing <broadcastTF>, defaults to false.");
     else ROS_INFO("Pandora 3DP plugin missing <broadcastTF>, defaults to true.");
-  } else {
+  }
+  else
+  {
     this->broadcast_tf_ = _sdf->GetElement("broadcastTF")->Get<bool>();
   }
 
@@ -128,7 +127,7 @@ void GazeboRosP3D::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   if (!_sdf->HasElement("updateRate"))
   {
     ROS_DEBUG("p3d plugin missing <updateRate>, defaults to 0.0"
-             " (as fast as possible)");
+              " (as fast as possible)");
     this->update_rate_ = 0;
   }
   else
@@ -138,10 +137,10 @@ void GazeboRosP3D::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   if (!ros::isInitialized())
   {
     ROS_FATAL_STREAM("A ROS node for Gazebo has not been initialized, unable to load plugin. "
-      << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
+                     << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
     return;
   }
-  
+
   transform_broadcaster_ = new tf::TransformBroadcaster();
 
   this->rosnode_ = new ros::NodeHandle(this->robot_namespace_);
@@ -196,13 +195,13 @@ void GazeboRosP3D::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 
   // start custom queue for p3d
   this->callback_queue_thread_ = boost::thread(
-    boost::bind(&GazeboRosP3D::P3DQueueThread, this));
+                                   boost::bind(&GazeboRosP3D::P3DQueueThread, this));
 
   // New Mechanism for Updating every World Cycle
   // Listen to the update event. This event is broadcast every
   // simulation iteration.
   this->update_connection_ = event::Events::ConnectWorldUpdateBegin(
-      boost::bind(&GazeboRosP3D::UpdateChild, this));
+                               boost::bind(&GazeboRosP3D::UpdateChild, this));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,7 +215,7 @@ void GazeboRosP3D::UpdateChild()
 
   // rate control
   if (this->update_rate_ > 0 &&
-      (cur_time-this->last_time_).Double() < (1.0/this->update_rate_))
+      (cur_time - this->last_time_).Double() < (1.0 / this->update_rate_))
     return;
 
   // differentiate to get accelerations
@@ -263,7 +262,7 @@ void GazeboRosP3D::UpdateChild()
       // apply xyz offsets and get position and rotation components
       pose.pos = pose.pos + this->offset_.pos;
       // apply rpy offsets
-      pose.rot = this->offset_.rot*pose.rot;
+      pose.rot = this->offset_.rot * pose.rot;
       pose.rot.Normalize();
 
       // compute accelerations (not used)
@@ -286,38 +285,39 @@ void GazeboRosP3D::UpdateChild()
       this->pose_msg_.pose.pose.orientation.y = pose.rot.y;
       this->pose_msg_.pose.pose.orientation.z = pose.rot.z;
       this->pose_msg_.pose.pose.orientation.w = pose.rot.w;
-      
-      if (this->broadcast_tf_) {
+
+      if (this->broadcast_tf_)
+      {
         ros::Time current_time = ros::Time::now();
-        
+
         tf::Quaternion qt(pose.rot.x, pose.rot.y, pose.rot.z, pose.rot.w);
         tf::Vector3 vt(pose.pos.x, pose.pos.y, pose.pos.z);
-        
+
         tf::Transform body_link_to_map(qt, vt);
-        
+
         transform_broadcaster_->sendTransform(
           tf::StampedTransform(body_link_to_map, current_time,
-              this->frame_name_, this->link_name_));
+                               this->frame_name_, this->link_name_));
       }
-      
+
 
       this->pose_msg_.twist.twist.linear.x  = vpos.x +
-        this->GaussianKernel(0, this->gaussian_noise_);
+                                              this->GaussianKernel(0, this->gaussian_noise_);
       this->pose_msg_.twist.twist.linear.y  = vpos.y +
-        this->GaussianKernel(0, this->gaussian_noise_);
+                                              this->GaussianKernel(0, this->gaussian_noise_);
       this->pose_msg_.twist.twist.linear.z  = vpos.z +
-        this->GaussianKernel(0, this->gaussian_noise_);
+                                              this->GaussianKernel(0, this->gaussian_noise_);
       // pass euler angular rates
       this->pose_msg_.twist.twist.angular.x = veul.x +
-        this->GaussianKernel(0, this->gaussian_noise_);
+                                              this->GaussianKernel(0, this->gaussian_noise_);
       this->pose_msg_.twist.twist.angular.y = veul.y +
-        this->GaussianKernel(0, this->gaussian_noise_);
+                                              this->GaussianKernel(0, this->gaussian_noise_);
       this->pose_msg_.twist.twist.angular.z = veul.z +
-        this->GaussianKernel(0, this->gaussian_noise_);
+                                              this->GaussianKernel(0, this->gaussian_noise_);
 
       // fill in covariance matrix
       /// @todo: let user set separate linear and angular covariance values.
-      double gn2 = this->gaussian_noise_*this->gaussian_noise_;
+      double gn2 = this->gaussian_noise_ * this->gaussian_noise_;
       this->pose_msg_.pose.covariance[0] = gn2;
       this->pose_msg_.pose.covariance[7] = gn2;
       this->pose_msg_.pose.covariance[14] = gn2;
@@ -358,7 +358,7 @@ double GazeboRosP3D::GaussianKernel(double mu, double sigma)
   double V = static_cast<double>(rand_r(&this->seed)) /
              static_cast<double>(RAND_MAX);
 
-  double X = sqrt(-2.0 * ::log(U)) * cos(2.0*M_PI * V);
+  double X = sqrt(-2.0 * ::log(U)) * cos(2.0 * M_PI * V);
   // double Y = sqrt(-2.0 * ::log(U)) * sin(2.0*M_PI * V);
 
   // there are 2 indep. vars, we'll just use X
@@ -378,4 +378,4 @@ void GazeboRosP3D::P3DQueueThread()
     this->p3d_queue_.callAvailable(ros::WallDuration(timeout));
   }
 }
-}
+}  // namespace gazebo

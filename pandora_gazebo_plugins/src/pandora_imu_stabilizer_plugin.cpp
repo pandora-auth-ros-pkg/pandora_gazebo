@@ -55,10 +55,9 @@ void GazeboRosIMU::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 
   // ros callback queue for processing subscription
   this->deferred_load_thread_ = boost::thread(
-    boost::bind(&GazeboRosIMU::LoadThread, this));
-    
+                                  boost::bind(&GazeboRosIMU::LoadThread, this));
+
   this->model_ = _parent;
-    
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +127,7 @@ void GazeboRosIMU::LoadThread()
     this->jointRoll_ = this->model_->GetJoint(this->sdf->Get<std::string>("rollCorrectionJoint"));
     joint_state_msg_.name.push_back(this->sdf->Get<std::string>("rollCorrectionJoint"));
   }
-    
+
   if (!this->sdf->HasElement("pitchCorrectionJoint"))
   {
     ROS_FATAL("stabilizer plugin missing <pitchCorrectionJoint>, exiting");
@@ -139,13 +138,13 @@ void GazeboRosIMU::LoadThread()
     this->jointPitch_  = this->model_->GetJoint(this->sdf->Get<std::string>("pitchCorrectionJoint"));
     joint_state_msg_.name.push_back(this->sdf->Get<std::string>("pitchCorrectionJoint"));
   }
-    
+
 
   // Make sure the ROS node for Gazebo has already been initialized
   if (!ros::isInitialized())
   {
     ROS_FATAL_STREAM("A ROS node for Gazebo has not been initialized, unable to load plugin. "
-      << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
+                     << "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
     return;
   }
 
@@ -156,11 +155,11 @@ void GazeboRosIMU::LoadThread()
 
   // assert that the body by link_name_ exists
   this->link = boost::dynamic_pointer_cast<physics::Link>(
-    this->world_->GetEntity(this->link_name_));
+                 this->world_->GetEntity(this->link_name_));
   if (!this->link)
   {
     ROS_FATAL("gazebo_ros_imu plugin error: bodyName: %s does not exist\n",
-      this->link_name_.c_str());
+              this->link_name_.c_str());
     return;
   }
 
@@ -169,16 +168,16 @@ void GazeboRosIMU::LoadThread()
   {
     this->pub_Queue = this->pmq.addPub<sensor_msgs::Imu>();
     this->pub_ = this->rosnode_->advertise<sensor_msgs::Imu>(
-      this->topic_name_, 1);
+                   this->topic_name_, 1);
     this->joint_state_pub_Queue = this->pmq.addPub<sensor_msgs::JointState>();
     this->joint_state_pub_ = this->rosnode_->advertise<sensor_msgs::JointState>(
-      "stabilizer_joint_states", 1);
+                               "stabilizer_joint_states", 1);
 
     // advertise services on the custom queue
     ros::AdvertiseServiceOptions aso =
       ros::AdvertiseServiceOptions::create<std_srvs::Empty>(
-      this->service_name_, boost::bind(&GazeboRosIMU::ServiceCallback,
-      this, _1, _2), ros::VoidPtr(), &this->imu_queue_);
+        this->service_name_, boost::bind(&GazeboRosIMU::ServiceCallback,
+                                         this, _1, _2), ros::VoidPtr(), &this->imu_queue_);
     this->srv_ = this->rosnode_->advertiseService(aso);
   }
 
@@ -200,13 +199,13 @@ void GazeboRosIMU::LoadThread()
   // Listen to the update event. This event is broadcast every
   // simulation iteration.
   this->update_connection_ = event::Events::ConnectWorldUpdateBegin(
-      boost::bind(&GazeboRosIMU::UpdateChild, this));
+                               boost::bind(&GazeboRosIMU::UpdateChild, this));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // returns true always, imu is always calibrated in sim
 bool GazeboRosIMU::ServiceCallback(std_srvs::Empty::Request &req,
-                                        std_srvs::Empty::Response &res)
+                                   std_srvs::Empty::Response &res)
 {
   return true;
 }
@@ -226,7 +225,7 @@ void GazeboRosIMU::UpdateChild()
   rot = pose.rot;
 
   // apply rpy offsets
-  rot = this->offset_.rot*rot;
+  rot = this->offset_.rot * rot;
   rot.Normalize();
   if ((this->pub_.getNumSubscribers() > 0 && this->topic_name_ != ""))
   {
@@ -291,7 +290,7 @@ void GazeboRosIMU::UpdateChild()
     // fill in covariance matrix
     /// @todo: let user set separate linear and angular covariance values.
     /// @todo: apply appropriate rotations from frame_pose
-    double gn2 = this->gaussian_noise_*this->gaussian_noise_;
+    double gn2 = this->gaussian_noise_ * this->gaussian_noise_;
     this->imu_msg_.orientation_covariance[0] = gn2;
     this->imu_msg_.orientation_covariance[4] = gn2;
     this->imu_msg_.orientation_covariance[8] = gn2;
@@ -306,19 +305,19 @@ void GazeboRosIMU::UpdateChild()
       boost::mutex::scoped_lock lock(this->lock_);
       // publish to ros
       if (this->pub_.getNumSubscribers() > 0 && this->topic_name_ != "")
-          this->pub_Queue->push(this->imu_msg_, this->pub_);
+        this->pub_Queue->push(this->imu_msg_, this->pub_);
     }
-    
+
     // save last time stamp
     this->last_time_ = cur_time;
   }
   joint_state_msg_.position.clear();
   joint_state_msg_.header.stamp = ros::Time::now();
 
-  jointRoll_->SetAngle(0,-rot.GetRoll());
+  jointRoll_->SetAngle(0, -rot.GetRoll());
   joint_state_msg_.position.push_back(-rot.GetRoll());
 
-  jointPitch_->SetAngle(0,-rot.GetPitch());
+  jointPitch_->SetAngle(0, -rot.GetPitch());
   joint_state_msg_.position.push_back(-rot.GetPitch());
 
   {
@@ -326,7 +325,6 @@ void GazeboRosIMU::UpdateChild()
     // publish to ros
     this->joint_state_pub_Queue->push(this->joint_state_msg_, this->joint_state_pub_);
   }
-  
 }
 
 
@@ -345,7 +343,7 @@ double GazeboRosIMU::GaussianKernel(double mu, double sigma)
   double V = static_cast<double>(rand_r(&this->seed)) /
              static_cast<double>(RAND_MAX);
 
-  double X = sqrt(-2.0 * ::log(U)) * cos(2.0*M_PI * V);
+  double X = sqrt(-2.0 * ::log(U)) * cos(2.0 * M_PI * V);
   // double Y = sqrt(-2.0 * ::log(U)) * sin(2.0*M_PI * V);
 
   // there are 2 indep. vars, we'll just use X
@@ -365,4 +363,4 @@ void GazeboRosIMU::IMUQueueThread()
     this->imu_queue_.callAvailable(ros::WallDuration(timeout));
   }
 }
-}
+}  // namespace gazebo

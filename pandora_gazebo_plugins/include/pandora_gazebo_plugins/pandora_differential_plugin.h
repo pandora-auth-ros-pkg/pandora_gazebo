@@ -1,22 +1,42 @@
-/*
- * Copyright 2012 Open Source Robotics Foundation
+/*********************************************************************
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Software License Agreement (BSD License)
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *  Copyright (c) 2015, P.A.N.D.O.R.A. Team.
+ *  All rights reserved.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
  *
-*/
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/or other materials provided
+ *     with the distribution.
+ *   * Neither the name of the P.A.N.D.O.R.A. Team nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Author: Geromichalos Dimitrios Panagiotis <geromidg@gmail.com>
+ *********************************************************************/
 
-#ifndef GAZEBO_ROS_DIFFERENTIAL_HH
-#define GAZEBO_ROS_DIFFERENTIAL_HH
+#ifndef PANDORA_GAZEBO_PLUGINS_PANDORA_DIFFERENTIAL_PLUGIN_H
+#define PANDORA_GAZEBO_PLUGINS_PANDORA_DIFFERENTIAL_PLUGIN_H
 
 #include <string>
 #include <boost/thread.hpp>
@@ -38,165 +58,164 @@
 #include <dynamic_reconfigure/server.h>
 #include <pandora_gazebo_plugins/DifferentialConfig.h>
 
-namespace gazebo { 
+namespace gazebo
+{
 
-  class GazeboRosDifferential : public ModelPlugin { 
-  
-    /// \brief Constructor
-    public: GazeboRosDifferential ( void ) ; 
+  class GazeboRosDifferential : public ModelPlugin
+  {
+    public:
+      /// \brief Constructor
+      GazeboRosDifferential();
 
-    /// \brief Destructor
-    public: virtual ~GazeboRosDifferential ( void ) ; 
+      /// \brief Destructor
+      virtual ~GazeboRosDifferential();
 
-    /// \brief Load the controller
-    /// \param Node XML config node
-    public: void Load ( physics ::ModelPtr _parent , sdf ::ElementPtr _sdf ) ; 
-    
-    /// \brief Load parameters from sdf
-    private: bool LoadParameters ( void ) ; 
-    
-    /// \brief Load the controller
-    private: void LoadThread ( void ) ; 
-    
-    /// \brief Initialize the dynamic reconfigure services
-    private: void LoadReconfigureThread ( void ) ; 
-    
-    /// \brief Callback when using service
-    private: bool ServiceCallback ( std_srvs ::Empty ::Request & req , 
-                                    std_srvs ::Empty ::Response & res ) ; 
-    
-    /// \brief Callback which reconfigures the variables when the 
-    ///        dynamic_reconfigure sents a new configuration
-    private: void ConfigCallback ( pandora_gazebo_plugins 
-                                    ::DifferentialConfig & config , 
-                                   uint32_t level ) ; 
+      /// \brief Load the controller
+      /// \param Node XML config node
+      void Load(
+          physics::ModelPtr _parent,
+          sdf::ElementPtr _sdf);
 
-    /// \brief Update the controller
-    protected: virtual void UpdateChild ( void ) ; 
-    
-    /// \brief Publishes the joint states to ROS
-    private: void PublishJointStates ( void ) ; 
-    
-    /// \brief Get the real time update rate of the physics engine
-    private: double GetUpdateRate ( void ) ; 
-    
-    /// \brief Implements the PID Algorithm
-    private: double PIDAlgorithm ( double error , 
-                                   double & previous_error , 
-                                   double & integral , 
-                                   double k_p , 
-                                   double k_i , 
-                                   double k_d , 
-                                   double i_clamp_min , 
-                                   double i_clamp_max ) ; 
-    private: double PIDAlgorithm ( void ) ; 
-    
-    /// \brief Update the angles of the side joints
-    private: void UpdateAngles ( void ) ; 
-    
-    /// \brief Add forces at the rear wheels in y and z axis due to 
-    ///        differential activity
-    private: void AddDifferentialForces ( void ) ; 
-    
-    /// \brief Add downforces at the wheels due to the side joint damping
-    private: void AddDownforces ( void ) ; 
-    
-    /// \brief Add force at the base link to correct its angle
-    private: void AddBaseCorrectionForce ( void ) ; 
-    
-    /// \brief Add force at the side joints to correct base's angle
-    private: void AddSideCorrectionForce ( void ) ; 
-    
-    /// \brief Add forces at the robot to improve physics
-    private: void AddPhysicsForces ( void ) ; 
+    protected:
+      /// \brief Update the controller
+      virtual void UpdateChild();
 
-    /// \brief Pointer to ros node
-    private: ros ::NodeHandle * rosnode_ ; 
-    private: ros ::Publisher joint_state_pub_ ; 
-    private: PubQueue < sensor_msgs ::JointState > ::Ptr joint_state_pub_Queue ; 
-    private: bool publish_joint_states_ ; 
+    private:
+      /// \brief Load parameters from sdf
+      bool LoadParameters();
 
-    // ROS publish multi queue, prevents publish() blocking
-    private: PubMultiQueue pmq ; 
+      /// \brief Load the controller
+      void LoadThread();
 
-    // Pointer to the update event connection
-    private: event ::ConnectionPtr update_connection_ ; 
-    
-    private: ros ::ServiceServer srv_ ; 
-    private: ros ::CallbackQueue callback_queue_ ; 
+      /// \brief Initialize the dynamic reconfigure services
+      void LoadReconfigureThread();
 
-    /// \brief A mutex to lock access to fields
-    ///        that are used in message callbacks
-    private: boost ::mutex lock_ ; 
-    
-    /// \brief ROS JointState message
-    private: sensor_msgs ::JointState joint_state_msg_ ; 
+      /// \brief Callback when using service
+      bool ServiceCallback(
+          std_srvs::Empty::Request& req,
+          std_srvs::Empty::Response& res);
 
-    /// \brief For setting ROS name space
-    private: std ::string robot_namespace_ ; 
-    
-    private: boost ::thread deferred_load_thread_ ; 
-    private: unsigned int seed ; 
-    
-    // Dynamic reconfigure
-    private: boost ::shared_ptr < boost ::thread > reconfigure_thread_ ; 
-    
-    private: boost ::shared_ptr 
-             < dynamic_reconfigure ::Server 
-              < pandora_gazebo_plugins ::DifferentialConfig > > 
-              reconfigure_srv_ ; 
-             
-    private: dynamic_reconfigure ::Server 
-             < pandora_gazebo_plugins ::DifferentialConfig > 
-              ::CallbackType reconfigure_callback_ ; 
+      /// \brief Callback which reconfigures the variables when the
+      ///        dynamic_reconfigure sents a new configuration
+      void ConfigCallback(
+          pandora_gazebo_plugins::DifferentialConfig& config,
+          uint32_t level);
 
-    // Deferred load in case ros is blocking
-    private: sdf ::ElementPtr sdf ; 
+      /// \brief Publishes the joint states to ROS
+      void PublishJointStates();
 
-    /// \brief The parent World
-    private: physics ::WorldPtr world_ ; 
-    
-    /// \brief Robot's model
-    private: physics ::ModelPtr model_ ; 
-    
-    // Robot's links
-    private: physics ::LinkPtr base_link_ ; 
-    private: physics ::LinkPtr left_front_wheel_link_ ; 
-    private: physics ::LinkPtr left_rear_wheel_link_ ; 
-    private: physics ::LinkPtr right_front_wheel_link_ ; 
-    private: physics ::LinkPtr right_rear_wheel_link_ ; 
-    
-    // Robot's joints
-    private: physics ::JointPtr left_side_joint_ ; 
-    private: physics ::JointPtr right_side_joint_ ; 
-    
-    // Joint angles and maximum angle
-    private: double left_angle_ ; 
-    private: double right_angle_ ; 
-    private: double max_angle_ ; 
-    
-    // Maximum manual forces and side joint damping
-    private: double max_downforce_ ; 
-    private: double max_differential_force_z_ ; 
-    private: double max_differential_force_y_ ; 
-    private: double side_joint_damping_ ; 
-    
-    // PID parameters
-    private: double k_p_ ; 
-    private: double k_i_ ; 
-    private: double k_d_ ; 
-    
-    // Stored variables of the PID algorithm
-    private: double previous_error_ ; 
-    private: double integral_ ; 
-    
-    // Correction force modifier and correction force
-    private: double correction_force_modifier_ ; 
-    
-  } ; 
-  
-}
+      /// \brief Get the real time update rate of the physics engine
+      double GetUpdateRate();
 
-#endif
+      /// \brief Implements the PID Algorithm
+      double PIDAlgorithm(
+          double error,
+          double& previous_error,
+          double& integral,
+          double k_p,
+          double k_i,
+          double k_d,
+          double i_clamp_min,
+          double i_clamp_max);
+      double PIDAlgorithm();
 
+      /// \brief Update the angles of the side joints
+      void UpdateAngles();
 
+      /// \brief Add forces at the rear wheels in y and z axis due to
+      ///        differential activity
+      void AddDifferentialForces();
+
+      /// \brief Add downforces at the wheels due to the side joint damping
+      void AddDownforces();
+
+      /// \brief Add force at the base link to correct its angle
+      void AddBaseCorrectionForce();
+
+      /// \brief Add force at the side joints to correct base's angle
+      void AddSideCorrectionForce();
+
+      /// \brief Add forces at the robot to improve physics
+      void AddPhysicsForces();
+
+    private:
+      /// \brief Pointer to ros node
+      ros::NodeHandle* rosnode_;
+
+      ros::Publisher joint_state_pub_;
+      PubQueue <sensor_msgs::JointState>::Ptr joint_state_pub_Queue;
+      bool publish_joint_states_;
+
+      // ROS publish multi queue, prevents publish() blocking
+      PubMultiQueue pmq;
+
+      // Pointer to the update event connection
+      event::ConnectionPtr update_connection_;
+
+      ros::ServiceServer srv_;
+      ros::CallbackQueue callback_queue_;
+
+      /// \brief A mutex to lock access to fields
+      ///        that are used in message callbacks
+      boost::mutex lock_;
+
+      /// \brief ROS JointState message
+      sensor_msgs::JointState joint_state_msg_;
+
+      /// \brief For setting ROS name space
+      std::string robot_namespace_;
+
+      boost::thread deferred_load_thread_;
+      unsigned int seed;
+
+      // Dynamic reconfigure
+      boost::shared_ptr<boost::thread> reconfigure_thread_;
+      boost::shared_ptr <dynamic_reconfigure::Server<pandora_gazebo_plugins::DifferentialConfig> > reconfigure_srv_;
+      dynamic_reconfigure::Server <pandora_gazebo_plugins::DifferentialConfig>::CallbackType reconfigure_callback_;
+
+      // Deferred load in case ros is blocking
+      sdf::ElementPtr sdf;
+
+      /// \brief The parent World
+      physics::WorldPtr world_;
+
+      /// \brief Robot's model
+      physics::ModelPtr model_;
+
+      // Robot's links
+      physics::LinkPtr base_link_;
+      physics::LinkPtr left_front_wheel_link_;
+      physics::LinkPtr left_rear_wheel_link_;
+      physics::LinkPtr right_front_wheel_link_;
+      physics::LinkPtr right_rear_wheel_link_;
+
+      // Robot's joints
+      physics::JointPtr left_side_joint_;
+      physics::JointPtr right_side_joint_;
+
+      // Joint angles and maximum angle
+      double left_angle_;
+      double right_angle_;
+      double max_angle_;
+
+      // Maximum manual forces and side joint damping
+      double max_downforce_;
+      double max_differential_force_z_;
+      double max_differential_force_y_;
+      double side_joint_damping_;
+
+      // PID parameters
+      double k_p_;
+      double k_i_;
+      double k_d_;
+
+      // Stored variables of the PID algorithm
+      double previous_error_;
+      double integral_;
+
+      // Correction force modifier and correction force
+      double correction_force_modifier_;
+  };
+
+}  // namespace gazebo
+#endif  // PANDORA_GAZEBO_PLUGINS_PANDORA_DIFFERENTIAL_PLUGIN_H
