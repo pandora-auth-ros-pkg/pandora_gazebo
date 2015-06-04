@@ -8,6 +8,7 @@
   <arg name="interface" default="true" />
   
   <arg name="sensors_viz" default="false" />
+  <arg name="tune" default="false" />
     
 <!-- ###################################################################### -->
   
@@ -28,7 +29,7 @@
 <!-- ###################################################################### -->
 
   <param name="robot_description"
-         command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/urdf/woody/woody.gazebo.xacro' control:=$(arg control) interface:=$(arg interface) sensors_viz:=$(arg sensors_viz)" />
+         command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/urdf/woody/woody.gazebo.xacro' control:=$(arg control) interface:=$(arg interface) sensors_viz:=$(arg sensors_viz) tune:=$(arg tune)"/>
     
 <!-- ###################################################################### -->
   
