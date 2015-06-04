@@ -120,6 +120,13 @@ target_link_libraries(${PROJECT_NAME}_pandora_wheel_physics_plugin
     ${Boost_LIBRARIES}
 )
 
+add_library(${PROJECT_NAME}_pandora_fdir_plugin src/pandora_fdir_plugin.cpp)
+target_link_libraries(${PROJECT_NAME}_pandora_fdir_plugin 
+    ${GAZEBO_LIBRARIES} 
+    ${catkin_LIBRARIES} 
+    ${Boost_LIBRARIES}
+)
+
 # To check lint : catkin_make roslint_pandora_gazebo_plugins
 set(ROSLINT_CPP_OPTS
   "--filter=-build/include_what_you_use, -runtime/references")

@@ -28,7 +28,7 @@
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/pandora_p3d_plugin.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/ros_control_plugin.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/pandora_wheel_physics_plugin.gazebo.xacro" />
-
+  <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/pandora_fdir_plugin.gazebo.xacro" />
 
 <!-- Properties ########################################################### -->
 
@@ -105,6 +105,8 @@
                                    hardware_interface="pandora_gazebo_interface/GazeboInterface" />
 
 <!--  <xacro:pandora_wheel_physics_plugin /> -->
+<!--  <xacro:pandora_fdir_plugin /> -->
+
 <!-- ###################################################################### -->
 
 </robot>

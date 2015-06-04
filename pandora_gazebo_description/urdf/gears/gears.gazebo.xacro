@@ -45,6 +45,7 @@
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/ros_skid_steer_drive_plugin.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/ros_control_plugin.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/pandora_wheel_physics_plugin.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/pandora_fdir_plugin.gazebo.xacro" />
   <!-- ==================================================================== -->
 
 <!-- Load URDF ############################################################ -->
@@ -482,13 +483,12 @@
     
   </xacro:if>
 
-<!-- ###################################################################### -->
+<!-- Enable tuning ######################################################## -->
 
-<!-- Enable tuning ##################################################### -->
-<xacro:if value="$(arg tune)">
-  <xacro:pandora_wheel_physics_plugin/>
-</xacro:if>
+  <xacro:if value="$(arg tune)">
+    <xacro:pandora_wheel_physics_plugin/>
+  </xacro:if>
 
-
+<!--<xacro:pandora_fdir_plugin/>-->
 
 </robot>
