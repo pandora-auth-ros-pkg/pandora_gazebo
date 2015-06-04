@@ -483,13 +483,12 @@
     
   </xacro:if>
 
-<!-- ###################################################################### -->
+<!-- Enable tuning ######################################################## -->
 
-<!-- Enable tuning ##################################################### -->
-<xacro:if value="$(arg tune)">
-  <xacro:pandora_wheel_physics_plugin/>
-</xacro:if>
+  <xacro:if value="$(arg tune)">
+    <xacro:pandora_wheel_physics_plugin/>
+  </xacro:if>
 
-<xacro:pandora_fdir_plugin/>
+<!--<xacro:pandora_fdir_plugin/>-->
 
 </robot>

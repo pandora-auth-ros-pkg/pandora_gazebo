@@ -27,6 +27,7 @@
   
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/woody/plugins/ros_skid_steer_drive_plugin.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/pandora_wheel_physics_plugin.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/urdf/gears/plugins/pandora_fdir_plugin.gazebo.xacro" />
 
 <!-- Properties ########################################################### -->
 
@@ -96,15 +97,17 @@
   <xacro:property name="wheel_joint_max_torque" value="50" />
 
   <xacro:pandora_differential_plugin publish_joint_states="true" />
-  <!-- <xacro:pandora_wheel_physics_plugin/> -->
-  <!-- <xacro:pandora_differential_plugin publish_joint_states="false" /> -->
+<!-- <xacro:pandora_differential_plugin publish_joint_states="false" /> -->
 
-  <!-- <xacro:pandora_p3d_plugin /> -->
+<!-- <xacro:pandora_p3d_plugin /> -->
 
 <!--  <xacro:gazebo_ros_control_plugin namespace="/"-->
 <!--                                   hardware_interface="gazebo_ros_control/DefaultRobotHWSim" />-->
-  <!-- <xacro:gazebo_ros_control_plugin namespace="/"
-                                   hardware_interface="pandora_gazebo_interface/GazeboInterface" /> -->
+<!-- <xacro:gazebo_ros_control_plugin namespace="/"
+                                      hardware_interface="pandora_gazebo_interface/GazeboInterface" /> -->
+                           
+<!-- <xacro:pandora_wheel_physics_plugin/> -->        
+<!-- <xacro:pandora_fdir_plugin />-->
                                    
 <!-- ###################################################################### -->
 
