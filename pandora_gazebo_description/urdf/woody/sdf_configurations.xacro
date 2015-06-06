@@ -15,23 +15,23 @@
   <!-- ==================================================================== -->
       
   <!-- Sensors ============================================================ -->
-  <xacro:property name="enable_gazebo_sensors" value="false" />
+  <xacro:property name="enable_gazebo_sensors" value="true" />
     <!-- ================================================================== -->
     <xacro:property name="enable_laser_gazebo_sensor" value="true" />
     <!-- ================================================================== -->
     <xacro:property name="enable_kinect_gazebo_sensor" value="true" />
     <!-- ================================================================== -->
-    <xacro:property name="enable_camera_gazebo_sensors" value="false" />
+    <xacro:property name="enable_camera_gazebo_sensors" value="true" />
       <xacro:property name="enable_left_camera_gazebo_sensor" value="true" />
       <xacro:property name="enable_right_camera_gazebo_sensor" value="true" />
     <!-- ================================================================== -->
-    <xacro:property name="enable_sonar_gazebo_sensors" value="false" />
+    <xacro:property name="enable_sonar_gazebo_sensors" value="true" />
       <xacro:property name="enable_left_sonar_gazebo_sensor" value="true" />
       <xacro:property name="enable_right_sonar_gazebo_sensor" value="true" />
     <!-- ================================================================== -->
-    <xacro:property name="enable_thermal_gazebo_sensor" value="false" />
+    <xacro:property name="enable_thermal_gazebo_sensor" value="true" />
     <!-- ================================================================== -->
-    <xacro:property name="enable_co2_gazebo_sensor" value="false" />
+    <xacro:property name="enable_co2_gazebo_sensor" value="true" />
     <!-- ================================================================== -->
     <xacro:property name="enable_microphone_gazebo_sensor" value="false" />
   <!-- ==================================================================== -->
