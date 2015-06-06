@@ -44,7 +44,7 @@
 <!-- Load URDF ############################################################ -->
     
   <!-- <xacro:woody_urdf fixed="false" /> -->
-  <xacro:woody_urdf fixed="true" /> 
+  <xacro:woody_urdf fixed="false" /> 
 
 <!-- Load Physics ######################################################### -->
   
@@ -80,16 +80,16 @@
       
 <!-- Load Transmissions ################################################### -->
 
-<!--  <xacro:wheel_transmission prefix_y="left" prefix_x="front" />-->
-<!--  <xacro:wheel_transmission prefix_y="left" prefix_x="rear" />-->
-<!--  <xacro:wheel_transmission prefix_y="right" prefix_x="front" />-->
-<!--  <xacro:wheel_transmission prefix_y="right" prefix_x="rear" />-->
-<!--  -->
-<!--  <xacro:laser_sensor_transmission rotation="roll" />-->
-<!--  <xacro:laser_sensor_transmission rotation="pitch" />-->
-<!--  -->
-<!--  <xacro:kinect_sensor_transmission rotation="pitch" />-->
-<!--  <xacro:kinect_sensor_transmission rotation="yaw" />-->
+  <xacro:wheel_transmission prefix_y="left" prefix_x="front" />
+  <xacro:wheel_transmission prefix_y="left" prefix_x="rear" />
+  <xacro:wheel_transmission prefix_y="right" prefix_x="front" />
+  <xacro:wheel_transmission prefix_y="right" prefix_x="rear" />
+  
+  <xacro:laser_sensor_transmission rotation="roll" />
+  <xacro:laser_sensor_transmission rotation="pitch" />
+  
+  <xacro:kinect_sensor_transmission rotation="yaw" />
+  <xacro:kinect_sensor_transmission rotation="pitch" />
 
 <!-- Load Plugins ######################################################### -->
   
@@ -101,8 +101,8 @@
 
 <!-- <xacro:pandora_p3d_plugin /> -->
 
-<!--  <xacro:gazebo_ros_control_plugin namespace="/"-->
-<!--                                   hardware_interface="gazebo_ros_control/DefaultRobotHWSim" />-->
+  <xacro:gazebo_ros_control_plugin namespace="/"
+                                   hardware_interface="gazebo_ros_control/DefaultRobotHWSim" />
 <!-- <xacro:gazebo_ros_control_plugin namespace="/"
                                       hardware_interface="pandora_gazebo_interface/GazeboInterface" /> -->
                            
