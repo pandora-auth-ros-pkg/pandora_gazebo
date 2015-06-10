@@ -44,11 +44,11 @@
                 filename="libpandora_gazebo_plugins_pandora_sonar_plugin.so" >
 
           <!--============================================================= -->
-          <robotNamespace></robotNamespace>
+          <robotNamespace>gazebo_sensors</robotNamespace>
           <!--============================================================= -->
           <frameName>${name}_sonar_frame</frameName>
           <!--============================================================= -->
-          <topicName>/sensors/sonar</topicName> <!-- FIXME -->
+          <topicName>sensors/sonar</topicName> <!-- FIXME -->
           <!--============================================================= -->
           <gaussianNoise>0.0</gaussianNoise>
           <!--============================================================= -->

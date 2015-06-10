@@ -37,6 +37,7 @@
         <plugin name="co2ros"
                 filename="libpandora_gazebo_plugins_pandora_co2_plugin.so" >
 
+          <robotNamespace>gazebo_sensors</robotNamespace>
           <!--============================================================= -->
           <frameName>co2_frame</frameName>
           <!--============================================================= -->

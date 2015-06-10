@@ -141,8 +141,10 @@ namespace gazebo
         }
       }
     }
+    
+    this->publish_msg_ = true; 
 
-    if (!_sdf->HasElement("publishMsg"))
+/*    if (!_sdf->HasElement("publishMsg"))
     {
       ROS_INFO("Block laser plugin missing <publishMsg>, defaults to true");
       this->publish_msg_ = true;
@@ -150,7 +152,7 @@ namespace gazebo
     else
     {
       this->publish_msg_ = _sdf->Get<std::string>("publishMsg") == "true";
-    }
+    }*/
 
     if (!_sdf->HasElement("gaussianNoise"))
     {
@@ -334,11 +336,6 @@ namespace gazebo
                               this->parent_ray_sensor_->GetLaserShape()->GetRetro(j3) +
                               this->parent_ray_sensor_->GetLaserShape()->GetRetro(j4));
 
-          // std::cout << " block debug "
-          //           << "  ij("<<i<<","<<j<<")"
-          //           << "  j1234("<<j1<<","<<j2<<","<<j3<<","<<j4<<")"
-          //           << "  r1234("<<r1<<","<<r2<<","<<r3<<","<<r4<<")"
-          //           << std::endl;
 
           // get angles of ray to get xyz for point
           double yAngle = 0.5 * (hja + hjb) * yDiff / (rayCount - 1) + minAngle.Radian();

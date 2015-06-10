@@ -69,6 +69,7 @@ namespace gazebo
     if (_sdf->HasElement("robotNamespace"))
     {
       this->robot_namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>() + "/";
+      //Probability of not intented namespace
     }
 
     if (!_sdf->HasElement("frameName"))
