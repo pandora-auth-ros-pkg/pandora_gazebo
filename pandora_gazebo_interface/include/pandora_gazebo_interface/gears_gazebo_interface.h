@@ -35,8 +35,8 @@
  * Author: Geromichalos Dimitrios Panagiotis <geromidg@gmail.com>
  *********************************************************************/
 
-#ifndef PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
-#define PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
+#ifndef PANDORA_GAZEBO_INTERFACE_GEARS_GAZEBO_INTERFACE_H
+#define PANDORA_GAZEBO_INTERFACE_GEARS_GAZEBO_INTERFACE_H
 
 // Gazebo
 #include <gazebo/gazebo.hh>
@@ -75,10 +75,10 @@
 namespace pandora_gazebo_interface
 {
 
-  class GazeboInterface : public gazebo_ros_control::RobotHWSim
+  class GearsGazeboInterface : public gazebo_ros_control::RobotHWSim
   {
     public:
-      ~GazeboInterface();
+      ~GearsGazeboInterface();
 
       bool initSim(
           const std::string& robotnamespace,
@@ -256,8 +256,8 @@ namespace pandora_gazebo_interface
   };
 }  // namespace pandora_gazebo_interface
 
-PLUGINLIB_EXPORT_CLASS(pandora_gazebo_interface::GazeboInterface,
+PLUGINLIB_EXPORT_CLASS(pandora_gazebo_interface::GearsGazeboInterface,
                        gazebo_ros_control::RobotHWSim
                       )
 
-#endif  // PANDORA_GAZEBO_INTERFACE_GAZEBO_INTERFACE_H
+#endif  // PANDORA_GAZEBO_INTERFACE_GEARS_GAZEBO_INTERFACE_H

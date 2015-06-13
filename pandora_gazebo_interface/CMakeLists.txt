@@ -46,10 +46,18 @@ link_directories(
 set(CMAKE_BUILD_TYPE Debug)
 
 add_library(
-  ${PROJECT_NAME}
-  src/gazebo_interface.cpp)
+  ${PROJECT_NAME}_gears_gazebo_interface
+  src/gears_gazebo_interface.cpp)
 target_link_libraries(
-  ${PROJECT_NAME}
+  ${PROJECT_NAME}_gears_gazebo_interface
+  ${catkin_LIBRARIES}
+  ${GAZEBO_LIBRARIES})
+
+add_library(
+  ${PROJECT_NAME}_woody_gazebo_interface
+  src/woody_gazebo_interface.cpp)
+target_link_libraries(
+  ${PROJECT_NAME}_woody_gazebo_interface
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES})
 

@@ -102,7 +102,7 @@
   <xacro:pandora_p3d_plugin />
       
   <xacro:gazebo_ros_control_plugin namespace="/"
-                                   hardware_interface="pandora_gazebo_interface/GazeboInterface" />
+                                   hardware_interface="pandora_gazebo_interface/GearsGazeboInterface" />
 
 <!--  <xacro:pandora_wheel_physics_plugin /> -->
 <!--  <xacro:pandora_fdir_plugin /> -->

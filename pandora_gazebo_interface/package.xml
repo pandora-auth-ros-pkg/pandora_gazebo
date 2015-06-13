@@ -28,7 +28,7 @@
   <depend>pluginlib</depend>
 
   <export>
-    <gazebo_ros_control
-      plugin="${prefix}/pandora_gazebo_interface_plugin.xml" />
+    <gazebo_ros_control plugin="${prefix}/woody_gazebo_interface.xml" />
+    <gazebo_ros_control plugin="${prefix}/gears_gazebo_interface.xml" />
   </export>
 </package>

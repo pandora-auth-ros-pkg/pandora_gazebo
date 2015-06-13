@@ -35,7 +35,7 @@
  * Author: Geromichalos Dimitrios Panagiotis <geromidg@gmail.com>
  *********************************************************************/
 
-#include "pandora_gazebo_interface/gazebo_interface.h"
+#include "pandora_gazebo_interface/woody_gazebo_interface.h"
 
 namespace
 {
@@ -53,11 +53,11 @@ namespace
 namespace pandora_gazebo_interface
 {
 
-  GazeboInterface::~GazeboInterface()
+  WoodyGazeboInterface::~WoodyGazeboInterface()
   {
   }
 
-  bool GazeboInterface::initSim(
+  bool WoodyGazeboInterface::initSim(
       const std::string& robotnamespace,
       ros::NodeHandle modelNh,
       gazebo::physics::ModelPtr parentModel,
@@ -102,11 +102,11 @@ namespace pandora_gazebo_interface
       return false;
     }
 
-    ROS_INFO("pandora_gazebo_interface initialized successfully!");
+    ROS_INFO("pandora_woody_gazebo_interface initialized successfully!");
     return true;
   }
 
-  void GazeboInterface::readSim(
+  void WoodyGazeboInterface::readSim(
       ros::Time time,
       ros::Duration period)
   {
@@ -119,7 +119,7 @@ namespace pandora_gazebo_interface
     readARM();
   }
 
-  void GazeboInterface::writeSim(
+  void WoodyGazeboInterface::writeSim(
       ros::Time time,
       ros::Duration period)
   {
@@ -130,7 +130,7 @@ namespace pandora_gazebo_interface
     writeJoints();
   }
 
-  bool GazeboInterface::initLinks()
+  bool WoodyGazeboInterface::initLinks()
   {
     // Number of links
     linkNum_ = 1;  // FIXME
@@ -158,7 +158,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initIMU()
+  bool WoodyGazeboInterface::initIMU()
   {
     linkName_[0] = "base_link";  // FIXME XXX
 
@@ -188,7 +188,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initJoints()
+  bool WoodyGazeboInterface::initJoints()
   {
     // Number of joints
     jointNum_ = 13;  // FIXME
@@ -280,7 +280,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initWheels()
+  bool WoodyGazeboInterface::initWheels()
   {
     jointName_[0] = "left_front_wheel_joint";  // FIXME
     jointName_[1] = "left_rear_wheel_joint";  // FIXME
@@ -301,7 +301,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initSides()
+  bool WoodyGazeboInterface::initSides()
   {
     jointName_[4] = "left_side_joint";  // FIXME
     jointName_[5] = "right_side_joint";  // FIXME
@@ -322,7 +322,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initLinear()
+  bool WoodyGazeboInterface::initLinear()
   {
     // Elevator
     jointName_[6] = "linear_elevator_joint";  // FIXME
@@ -366,7 +366,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initLaser()
+  bool WoodyGazeboInterface::initLaser()
   {
     // Roll
     jointName_[9] = "laser_roll_joint";  // FIXME
@@ -397,7 +397,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initKinect()
+  bool WoodyGazeboInterface::initKinect()
   {
     // Pitch
     jointName_[11] = "kinect_pitch_joint";  // FIXME
@@ -428,7 +428,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initXMEGA()
+  bool WoodyGazeboInterface::initXMEGA()
   {
     // Number of batteries and range sensors
     batteryNum_ = 2;  // FIXME
@@ -474,7 +474,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initBatteries()
+  bool WoodyGazeboInterface::initBatteries()
   {
     // PSU
     batteryName_[0] = "/PSU_battery";  // FIXME
@@ -497,7 +497,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initRangeSensors()
+  bool WoodyGazeboInterface::initRangeSensors()
   {
     rangeSensorName_[0] = "/sensors/linear_sonar";  // FIXME
     rangeSensorFrameID_[0] = "linear_sonar_frame";  // FIXME
@@ -538,7 +538,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initARM()
+  bool WoodyGazeboInterface::initARM()
   {
     // Number of co2, thermal and microphone sensors
     co2SensorNum_ = 1;  // FIXME
@@ -594,7 +594,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initCO2Sensors()
+  bool WoodyGazeboInterface::initCO2Sensors()
   {
     co2SensorName_[0] = "/sensors/co2";  // FIXME
     co2SensorData_[0].name = co2SensorName_[0];
@@ -608,7 +608,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initThermalSensors()
+  bool WoodyGazeboInterface::initThermalSensors()
   {
     thermalSensorName_[0] = "/sensors/left_thermal";  // FIXME
     thermalSensorData_[0].name = thermalSensorName_[0];
@@ -647,7 +647,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::initMicrophoneSensors()
+  bool WoodyGazeboInterface::initMicrophoneSensors()
   {
     microphoneSensorName_[0] = "/sensors/microphone";  // FIXME
     microphoneSensorFrameID_[0] = "microphone_frame";
@@ -658,7 +658,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  bool GazeboInterface::registerInterfaces()
+  bool WoodyGazeboInterface::registerInterfaces()
   {
     // Connect and register the joint state handle
     for (unsigned int i = 0; i < jointNum_; i++)
@@ -739,7 +739,7 @@ namespace pandora_gazebo_interface
     return true;
   }
 
-  void GazeboInterface::readLinks()
+  void WoodyGazeboInterface::readLinks()
   {
     // Read robot orientation for IMU
     gazebo::math::Quaternion quaternion = gazeboLink_[0]->GetWorldPose().rot;
@@ -754,7 +754,7 @@ namespace pandora_gazebo_interface
     *imuYaw_ = quaternion.GetYaw() * 360 / (gazebo::math::Angle::TwoPi.Radian());
   }
 
-  void GazeboInterface::readJoints()
+  void WoodyGazeboInterface::readJoints()
   {
     for (unsigned int i = 0; i < jointNum_; i++)
     {
@@ -781,7 +781,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GazeboInterface::readXMEGA()
+  void WoodyGazeboInterface::readXMEGA()
   {
     if ((batteryLastUpdateTime_ + batteryUpdateRate_) < readTime_)
     {
@@ -796,7 +796,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GazeboInterface::readBatteries()
+  void WoodyGazeboInterface::readBatteries()
   {
     for (unsigned int n = 0; n < batteryNum_; n++)
     {
@@ -812,7 +812,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GazeboInterface::readRangeSensors()
+  void WoodyGazeboInterface::readRangeSensors()
   {
     for (unsigned int n = 0; n < rangeSensorNum_; n++)
     {
@@ -891,7 +891,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GazeboInterface::readARM()
+  void WoodyGazeboInterface::readARM()
   {
     if ((co2SensorLastUpdateTime_ + co2SensorUpdateRate_) < readTime_)
     {
@@ -912,7 +912,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GazeboInterface::readCO2Sensors()
+  void WoodyGazeboInterface::readCO2Sensors()
   {
     for (unsigned int n = 0; n < co2SensorNum_; n++)
     {
@@ -976,7 +976,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GazeboInterface::readThermalSensors()
+  void WoodyGazeboInterface::readThermalSensors()
   {
     for (unsigned int n = 0; n < thermalSensorNum_; n++)
     {
@@ -1052,7 +1052,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GazeboInterface::readMicrophoneSensors()
+  void WoodyGazeboInterface::readMicrophoneSensors()
   {
     for (unsigned int n = 0; n < microphoneSensorNum_; n++)
     {
@@ -1113,11 +1113,11 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GazeboInterface::writeLinks()
+  void WoodyGazeboInterface::writeLinks()
   {
   }
 
-  void GazeboInterface::writeJoints()
+  void WoodyGazeboInterface::writeJoints()
   {
     adjustWheelVelocityCommands();
 
@@ -1172,7 +1172,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GazeboInterface::adjustWheelVelocityCommands()
+  void WoodyGazeboInterface::adjustWheelVelocityCommands()
   {
     double leftWheelVelocity = jointCommand_[0];
     double rightWheelVelocity = jointCommand_[2];

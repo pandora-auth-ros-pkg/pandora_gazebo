@@ -473,7 +473,7 @@
   
     <xacro:if value="$(arg interface)" >
       <xacro:gazebo_ros_control_plugin namespace="/"
-                                       hardware_interface="pandora_gazebo_interface/GazeboInterface" />
+                                       hardware_interface="pandora_gazebo_interface/GearsGazeboInterface" />
     </xacro:if>
     
     <xacro:unless value="$(arg interface)" >

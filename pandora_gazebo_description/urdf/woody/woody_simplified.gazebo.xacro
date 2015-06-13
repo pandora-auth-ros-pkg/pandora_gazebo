@@ -98,7 +98,7 @@
 <!--  <xacro:gazebo_ros_control_plugin namespace="/"-->
 <!--                                   hardware_interface="gazebo_ros_control/DefaultRobotHWSim" />-->
   <xacro:gazebo_ros_control_plugin namespace="/"
-                                   hardware_interface="pandora_gazebo_interface/GazeboInterface" /> -->
+                                   hardware_interface="pandora_gazebo_interface/WoodyGazeboInterface" /> -->
                            
 <!-- <xacro:pandora_wheel_physics_plugin/> -->        
 <!-- <xacro:pandora_fdir_plugin />-->
