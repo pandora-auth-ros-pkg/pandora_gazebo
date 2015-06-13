@@ -51,7 +51,7 @@
   <node name="gazebo" pkg="gazebo_ros" type="gzserver"
         args="$(find pandora_gazebo_worlds)/worlds/$(arg world)/$(arg world).world"
         respawn="false" output="screen">
-    <remap unless="$(arg interface)" from="gazebo_sensors" to="/"/>
+    <remap unless="$(arg interface)" from="gazebo_sensors" to="sensors"/>
   </node>
 <!-- ###################################################################### -->
 

@@ -37,10 +37,11 @@
         <plugin name="microphone2ros"
                 filename="libpandora_gazebo_plugins_pandora_microphone_plugin.so" >
 
+          <robotNamespace>gazebo_sensors</robotNamespace>
           <!--============================================================= -->
           <frameName>microphone_frame</frameName>
           <!--============================================================= -->
-          <topicName>sensors/sound</topicName>
+          <topicName>sound</topicName>
           <!--============================================================= -->
           <publishMsg>${publish_msg}</publishMsg>
           <!--============================================================= -->
