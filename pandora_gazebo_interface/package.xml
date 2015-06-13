@@ -28,7 +28,6 @@
   <depend>pluginlib</depend>
 
   <export>
-    <gazebo_ros_control plugin="${prefix}/woody_gazebo_interface.xml" />
-    <gazebo_ros_control plugin="${prefix}/gears_gazebo_interface.xml" />
+    <gazebo_ros_control plugin="${prefix}/gazebo_interfaces.xml" />
   </export>
 </package>

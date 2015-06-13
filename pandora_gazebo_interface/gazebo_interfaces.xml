@@ -1,0 +1,24 @@
+<class_libraries>
+  <library path="lib/libpandora_gazebo_interface_gears_gazebo_interface">
+    <class
+      name="pandora_gazebo_interface/GearsGazeboInterface"
+      type="pandora_gazebo_interface::GearsGazeboInterface"
+      base_class_type="gazebo_ros_control::RobotHWSim">
+      <description>
+        This is the gazebo interface for Pandora's Gears robot.
+      </description>
+    </class>
+  </library>
+
+  <library path="lib/libpandora_gazebo_interface_woody_gazebo_interface">
+
+    <class
+      name="pandora_gazebo_interface/WoodyGazeboInterface"
+      type="pandora_gazebo_interface::WoodyGazeboInterface"
+      base_class_type="gazebo_ros_control::RobotHWSim">
+      <description>
+        This is the gazebo interface for Pandora's Woody robot.
+      </description>
+    </class>
+  </library>
+</class_libraries>

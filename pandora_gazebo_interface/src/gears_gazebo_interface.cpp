@@ -102,7 +102,7 @@ namespace pandora_gazebo_interface
       return false;
     }
 
-    ROS_INFO("pandora_gazebo_interface initialized successfully!");
+    ROS_INFO("gears_gazebo_interface initialized successfully!");
     return true;
   }
 
