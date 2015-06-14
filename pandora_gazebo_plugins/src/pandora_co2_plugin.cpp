@@ -69,7 +69,7 @@ namespace gazebo
     if (_sdf->HasElement("robotNamespace"))
     {
       this->robot_namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>() + "/";
-      //Probability of not intented namespace
+      //  Probability of not intented namespace
     }
 
     if (!_sdf->HasElement("frameName"))
@@ -257,7 +257,7 @@ namespace gazebo
     co2Msg_.co2_percentage = percentage;
 
     this->pub_.publish(this->co2Msg_);
-    
+
     usleep(100000);
   }
 }  // namespace gazebo

@@ -141,7 +141,7 @@ namespace gazebo
         }
       }
     }
-    
+
     if (!_sdf->HasElement("gaussianNoise"))
     {
       ROS_INFO("Block laser plugin missing <gaussianNoise>, defaults to 0.0");

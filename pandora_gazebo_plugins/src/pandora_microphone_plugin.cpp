@@ -243,7 +243,7 @@ namespace gazebo
     }
 
     double certainty = totalCert / (width * height);
-    
+
     // soundMsg_.header.stamp = ros::Time::now ( );
     // soundMsg_.header.frame_id = this->frame_name_;
 
