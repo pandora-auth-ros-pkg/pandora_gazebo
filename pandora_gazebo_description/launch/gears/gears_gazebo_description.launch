@@ -28,7 +28,8 @@
 <!-- ###################################################################### -->
 
   <param name="robot_description"
-         command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/urdf/gears/gears.gazebo.xacro' control:=$(arg control) interface:=$(arg interface) tune:=$(arg tune)" />
+         command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/urdf/gears/gears.gazebo.xacro'
+                  control:=$(arg control) interface:=$(arg interface) tune:=$(arg tune)" />
     
 <!-- ###################################################################### -->
   
