@@ -180,6 +180,9 @@ namespace gazebo
 
   void PandoraMicrophonePlugin::PutMicrophoneData(common::Time& _updateTime)
   {
+    // soundMsg_.header.stamp = ros::Time::now ( );
+    // soundMsg_.header.frame_id = this->frame_name_;
+
     unsigned int width = this->parent_camera_sensor_
                         ->GetImageWidth();
 
@@ -243,9 +246,7 @@ namespace gazebo
     }
 
     double certainty = totalCert / (width * height);
-
-    // soundMsg_.header.stamp = ros::Time::now ( );
-    // soundMsg_.header.frame_id = this->frame_name_;
+    // soundMsg_.certainty = certainty;
 
     // Sound detection condition
     if (certainty > 0.5)
@@ -256,8 +257,6 @@ namespace gazebo
     {
       soundMsg_.data = false;
     }
-
-    // soundMsg_.certainty = certainty;
 
     this->pub_.publish(this->soundMsg_);
 

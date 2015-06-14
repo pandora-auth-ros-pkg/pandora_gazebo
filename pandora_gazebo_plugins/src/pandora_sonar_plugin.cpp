@@ -361,10 +361,9 @@ namespace gazebo
       }
     }
 
-    this->parent_ray_sensor_->SetActive(true);
-
-    // send data out via ros message
     this->pub_.publish(this->sonar_msg_);
+
+    this->parent_ray_sensor_->SetActive(true);
   }
 
   // Utility for adding noise

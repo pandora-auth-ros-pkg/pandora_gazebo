@@ -181,6 +181,9 @@ namespace gazebo
 
   void PandoraCo2Plugin::PutCo2Data(common::Time& _updateTime)
   {
+    co2Msg_.header.stamp = ros::Time::now();
+    co2Msg_.header.frame_id = this->frame_name_;
+
     unsigned int width = this->parent_camera_sensor_
                         ->GetImageWidth();
 
@@ -250,10 +253,6 @@ namespace gazebo
     totalPpm /= (width * height);
 
     double percentage = (ambientPpm + totalPpm * maxPpm) / 10000.0;
-
-    co2Msg_.header.stamp = ros::Time::now();
-    co2Msg_.header.frame_id = this->frame_name_;
-
     co2Msg_.co2_percentage = percentage;
 
     this->pub_.publish(this->co2Msg_);

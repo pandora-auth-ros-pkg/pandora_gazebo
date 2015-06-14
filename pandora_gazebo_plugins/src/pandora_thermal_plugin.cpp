@@ -274,7 +274,6 @@ namespace gazebo
         meanTemp /= (divWidth * divHeight);
 
         double temp = ambientTemp + meanTemp * maxTemp;
-
         tempMsg_.data.push_back(static_cast<char>(temp));
       }
     }
