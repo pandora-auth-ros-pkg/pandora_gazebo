@@ -102,10 +102,6 @@ private:
   ros::NodeHandle* rosnode_;
 private:
   ros::Publisher pub_;
-private:
-  ros::Publisher pub_viz;
-private:
-  ros::Publisher camera_info_pub_;
 
   /// \brief topic name
 private:
@@ -160,15 +156,7 @@ private:
   void PutCo2Data(common::Time& _updateTime);
 
 private:
-  sensor_msgs::Image imgviz_;
-
-private:
   pandora_sensor_msgs::Co2Msg co2Msg_;
-
-private:
-  bool publish_msg_;
-private:
-  bool publish_viz_;
 };
 GZ_REGISTER_SENSOR_PLUGIN(PandoraCo2Plugin)
 }  // namespace gazebo

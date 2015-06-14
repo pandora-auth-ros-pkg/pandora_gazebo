@@ -92,26 +92,6 @@ namespace gazebo
       this->topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
     }
 
-    if (!_sdf->HasElement("publishMsg"))
-    {
-      ROS_INFO("Co2 plugin missing <publishMsg>, defaults to true");
-      this->publish_msg_ = true;
-    }
-    else
-    {
-      this->publish_msg_ = _sdf->Get<std::string>("publishMsg") == "true";
-    }
-
-    if (!_sdf->HasElement("publishViz"))
-    {
-      ROS_INFO("Co2 plugin missing <publishViz>, defaults to true");
-      this->publish_viz_ = true;
-    }
-    else
-    {
-      this->publish_viz_ = _sdf->Get<std::string>("publishViz") == "true";
-    }
-
     this->camera_connect_count_ = 0;
 
     // Make sure the ROS node for Gazebo has already been initialized
@@ -136,33 +116,17 @@ namespace gazebo
 
     if (this->topic_name_ != "")
     {
-      if (this->publish_msg_)
-      {
-        // Custom Callback Queue
-        ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<pandora_sensor_msgs::Co2Msg>(
-                                     this->topic_name_, 1,
-                                     boost::bind(&PandoraCo2Plugin::CameraConnect, this),
-                                     boost::bind(&PandoraCo2Plugin::CameraDisconnect, this),
-                                     ros::VoidPtr(), &this->camera_queue_);
-        this->pub_ = this->rosnode_->advertise(ao);
-      }
-
-      if (this->publish_viz_)
-      {
-        ros::AdvertiseOptions ao2 = ros::AdvertiseOptions::create<sensor_msgs::Image>(
-                                      (this->topic_name_ + "/viz/image/" + this->frame_name_), 1,
-                                      boost::bind(&PandoraCo2Plugin::CameraConnect, this),
-                                      boost::bind(&PandoraCo2Plugin::CameraDisconnect, this),
-                                      ros::VoidPtr(), &this->camera_queue_);
-        this->pub_viz = this->rosnode_->advertise(ao2);
-      }
+      // Custom Callback Queue
+      ros::AdvertiseOptions ao = ros::AdvertiseOptions::create<pandora_sensor_msgs::Co2Msg>(
+                                   this->topic_name_, 1,
+                                   boost::bind(&PandoraCo2Plugin::CameraConnect, this),
+                                   boost::bind(&PandoraCo2Plugin::CameraDisconnect, this),
+                                   ros::VoidPtr(), &this->camera_queue_);
+      this->pub_ = this->rosnode_->advertise(ao);
     }
 
-    if (this->publish_msg_)
-    {
-      // sensor generation off by default
-      this->parent_camera_sensor_->SetActive(false);
-    }
+    // sensor generation off by default
+    this->parent_camera_sensor_->SetActive(false);
 
     // start custom queue for laser
     this->callback_camera_queue_thread_ = boost::thread(boost::bind(&PandoraCo2Plugin::CameraQueueThread, this));
@@ -217,112 +181,83 @@ namespace gazebo
 
   void PandoraCo2Plugin::PutCo2Data(common::Time& _updateTime)
   {
-    if (this->publish_msg_ || this->publish_viz_)
+    unsigned int width = this->parent_camera_sensor_
+                        ->GetImageWidth();
+
+    unsigned int height = this->parent_camera_sensor_
+                         ->GetImageHeight();
+
+    const unsigned char* data = this->parent_camera_sensor_
+                                ->GetImageData();
+
+    if (data == NULL)
     {
-      unsigned int width = this->parent_camera_sensor_
-                          ->GetImageWidth();
+      return;
+    }
 
-      unsigned int height = this->parent_camera_sensor_
-                           ->GetImageHeight();
+    double ambientPpm = 400.0;
 
-      const unsigned char* data = this->parent_camera_sensor_
-                                  ->GetImageData();
+    double maxPpm = 40000.0;
 
-      if (data == NULL)
+    double totalPpm = 0.0;
+
+    for (unsigned int i = 0; i < width; i++)
+    {
+      for (unsigned int j = 0; j < height; j++)
       {
-        return;
-      }
+        double currentPpm = 0;
 
-      if (this->publish_viz_)
-      {
-        imgviz_.header.stamp = ros::Time::now();
-        imgviz_.header.frame_id = this->frame_name_;
+        double R = data [((i * height) + j) * 3 + 0 ];
+        double G = data [((i * height) + j) * 3 + 1 ];
+        double B = data [((i * height) + j) * 3 + 2 ];
 
-        imgviz_.height = height;
-        imgviz_.width = width;
-        imgviz_.step = width;
-        imgviz_.encoding = "mono8";
+        // co2 is represented by green
+        double G1 = (G - R);
+        double G2 = (G - B);
 
-        imgviz_.data.clear();
-      }
+        double positiveDiff = 0;
 
-      double ambientPpm = 400.0;
-
-      double maxPpm = 40000.0;
-
-      double totalPpm = 0.0;
-
-      for (unsigned int i = 0; i < width; i++)
-      {
-        for (unsigned int j = 0; j < height; j++)
+        if (G1 > 0)
         {
-          double currentPpm = 0;
+          currentPpm += pow(G1, 2);
 
-          double R = data [((i * height) + j) * 3 + 0 ];
-          double G = data [((i * height) + j) * 3 + 1 ];
-          double B = data [((i * height) + j) * 3 + 2 ];
-
-          // co2 is represented by green
-          double G1 = (G - R);
-          double G2 = (G - B);
-
-          double positiveDiff = 0;
-
-          if (G1 > 0)
-          {
-            currentPpm += pow(G1, 2);
-
-            ++positiveDiff;
-          }
-
-          if (G2 > 0)
-          {
-            currentPpm += pow(G2, 2);
-
-            ++positiveDiff;
-          }
-
-          currentPpm = sqrt(currentPpm);
-
-          if (positiveDiff == 1)
-          {
-            currentPpm /= 255.0;
-          }
-          else if (positiveDiff == 2)
-          {
-            currentPpm /= sqrt(pow(255.0, 2)
-                               + pow(255.0, 2));
-          }
-
-          if (this->publish_viz_)
-          {
-            imgviz_.data.push_back(static_cast<char>(currentPpm * 255.0));
-          }
-
-          totalPpm += currentPpm;
+          ++positiveDiff;
         }
-      }
 
-      totalPpm /= (width * height);
+        if (G2 > 0)
+        {
+          currentPpm += pow(G2, 2);
 
-      double percentage = (ambientPpm + totalPpm * maxPpm) / 10000.0;
+          ++positiveDiff;
+        }
 
-      if (this->publish_viz_)
-      {
-        this->pub_viz.publish(imgviz_);
-      }
+        currentPpm = sqrt(currentPpm);
 
-      if (this->publish_msg_)
-      {
-        co2Msg_.header.stamp = ros::Time::now();
-        co2Msg_.header.frame_id = this->frame_name_;
+        if (positiveDiff == 1)
+        {
+          currentPpm /= 255.0;
+        }
+        else if (positiveDiff == 2)
+        {
+          currentPpm /= sqrt(pow(255.0, 2)
+                             + pow(255.0, 2));
+        }
 
-        co2Msg_.co2_percentage = percentage;
-
-        this->pub_.publish(this->co2Msg_);
+        totalPpm += currentPpm;
       }
     }
 
+    totalPpm /= (width * height);
+
+    double percentage = (ambientPpm + totalPpm * maxPpm) / 10000.0;
+
+    co2Msg_.header.stamp = ros::Time::now();
+    co2Msg_.header.frame_id = this->frame_name_;
+
+    co2Msg_.co2_percentage = percentage;
+
+    this->pub_.publish(this->co2Msg_);
+    
     usleep(100000);
   }
 }  // namespace gazebo

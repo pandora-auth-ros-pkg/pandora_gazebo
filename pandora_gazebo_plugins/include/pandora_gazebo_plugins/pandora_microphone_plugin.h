@@ -101,10 +101,6 @@ private:
   ros::NodeHandle* rosnode_;
 private:
   ros::Publisher pub_;
-private:
-  ros::Publisher pub_viz;
-private:
-  ros::Publisher camera_info_pub_;
 
   /// \brief topic name
 private:
@@ -159,15 +155,7 @@ private:
   void PutMicrophoneData(common::Time& _updateTime);
 
 private:
-  sensor_msgs::Image imgviz_;
-
-private:
   std_msgs::Bool soundMsg_;
-
-private:
-  bool publish_msg_;
-private:
-  bool publish_viz_;
 };
 GZ_REGISTER_SENSOR_PLUGIN(PandoraMicrophonePlugin)
 }  // namespace gazebo

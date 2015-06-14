@@ -99,10 +99,6 @@ private:
   ros::NodeHandle* rosnode_;
 private:
   ros::Publisher pub_;
-private:
-  ros::Publisher pub_viz;
-private:
-  ros::Publisher camera_info_pub_;
 
   /// \brief ros message
   // ~ private: sensor_msgs::PointCloud cloud_msg_;
@@ -161,15 +157,7 @@ private:
   void PutThermalData(common::Time& _updateTime);
 
 private:
-  sensor_msgs::Image imgviz_;
-
-private:
   sensor_msgs::Image tempMsg_;
-
-private:
-  bool publish_msg_;
-private:
-  bool publish_viz_;
 };
 GZ_REGISTER_SENSOR_PLUGIN(PandoraThermalPlugin)
 }  // namespace gazebo
