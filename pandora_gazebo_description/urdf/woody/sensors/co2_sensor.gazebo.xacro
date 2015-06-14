@@ -4,8 +4,7 @@
 
 <!-- ###################################################################### -->
 
-  <xacro:macro name="co2_gazebo_sensor"
-               params="publish_msg publish_viz" >
+  <xacro:macro name="co2_gazebo_sensor" >
 
     <gazebo reference="co2_frame" >
 
@@ -17,14 +16,8 @@
           <horizontal_fov>1.5</horizontal_fov> <!-- FIXME -->
           <!--============================================================= -->
           <image>
-            <xacro:if value="${publish_viz}" >
-              <width>640</width>
-              <height>480</height>
-            </xacro:if>
-            <xacro:unless value="${publish_viz}" >
-              <width>8</width>
-              <height>8</height>
-            </xacro:unless>
+            <width>8</width>
+            <height>8</height>
           </image>
           <!--============================================================= -->
           <clip> <!-- FIXME -->
@@ -42,10 +35,6 @@
           <frameName>co2_frame</frameName>
           <!--============================================================= -->
           <topicName>co2</topicName>
-          <!--============================================================= -->
-          <publishMsg>${publish_msg}</publishMsg>
-          <!--============================================================= -->
-          <publishViz>${publish_viz}</publishViz>
           <!--============================================================= -->
 
         </plugin>

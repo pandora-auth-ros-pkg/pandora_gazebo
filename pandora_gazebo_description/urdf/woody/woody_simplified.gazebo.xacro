@@ -61,14 +61,14 @@
 <!--  <xacro:camera_gazebo_sensor prefix_y="left" />-->
 <!--  <xacro:camera_gazebo_sensor prefix_y="right" />-->
   
-  <xacro:sonar_gazebo_sensor name="left" publish_msg="false" />
-  <xacro:sonar_gazebo_sensor name="right" publish_msg="false" />
+  <xacro:sonar_gazebo_sensor name="left" />
+  <xacro:sonar_gazebo_sensor name="right" />
                 
-<!--  TODO: <xacro:flir_gazebo_sensor publish_msg="false" publish_viz="false" />-->
+<!--  TODO: <xacro:flir_gazebo_sensor />-->
   
-<xacro:co2_gazebo_sensor publish_msg="true" publish_viz="false" />
-<xacro:thermal_gazebo_sensor prefix_y="middle" publish_msg="true" publish_viz="false" />
-<!--  <xacro:microphone_gazebo_sensor publish_msg="false" publish_viz="false" />-->
+  <xacro:co2_gazebo_sensor />
+  <xacro:thermal_gazebo_sensor prefix_y="middle" />
+<!--  <xacro:microphone_gazebo_sensor />-->
       
 <!-- Load Transmissions ################################################### -->
 
