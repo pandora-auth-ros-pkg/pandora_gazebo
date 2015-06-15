@@ -4,9 +4,7 @@
 
 <!-- ###################################################################### -->
 
-  <include file="$(find pandora_gazebo_controllers)/launch/pandora_gazebo_position_controllers.launch" >
-    <arg name="robot" value="gears" />
-  </include>
+  <include file="$(find pandora_gazebo_controllers)/launch/gears/pandora_gears_controllers.launch" />
       
 <!-- ###################################################################### -->
 
