@@ -15,8 +15,8 @@
   
   <arg name="simplified" default="true"/>
   
-  <arg name="control" default="false"/>
-  <arg name="interface" default="false"/>
+  <arg name="control" default="true"/>
+  <arg name="interface" default="true"/>
   <arg name="tune" default="false" />
     
 <!-- ###################################################################### -->
