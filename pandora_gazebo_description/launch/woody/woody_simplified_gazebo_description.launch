@@ -4,9 +4,7 @@
 
 <!-- ###################################################################### -->
 
-  <include file="$(find pandora_gazebo_controllers)/launch/woody/pandora_woody_controllers.launch" >
-    <arg name="robot" value="woody" />
-  </include>
+  <include file="$(find pandora_gazebo_controllers)/launch/woody/pandora_woody_controllers.launch" />
       
 <!-- ###################################################################### -->
 

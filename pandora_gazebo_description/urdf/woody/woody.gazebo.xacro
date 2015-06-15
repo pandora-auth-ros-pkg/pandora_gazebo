@@ -171,7 +171,7 @@
         </xacro:if>
       </xacro:if>
       
-      <xacro:if value="${enable_thermal_sensors}" >
+      <xacro:if value="${enable_thermal_sensor}" >
         <xacro:if value="${enable_thermal_gazebo_sensor}" >
           <xacro:if value="${enable_thermal_gazebo_sensor}" >
             <xacro:thermal_gazebo_sensor prefix_y="middle" />
@@ -273,7 +273,7 @@
   
     <xacro:if value="$(arg interface)" >
       <xacro:gazebo_ros_control_plugin namespace="/"
-                                       hardware_interface="pandora_gazebo_interface/GazeboInterface" />
+                                       hardware_interface="pandora_gazebo_interface/WoodyGazeboInterface" />
     </xacro:if>
     
     <xacro:unless value="$(arg interface)" >

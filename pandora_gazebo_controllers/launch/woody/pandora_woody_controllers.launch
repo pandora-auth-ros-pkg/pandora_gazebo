@@ -18,7 +18,7 @@
 <!-- ###################################################################### -->
             
   <!-- Load ARM -->
-  <include file="$(find pandora_arm_hardware_interface)/arm_controllers/launch/joint_state_controller.launch" >
+  <include file="$(find pandora_arm_hardware_interface)/arm_controllers/launch/joint_states_controller.launch" >
     <arg name="namespace" value="/" />
   </include>
   

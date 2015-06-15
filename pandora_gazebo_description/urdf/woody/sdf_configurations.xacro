@@ -13,8 +13,23 @@
   <!-- Robot ============================================================== -->
   <xacro:property name="static_robot" value="false" />
   <!-- ==================================================================== -->
+  
+  <!-- Model Sensors ====================================================== -->
+   <!-- FIXME: Remove all model properties (should be set in URDF) -->
+  <xacro:property name="enable_sensors" value="true" />
+    <xacro:property name="enable_laser_sensor" value="true" />
+    <xacro:property name="enable_kinect_sensor" value="true" />
+    <xacro:property name="enable_camera_sensors" value="true" />
+      <xacro:property name="enable_left_camera_sensor" value="true" />
+      <xacro:property name="enable_right_camera_sensor" value="true" />
+    <xacro:property name="enable_sonar_sensors" value="true" />
+      <xacro:property name="enable_left_sonar_sensor" value="true" />
+      <xacro:property name="enable_right_sonar_sensor" value="true" />
+    <xacro:property name="enable_thermal_sensor" value="true" />
+    <xacro:property name="enable_co2_sensor" value="true" />
+    <xacro:property name="enable_microphone_sensor" value="false" />
       
-  <!-- Sensors ============================================================ -->
+  <!-- Gazebo Sensors ===================================================== -->
   <xacro:property name="enable_gazebo_sensors" value="true" />
     <!-- ================================================================== -->
     <xacro:property name="enable_laser_gazebo_sensor" value="true" />
