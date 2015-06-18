@@ -180,27 +180,27 @@ namespace gazebo
 
   void PandoraThermalPlugin::PutThermalData(common::Time& _updateTime)
   {
-    tempMsg_.header.stamp = ros::Time::now();
-    tempMsg_.header.frame_id = this->frame_name_;
+    imageMsg_.header.stamp = ros::Time::now();
+    imageMsg_.header.frame_id = this->frame_name_;
 
-    tempMsg_.height = 8;
-    tempMsg_.width = 8;
-    tempMsg_.step = 8;
-    tempMsg_.encoding = "mono8";
+    imageMsg_.height = 8;
+    imageMsg_.width = 8;
+    imageMsg_.step = 8;
+    imageMsg_.encoding = sensor_msgs::image_encodings::MONO8;
 
-    tempMsg_.data.clear();
+    imageMsg_.data.clear();
 
     unsigned int cameraWidth = this->parent_camera_sensor_
                               ->GetImageWidth();
 
-    unsigned int sensorWidth = tempMsg_.width;
+    unsigned int sensorWidth = imageMsg_.width;
 
     unsigned int divWidth = (cameraWidth / sensorWidth);
 
     unsigned int cameraHeight = this->parent_camera_sensor_
                                ->GetImageHeight();
 
-    unsigned int sensorHeight = tempMsg_.height;
+    unsigned int sensorHeight = imageMsg_.height;
 
     unsigned int divHeight = (cameraHeight / sensorHeight);
 
@@ -274,11 +274,11 @@ namespace gazebo
         meanTemp /= (divWidth * divHeight);
 
         double temp = ambientTemp + meanTemp * maxTemp;
-        tempMsg_.data.push_back(static_cast<char>(temp));
+        imageMsg_.data.push_back(static_cast<char>(temp));
       }
     }
 
-    this->pub_.publish(tempMsg_);
+    this->pub_.publish(imageMsg_);
 
     usleep(100000);
   }
