@@ -109,29 +109,6 @@ namespace gazebo
     else
     {
       this->topic_name_ = _sdf->GetElement("topicName")->Get<std::string>();
-
-      if (this->parent_sensor_->GetScopedName().find("left") != std::string::npos)
-      {
-        if (this->parent_sensor_->GetScopedName().find("front") != std::string::npos)
-        {
-          this->topic_name_ = this->topic_name_ + std::string("/front_left");
-        }
-        else
-        {
-          this->topic_name_ = this->topic_name_ + std::string("/rear_left");
-        }
-      }
-      else
-      {
-        if (this->parent_sensor_->GetScopedName().find("front") != std::string::npos)
-        {
-          this->topic_name_ = this->topic_name_ + std::string("/front_right");
-        }
-        else
-        {
-          this->topic_name_ = this->topic_name_ + std::string("/rear_right");
-        }
-      }
     }
 
     if (!_sdf->HasElement("gaussianNoise"))
