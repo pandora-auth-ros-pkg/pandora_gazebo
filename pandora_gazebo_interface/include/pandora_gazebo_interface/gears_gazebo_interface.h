@@ -101,22 +101,22 @@ namespace pandora_gazebo_interface
           ros::Duration period);
 
     private:
-      bool registerInterfaces();
+      void registerInterfaces();
 
-      bool initLinks();
-      bool initIMU();
-      bool initJoints();
-      bool initWheels();
-      bool initSides();
-      bool initLinear();
-      bool initLaser();
-      bool initKinect();
-      bool initXMEGA();
-      bool initBatteries();
-      bool initRangeSensors();
-      bool initARM();
-      bool initCO2Sensors();
-      bool initThermalSensors();
+      void initLinks();
+      void initIMU();
+      void initJoints();
+      void initWheels();
+      void initSides();
+      void initLinear();
+      void initLaser();
+      void initKinect();
+      void initXMEGA();
+      void initBatteries();
+      void initRangeSensors();
+      void initARM();
+      void initCO2Sensors();
+      void initThermalSensors();
 
       void readLinks();
       void readJoints();
@@ -162,20 +162,20 @@ namespace pandora_gazebo_interface
 
       hardware_interface::ImuSensorHandle::Data imuSensorData_;
       pandora_hardware_interface::imu::ImuRPYHandle::Data imuRPYData_;
-      std::vector<pandora_hardware_interface::xmega::BatteryHandle::Data> batteryData_;
-      std::vector<pandora_hardware_interface::xmega::RangeSensorHandle::Data> rangeSensorData_;
       std::vector<pandora_hardware_interface::arm::Co2SensorHandle::Data> co2SensorData_;
       std::vector<pandora_hardware_interface::arm::ThermalSensorHandle::Data> thermalSensorData_;
+      std::vector<pandora_hardware_interface::xmega::BatteryHandle::Data> batteryData_;
+      std::vector<pandora_hardware_interface::xmega::RangeSensorHandle::Data> rangeSensorData_;
 
       hardware_interface::JointStateInterface jointStateInterface_;
       hardware_interface::PositionJointInterface positionJointInterface_;
       hardware_interface::VelocityJointInterface velocityJointInterface_;
       hardware_interface::ImuSensorInterface imuSensorInterface_;
       pandora_hardware_interface::imu::ImuRPYInterface imuRPYInterface_;
-      pandora_hardware_interface::xmega::BatteryInterface batteryInterface_;
-      pandora_hardware_interface::xmega::RangeSensorInterface rangeSensorInterface_;
       pandora_hardware_interface::arm::Co2SensorInterface co2SensorInterface_;
       pandora_hardware_interface::arm::ThermalSensorInterface thermalSensorInterface_;
+      pandora_hardware_interface::xmega::BatteryInterface batteryInterface_;
+      pandora_hardware_interface::xmega::RangeSensorInterface rangeSensorInterface_;
 
       unsigned int linkNum_;
       gazebo::common::Time linkUpdateRate_;

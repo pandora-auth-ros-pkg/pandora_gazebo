@@ -72,35 +72,11 @@ namespace pandora_gazebo_interface
 
     world_ = parentModel_->GetWorld();
 
-    if (!initLinks())
-    {
-      ROS_FATAL_STREAM("Unable to initialize links." << "pandora_gazebo_interface initializing failed.");
-      return false;
-    }
-
-    if (!initJoints())
-    {
-      ROS_FATAL_STREAM("Unable to initialize joints." << "pandora_gazebo_interface initializing failed.");
-      return false;
-    }
-
-    if (!initXMEGA())
-    {
-      ROS_FATAL_STREAM("Unable to initialize XMEGA." << "pandora_gazebo_interface initializing failed.");
-      return false;
-    }
-
-    if (!initARM())
-    {
-      ROS_FATAL_STREAM("Unable to initialize ARM." << "pandora_gazebo_interface initializing failed.");
-      return false;
-    }
-
-    if (!registerInterfaces())
-    {
-      ROS_FATAL_STREAM("Unable to register interfaces." << "pandora_gazebo_interface initializing failed.");
-      return false;
-    }
+    initLinks();
+    initJoints();
+    initXMEGA();
+    initARM();
+    registerInterfaces();
 
     ROS_INFO("gears_gazebo_interface initialized successfully!");
     return true;
@@ -129,7 +105,7 @@ namespace pandora_gazebo_interface
     writeJoints();
   }
 
-  bool GearsGazeboInterface::initLinks()
+  void GearsGazeboInterface::initLinks()
   {
     // Number of links
     linkNum_ = 1;  // FIXME
@@ -142,22 +118,16 @@ namespace pandora_gazebo_interface
     linkName_.resize(linkNum_);
 
     // Initialize link data
-    if (!initIMU())
-    {
-      ROS_FATAL("Could not initialize IMU sensor.");
-      return false;
-    }
+    initIMU();
 
     // Load gazebo links
     for (unsigned int i = 0; i < linkNum_; i++)
     {
       gazeboLink_[i] = parentModel_->GetLink(linkName_[i]);
     }
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initIMU()
+  void GearsGazeboInterface::initIMU()
   {
     linkName_[0] = "base_link";  // FIXME XXX
 
@@ -183,11 +153,9 @@ namespace pandora_gazebo_interface
     imuRPYData_.yaw = imuYaw_;
     imuRPYData_.name = "/sensors/imu_rpy";  // FIXME
     imuRPYData_.frame_id = linkName_[0];
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initJoints()
+  void GearsGazeboInterface::initJoints()
   {
     // Number of joints
     jointNum_ = 13;  // FIXME
@@ -215,35 +183,12 @@ namespace pandora_gazebo_interface
     wheelSeparation_ = 0.344;  // FIXME
 
     // Initialize link data
-    if (!initWheels())
-    {
-      ROS_FATAL("Could not initialize wheels.");
-      return false;
-    }
+    initWheels();
 
-    if (!initSides())
-    {
-      ROS_FATAL("Could not initialize sides.");
-      return false;
-    }
-
-    if (!initLinear())
-    {
-      ROS_FATAL("Could not initialize linear.");
-      return false;
-    }
-
-    if (!initLaser())
-    {
-      ROS_FATAL("Could not initialize laser.");
-      return false;
-    }
-
-    if (!initKinect())
-    {
-      ROS_FATAL("Could not initialize kinect.");
-      return false;
-    }
+    initSides();
+    initLinear();
+    initLaser();
+    initKinect();
 
     // Load gazebo joints
     for (unsigned int i = 0; i < jointNum_; i++)
@@ -275,11 +220,9 @@ namespace pandora_gazebo_interface
         }
       }
     }
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initWheels()
+  void GearsGazeboInterface::initWheels()
   {
     jointName_[0] = "left_front_wheel_joint";  // FIXME
     jointName_[1] = "left_rear_wheel_joint";  // FIXME
@@ -296,11 +239,9 @@ namespace pandora_gazebo_interface
       jointEffortLimit_[i] = 100.0;  // FIXME
       jointControlMethod_[i] = VELOCITY;  // FIXME
     }
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initSides()
+  void GearsGazeboInterface::initSides()
   {
     jointName_[4] = "left_side_joint";  // FIXME
     jointName_[5] = "right_side_joint";  // FIXME
@@ -317,11 +258,9 @@ namespace pandora_gazebo_interface
       jointEffortLimit_[i] = 150.0;  // FIXME
       jointControlMethod_[i] = NONE;  // FIXME
     }
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initLinear()
+  void GearsGazeboInterface::initLinear()
   {
     // Elevator
     jointName_[6] = "linear_elevator_joint";  // FIXME
@@ -361,11 +300,9 @@ namespace pandora_gazebo_interface
     jointEffortLimit_[8] = 50.0;  // FIXME
     jointControlMethod_[8] = POSITION_PID;  // FIXME
     pidController_[8].initPid(12.0, 1.0, 0.45, 10.0, -10.0);  // FIXME
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initLaser()
+  void GearsGazeboInterface::initLaser()
   {
     // Roll
     jointName_[9] = "laser_roll_joint";  // FIXME
@@ -392,11 +329,9 @@ namespace pandora_gazebo_interface
     jointEffortLimit_[10] = 50.0;  // FIXME
     jointControlMethod_[10] = POSITION_PID;  // FIXME
     pidController_[10].initPid(2.5, 0.0, 0.3, 0.0, 0.0);  // FIXME
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initKinect()
+  void GearsGazeboInterface::initKinect()
   {
     // Pitch
     jointName_[11] = "kinect_pitch_joint";  // FIXME
@@ -423,11 +358,9 @@ namespace pandora_gazebo_interface
     jointEffortLimit_[12] = 50.0;  // FIXME
     jointControlMethod_[12] = POSITION_PID;  // FIXME
     pidController_[12].initPid(8.0, 1.5, 0.4, 10.0, -10.0);  // FIXME
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initXMEGA()
+  void GearsGazeboInterface::initXMEGA()
   {
     // Number of batteries and range sensors
     batteryNum_ = 2;  // FIXME
@@ -458,22 +391,11 @@ namespace pandora_gazebo_interface
     rangeSensorBufferCounter_.resize(rangeSensorNum_);
 
     // Initialize XMEGA data
-    if (!initBatteries())
-    {
-      ROS_FATAL("Could not initialize batteries.");
-      return false;
-    }
-
-    if (!initRangeSensors())
-    {
-      ROS_FATAL("Could not initialize range sensors.");
-      return false;
-    }
-
-    return true;
+    initBatteries();
+    initRangeSensors();
   }
 
-  bool GearsGazeboInterface::initBatteries()
+  void GearsGazeboInterface::initBatteries()
   {
     // PSU
     batteryName_[0] = "/PSU_battery";  // FIXME
@@ -492,11 +414,9 @@ namespace pandora_gazebo_interface
     batteryDuration_[1] = 45.0;  // FIXME
     batteryVoltage_[1] = batteryVoltageMax_[1];
     batteryData_[1].voltage = &batteryVoltage_[1];
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initRangeSensors()
+  void GearsGazeboInterface::initRangeSensors()
   {
     rangeSensorName_[0] = "/sensors/linear_sonar";  // FIXME
     rangeSensorFrameID_[0] = "linear_sonar_frame";  // FIXME
@@ -534,11 +454,9 @@ namespace pandora_gazebo_interface
       rangeSensorData_[i].range = &rangeSensorRange_[i][0];
       rangeSensorBufferCounter_[i] = 0;
     }
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initARM()
+  void GearsGazeboInterface::initARM()
   {
     // Number of co2 and thermal sensors
     co2SensorNum_ = 1;  // FIXME
@@ -566,22 +484,11 @@ namespace pandora_gazebo_interface
     thermalSensorVector_.resize(thermalSensorNum_);
 
     // Initialize ARM data
-    if (!initCO2Sensors())
-    {
-      ROS_FATAL("Could not initialize CO2 sensors.");
-      return false;
-    }
-
-    if (!initThermalSensors())
-    {
-      ROS_FATAL("Could not initialize thermal sensors.");
-      return false;
-    }
-
-    return true;
+    initCO2Sensors();
+    initThermalSensors();
   }
 
-  bool GearsGazeboInterface::initCO2Sensors()
+  void GearsGazeboInterface::initCO2Sensors()
   {
     co2SensorName_[0] = "/sensors/co2";  // FIXME
     co2SensorData_[0].name = co2SensorName_[0];
@@ -596,11 +503,9 @@ namespace pandora_gazebo_interface
         1,
         &GearsGazeboInterface::co2SensorCallback,
         this);
-
-    return true;
   }
 
-  bool GearsGazeboInterface::initThermalSensors()
+  void GearsGazeboInterface::initThermalSensors()
   {
     thermalSensorName_[0] = "/sensors/left_thermal";  // FIXME
     thermalSensorData_[0].name = thermalSensorName_[0];
@@ -636,11 +541,9 @@ namespace pandora_gazebo_interface
       thermalSensorVector_[i].resize(resolution, 0);
       thermalSensorData_[i].data = &thermalSensorVector_[i][0];
     }
-
-    return true;
   }
 
-  bool GearsGazeboInterface::registerInterfaces()
+  void GearsGazeboInterface::registerInterfaces()
   {
     // Connect and register the joint state handle
     for (unsigned int i = 0; i < jointNum_; i++)
@@ -717,8 +620,6 @@ namespace pandora_gazebo_interface
     registerInterface(&rangeSensorInterface_);
     registerInterface(&co2SensorInterface_);
     registerInterface(&thermalSensorInterface_);
-
-    return true;
   }
 
   void GearsGazeboInterface::readLinks()
