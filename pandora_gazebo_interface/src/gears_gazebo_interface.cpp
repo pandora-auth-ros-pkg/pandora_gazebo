@@ -126,7 +126,6 @@ namespace pandora_gazebo_interface
     writeTime_ = gazebo::common::Time(time.sec, time.nsec);
     writePeriod_ = period;
 
-    writeLinks();
     writeJoints();
   }
 
@@ -454,9 +453,9 @@ namespace pandora_gazebo_interface
     rangeSensorFOV_.resize(rangeSensorNum_);
     rangeSensorMinRange_.resize(rangeSensorNum_);
     rangeSensorMaxRange_.resize(rangeSensorNum_);
+    rangeSensorRangeStored_.resize(rangeSensorNum_);
     rangeSensorRange_.resize(rangeSensorNum_);
     rangeSensorBufferCounter_.resize(rangeSensorNum_);
-    rangeSensorRay_.resize(rangeSensorNum_);
 
     // Initialize XMEGA data
     if (!initBatteries())
@@ -503,22 +502,22 @@ namespace pandora_gazebo_interface
     rangeSensorFrameID_[0] = "linear_sonar_frame";  // FIXME
     rangeSensorData_[0].name = rangeSensorName_[0];
     rangeSensorData_[0].frameId = rangeSensorFrameID_[0];
-    rangeSensorRay_[0] = boost::dynamic_pointer_cast<gazebo::sensors::RaySensor>
-        (gazebo::sensors::get_sensor("linear_sonar"));
 
     rangeSensorName_[1] = "/sensors/left_sonar";  // FIXME
     rangeSensorFrameID_[1] = "left_sonar_frame";  // FIXME
     rangeSensorData_[1].name = rangeSensorName_[1];
     rangeSensorData_[1].frameId = rangeSensorFrameID_[1];
-    rangeSensorRay_[1] = boost::dynamic_pointer_cast<gazebo::sensors::RaySensor>
-        (gazebo::sensors::get_sensor("left_sonar"));
 
     rangeSensorName_[2] = "/sensors/right_sonar";  // FIXME
     rangeSensorFrameID_[2] = "right_sonar_frame";  // FIXME
     rangeSensorData_[2].name = rangeSensorName_[2];
     rangeSensorData_[2].frameId = rangeSensorFrameID_[2];
-    rangeSensorRay_[2] = boost::dynamic_pointer_cast<gazebo::sensors::RaySensor>
-        (gazebo::sensors::get_sensor("right_sonar"));
+    
+    rangeSensorSubscriber_ = modelNh_.subscribe(
+        "gazebo_sensors/range",
+        1,
+        &GearsGazeboInterface::rangeSensorCallback,
+        this);
 
     for (unsigned int i = 0; i < rangeSensorNum_; i++)
     {
@@ -526,6 +525,7 @@ namespace pandora_gazebo_interface
       rangeSensorFOV_[i] = 60.0;  // FIXME
       rangeSensorMinRange_[i] = 0.2;  // FIXME
       rangeSensorMaxRange_[i] = 4.0;  // FIXME
+      rangeSensorRangeStored_[i] = 0.0;
       rangeSensorRange_[i].resize(5, rangeSensorMaxRange_[i]);
       rangeSensorData_[i].radiationType = &rangeSensorRadiationType_[i];
       rangeSensorData_[i].fieldOfView = &rangeSensorFOV_[i];
@@ -540,37 +540,30 @@ namespace pandora_gazebo_interface
 
   bool GearsGazeboInterface::initARM()
   {
-    // Number of co2, thermal and microphone sensors
+    // Number of co2 and thermal sensors
     co2SensorNum_ = 1;  // FIXME
     thermalSensorNum_ = 3;  // FIXME
-    microphoneSensorNum_ = 1;  // FIXME
 
     // Update rates of read methods
     co2SensorUpdateRate_ = gazebo::common::Time(1 / 2.0);  // FIXME
     co2SensorLastUpdateTime_ = world_->GetSimTime();
     thermalSensorUpdateRate_ = gazebo::common::Time(1 / 1.0);  // FIXME
     thermalSensorLastUpdateTime_ = world_->GetSimTime();
-    microphoneSensorUpdateRate_ = gazebo::common::Time(1 / 2.0);  // FIXME
-    microphoneSensorLastUpdateTime_ = world_->GetSimTime();
 
     // Resize vectors
     co2SensorData_.resize(co2SensorNum_);
     co2SensorName_.resize(co2SensorNum_);
     co2SensorFrameID_.resize(co2SensorNum_);
+    co2SensorCo2PercentageStored_.resize(co2SensorNum_);
     co2SensorCo2Percentage_.resize(co2SensorNum_);
-    co2SensorCamera_.resize(co2SensorNum_);
     thermalSensorData_.resize(thermalSensorNum_);
     thermalSensorName_.resize(thermalSensorNum_);
     thermalSensorFrameID_.resize(thermalSensorNum_);
     thermalSensorHeight_.resize(thermalSensorNum_);
     thermalSensorWidth_.resize(thermalSensorNum_);
     thermalSensorStep_.resize(thermalSensorNum_);
+    thermalSensorVectorStored_.resize(thermalSensorNum_);
     thermalSensorVector_.resize(thermalSensorNum_);
-    thermalSensorCamera_.resize(thermalSensorNum_);
-    microphoneSensorName_.resize(microphoneSensorNum_);
-    microphoneSensorFrameID_.resize(microphoneSensorNum_);
-    microphoneSensorSoundCertainty_.resize(microphoneSensorNum_);
-    microphoneSensorCamera_.resize(microphoneSensorNum_);
 
     // Initialize ARM data
     if (!initCO2Sensors())
@@ -585,12 +578,6 @@ namespace pandora_gazebo_interface
       return false;
     }
 
-    if (!initMicrophoneSensors())
-    {
-      ROS_FATAL("Could not initialize microphone sensors.");
-      return false;
-    }
-
     return true;
   }
 
@@ -600,10 +587,15 @@ namespace pandora_gazebo_interface
     co2SensorData_[0].name = co2SensorName_[0];
     co2SensorFrameID_[0] = "co2_frame";  // FIXME
     co2SensorData_[0].frameId = co2SensorFrameID_[0];
-    co2SensorCo2Percentage_[0] = 0.0;
+    co2SensorCo2PercentageStored_[0] = 0.0;
+    co2SensorCo2Percentage_[0] = co2SensorCo2PercentageStored_[0];
     co2SensorData_[0].co2Percentage = &co2SensorCo2Percentage_[0];
-    co2SensorCamera_[0] = boost::dynamic_pointer_cast<gazebo::sensors::CameraSensor>
-        (gazebo::sensors::get_sensor("co2"));
+    
+    co2SensorSubscriber_ = modelNh_.subscribe(
+        "gazebo_sensors/co2",
+        1,
+        &GearsGazeboInterface::co2SensorCallback,
+        this);
 
     return true;
   }
@@ -614,22 +606,22 @@ namespace pandora_gazebo_interface
     thermalSensorData_[0].name = thermalSensorName_[0];
     thermalSensorFrameID_[0] = "left_thermal_optical_frame";  // FIXME
     thermalSensorData_[0].frameId = thermalSensorFrameID_[0];
-    thermalSensorCamera_[0] = boost::dynamic_pointer_cast<gazebo::sensors::CameraSensor>
-        (gazebo::sensors::get_sensor("left_thermal"));
 
-    thermalSensorName_[1] = "/sensors/middle_thermal";  // FIXME XXX
+    thermalSensorName_[1] = "/sensors/center_thermal";  // FIXME XXX
     thermalSensorData_[1].name = thermalSensorName_[1];
     thermalSensorFrameID_[1] = "middle_thermal_optical_frame";  // FIXME
     thermalSensorData_[1].frameId = thermalSensorFrameID_[1];
-    thermalSensorCamera_[1] = boost::dynamic_pointer_cast<gazebo::sensors::CameraSensor>
-        (gazebo::sensors::get_sensor("middle_thermal"));  // FIXME: Adjust name
 
     thermalSensorName_[2] = "/sensors/right_thermal";  // FIXME
     thermalSensorData_[2].name = thermalSensorName_[2];
     thermalSensorFrameID_[2] = "right_thermal_optical_frame";  // FIXME
     thermalSensorData_[2].frameId = thermalSensorFrameID_[2];
-    thermalSensorCamera_[2] = boost::dynamic_pointer_cast<gazebo::sensors::CameraSensor>
-        (gazebo::sensors::get_sensor("right_thermal"));
+    
+    thermalSensorSubscriber_ = modelNh_.subscribe(
+        "gazebo_sensors/thermal",
+        1,
+        &GearsGazeboInterface::thermalSensorCallback,
+        this);
 
     for (unsigned int i = 0; i < thermalSensorNum_; i++)
     {
@@ -637,23 +629,13 @@ namespace pandora_gazebo_interface
       thermalSensorData_[i].height = &thermalSensorHeight_[i];
       thermalSensorWidth_[i] = 8;  // FIXME
       thermalSensorData_[i].width = &thermalSensorWidth_[i];
-      thermalSensorStep_[i] = thermalSensorWidth_[i];  // FIXME
+      thermalSensorStep_[i] = 8;  // FIXME
       thermalSensorData_[i].step = &thermalSensorStep_[i];
       int resolution = thermalSensorHeight_[i] * thermalSensorWidth_[i];
+      thermalSensorVectorStored_[i].resize(resolution, 0);
       thermalSensorVector_[i].resize(resolution, 0);
       thermalSensorData_[i].data = &thermalSensorVector_[i][0];
     }
-
-    return true;
-  }
-
-  bool GearsGazeboInterface::initMicrophoneSensors()
-  {
-    microphoneSensorName_[0] = "/sensors/microphone";  // FIXME
-    microphoneSensorFrameID_[0] = "microphone_frame";
-    microphoneSensorSoundCertainty_[0] = 0.0;
-    microphoneSensorCamera_[0] = boost::dynamic_pointer_cast<gazebo::sensors::CameraSensor>
-        (gazebo::sensors::get_sensor("microphone"));
 
     return true;
   }
@@ -816,78 +798,20 @@ namespace pandora_gazebo_interface
   {
     for (unsigned int n = 0; n < rangeSensorNum_; n++)
     {
-      int i, hja, hjb;
-      int j, vja, vjb;
-      double vb, hb;
-      int j1, j2, j3, j4;
-      double r1, r2, r3, r4, r;
-
-      gazebo::math::Angle maxAngle = rangeSensorRay_[n]->GetAngleMax();
-      gazebo::math::Angle minAngle = rangeSensorRay_[n]->GetAngleMin();
-
-      double maxRange = rangeSensorRay_[n]->GetRangeMax();
-      double minRange = rangeSensorRay_[n]->GetRangeMin();
-      int rayCount = rangeSensorRay_[n]->GetRayCount();
-      int rangeCount = rangeSensorRay_[n]->GetRangeCount();
-      int verticalRayCount = rangeSensorRay_[n]->GetVerticalRayCount();
-      int verticalRangeCount = rangeSensorRay_[n]->GetVerticalRangeCount();
-
-      gazebo::math::Angle verticalMaxAngle = rangeSensorRay_[n]->GetVerticalAngleMax();
-      gazebo::math::Angle verticalMinAngle = rangeSensorRay_[n]->GetVerticalAngleMin();
-
-      double yDiff = maxAngle.Radian() - minAngle.Radian();
-      double pDiff = verticalMaxAngle.Radian() - verticalMinAngle.Radian();
-      double currentRange = maxRange;
-
-      for (j = 0; j < verticalRangeCount; j++)
-      {
-        vb = (verticalRangeCount == 1) ? 0 :
-            static_cast<double>(j) * (verticalRayCount - 1) / (verticalRangeCount -  1);
-        vja = static_cast<int>(floor(vb));
-        vjb = std::min(vja + 1, verticalRayCount - 1);
-        vb = vb - floor(vb);
-
-        assert(vja >= 0 && vja < verticalRayCount);
-        assert(vjb >= 0 && vjb < verticalRayCount);
-
-        for (i = 0; i < rangeCount; i++)
-        {
-          hb = (rangeCount == 1) ? 0 : static_cast<double>(i) * (rayCount - 1) / (rangeCount - 1);
-          hja = static_cast<int>(floor(hb));
-          hjb = std::min(hja + 1, rayCount - 1);
-          hb = hb - floor(hb);
-
-          assert(hja >= 0 && hja < rayCount);
-          assert(hjb >= 0 && hjb < rayCount);
-
-          j1 = hja + vja * rayCount;
-          j2 = hjb + vja * rayCount;
-          j3 = hja + vjb * rayCount;
-          j4 = hjb + vjb * rayCount;
-
-          r1 = std::min(rangeSensorRay_[n]->GetLaserShape()->GetRange(j1), maxRange - minRange);
-          r2 = std::min(rangeSensorRay_[n]->GetLaserShape()->GetRange(j2), maxRange - minRange);
-          r3 = std::min(rangeSensorRay_[n]->GetLaserShape()->GetRange(j3), maxRange - minRange);
-          r4 = std::min(rangeSensorRay_[n]->GetLaserShape()->GetRange(j4), maxRange - minRange);
-
-          r = (1 - vb) * ((1 - hb) * r1 + hb * r2) + vb * ((1 - hb) * r3 + hb * r4);
-
-          double yAngle = 0.5 * (hja + hjb) * yDiff / (rayCount - 1) + minAngle.Radian();
-          double pAngle = 0.5 * (vja + vjb) * pDiff / (verticalRayCount - 1) + verticalMinAngle.Radian();
-
-          if (r != maxRange - minRange)
-          {
-            double point = (r + minRange) * cos(pAngle) * cos(yAngle);
-            if (point < currentRange)
-            {
-              currentRange = point;
-            }
-          }
-        }
-      }
-
-      rangeSensorRange_[n][rangeSensorBufferCounter_[n]] = currentRange;
+      rangeSensorRange_[n][rangeSensorBufferCounter_[n]] = rangeSensorRangeStored_[n];
       rangeSensorBufferCounter_[n] = fmod(rangeSensorBufferCounter_[n] + 1, 5);
+    }
+  }
+  
+  void GearsGazeboInterface::rangeSensorCallback(
+      const sensor_msgs::RangeConstPtr& msg)
+  {
+    for (unsigned int n = 0; n < rangeSensorNum_; n++)
+    {
+      if (msg->header.frame_id == rangeSensorFrameID_[n])
+      {
+        rangeSensorRangeStored_[n] = msg->range;
+      }
     }
   }
 
@@ -904,75 +828,25 @@ namespace pandora_gazebo_interface
       readThermalSensors();
       thermalSensorLastUpdateTime_ = readTime_;
     }
-
-    if ((microphoneSensorLastUpdateTime_ + microphoneSensorUpdateRate_) < readTime_)
-    {
-      readMicrophoneSensors();
-      microphoneSensorLastUpdateTime_ = readTime_;
-    }
   }
 
   void GearsGazeboInterface::readCO2Sensors()
   {
     for (unsigned int n = 0; n < co2SensorNum_; n++)
     {
-      double ambientPpm = 400.0;
-      double maxPpm = 40000.0;
-      double totalPpm = 0.0;
-
-      unsigned int width = co2SensorCamera_[n]->GetImageWidth();
-      unsigned int height = co2SensorCamera_[n]->GetImageHeight();
-      const unsigned char* data = co2SensorCamera_[n]->GetImageData();
-      if (data == NULL)
+      co2SensorCo2Percentage_[n] = co2SensorCo2PercentageStored_[n];
+    }
+  }
+  
+  void GearsGazeboInterface::co2SensorCallback(
+      const pandora_sensor_msgs::Co2MsgConstPtr& msg)
+  {
+    for (unsigned int n = 0; n < co2SensorNum_; n++)
+    {
+      if (msg->header.frame_id == co2SensorFrameID_[n])
       {
-        return;
+        co2SensorCo2PercentageStored_[n] = msg->co2_percentage;
       }
-
-      for (unsigned int i = 0; i < width; i++)
-      {
-        for (unsigned int j = 0; j < height; j++)
-        {
-          double currentPpm = 0;
-
-          double R = data [((i * height) + j) * 3 + 0];
-          double G = data [((i * height) + j) * 3 + 1];
-          double B = data [((i * height) + j) * 3 + 2];
-
-          // co2 is represented by green
-          double G1 = (G - R);
-          double G2 = (G - B);
-
-          double positiveDiff = 0;
-
-          if (G1 > 0)
-          {
-            currentPpm += pow(G1, 2);
-            ++positiveDiff;
-          }
-          if (G2 > 0)
-          {
-            currentPpm += pow(G2, 2);
-            ++positiveDiff;
-          }
-
-          currentPpm = sqrt(currentPpm);
-
-          if (positiveDiff == 1)
-          {
-            currentPpm /= 255.0;
-          }
-          else if (positiveDiff == 2)
-          {
-            currentPpm /= sqrt(pow(255.0, 2) + pow(255.0, 2));
-          }
-
-          totalPpm += currentPpm;
-        }
-      }
-
-      totalPpm /= (width * height);
-      double percentage = (ambientPpm + totalPpm * maxPpm) / 10000.0;
-      co2SensorCo2Percentage_[n] = percentage;
     }
   }
 
@@ -980,142 +854,22 @@ namespace pandora_gazebo_interface
   {
     for (unsigned int n = 0; n < thermalSensorNum_; n++)
     {
-      double ambientTemp = 25.0;
-      double maxTemp = 17.0;
-
-      unsigned int cameraWidth = thermalSensorCamera_[n]->GetImageWidth();
-      unsigned int sensorWidth = thermalSensorWidth_[n];
-      unsigned int divWidth = (cameraWidth / sensorWidth);
-      unsigned int cameraHeight = thermalSensorCamera_[n]->GetImageHeight();
-      unsigned int sensorHeight = thermalSensorHeight_[n];
-      unsigned int divHeight = (cameraHeight / sensorHeight);
-      const unsigned char* data = thermalSensorCamera_[n]->GetImageData();
-      if (data == NULL)
-      {
-        return;
-      }
-
-      for (unsigned int i = 0; i < sensorWidth; i++)
-      {
-        for (unsigned int j = 0; j < sensorHeight; j++)
-        {
-          double meanTemp = 0;
-
-          for (unsigned int k = 0; k < divWidth; k++)
-          {
-            for (unsigned int l = 0; l < divHeight; l++)
-            {
-              double currentTemp = 0;
-
-              double R = data [((k + i * divWidth) * cameraHeight + (l + j * divHeight)) * 3 + 0];
-              double G = data [((k + i * divWidth) * cameraHeight + (l + j * divHeight)) * 3 + 1];
-              double B = data [((k + i * divWidth) * cameraHeight + (l + j * divHeight)) * 3 + 2];
-
-              // temperature is represented by red
-              double R1 = (R - G);
-              double R2 = (R - B);
-
-              double positiveDiff = 0;
-
-              if (R1 > 0)
-              {
-                currentTemp += pow(R1, 2);
-                ++positiveDiff;
-              }
-              if (R2 > 0)
-              {
-                currentTemp += pow(R2, 2);
-                ++positiveDiff;
-              }
-
-              currentTemp = sqrt(currentTemp);
-
-              if (positiveDiff == 1)
-              {
-                currentTemp /= 255.0;
-              }
-              else if (positiveDiff == 2)
-              {
-                currentTemp /= sqrt(pow(255.0, 2) + pow(255.0, 2));
-              }
-
-              meanTemp += currentTemp;
-            }
-          }
-
-          meanTemp /= (divWidth * divHeight);
-          double temp = ambientTemp + meanTemp * maxTemp;
-          unsigned int mirrored_pixel = (sensorHeight - 1 - i) * sensorWidth + j;
-          thermalSensorVector_[n][mirrored_pixel] = static_cast<char>(temp);
-        }
-      }
+      thermalSensorVector_[n] = thermalSensorVectorStored_[n];
     }
   }
-
-  void GearsGazeboInterface::readMicrophoneSensors()
+  
+  void GearsGazeboInterface::thermalSensorCallback(
+      const sensor_msgs::ImageConstPtr& msg)
   {
-    for (unsigned int n = 0; n < microphoneSensorNum_; n++)
+    for (unsigned int n = 0; n < thermalSensorNum_; n++)
     {
-      double totalCert = 0.0;
-
-      unsigned int width = microphoneSensorCamera_[n]->GetImageWidth();
-      unsigned int height = microphoneSensorCamera_[n]->GetImageHeight();
-      const unsigned char* data = microphoneSensorCamera_[n]->GetImageData();
-      if (data == NULL)
+      if (msg->header.frame_id == thermalSensorFrameID_[n])
       {
-        return;
+        thermalSensorVectorStored_[n] = msg->data;
       }
-
-      for (unsigned int i = 0; i < width; i++)
-      {
-        for (unsigned int j = 0; j < height; j++)
-        {
-          double currentCert = 0;
-
-          double R = data [((i * height) + j) * 3 + 0];
-          double G = data [((i * height) + j) * 3 + 1];
-          double B = data [((i * height) + j) * 3 + 2];
-
-          // sound is represented by blue
-          double B1 = (B - R);
-          double B2 = (B - G);
-
-          double positiveDiff = 0;
-
-          if (B1 > 0)
-          {
-            currentCert += pow(B1, 2);
-            ++positiveDiff;
-          }
-          if (B2 > 0)
-          {
-            currentCert += pow(B2, 2);
-            ++positiveDiff;
-          }
-
-          currentCert = sqrt(currentCert);
-
-          if (positiveDiff == 1)
-          {
-            currentCert /= 255.0;
-          }
-          else if (positiveDiff == 2)
-          {
-            currentCert /= sqrt(pow(255.0, 2) + pow(255.0, 2));
-          }
-
-          totalCert += currentCert;
-        }
-      }
-
-      double certainty = totalCert / (width * height);
-      microphoneSensorSoundCertainty_[n] = certainty;
     }
   }
 
-  void GearsGazeboInterface::writeLinks()
-  {
-  }
 
   void GearsGazeboInterface::writeJoints()
   {
@@ -1180,6 +934,7 @@ namespace pandora_gazebo_interface
     double x = (rightWheelVelocity + leftWheelVelocity) * wheelRadius_ / 2;
     double z = (rightWheelVelocity - leftWheelVelocity) * wheelRadius_ / wheelSeparation_;
 
+    // TODO: Calculate the new values
     double linearVelocity =
         (+9.446060513) * (0.1000) * pow(x, 1) +
         (+1.315202284) * (1.0000) * pow(x, 3) +
@@ -1190,17 +945,6 @@ namespace pandora_gazebo_interface
         (+3.166949881) * (0.0100) * pow(z, 3) +
         (-1.104404291) * (0.0100) * pow(z, 5) +
         (+8.216225035) * (0.0001) * pow(z, 7);
-
-    /*
-    x = (+1.001487279) * pow (x, 1) +
-        (+0.456332984) * pow (x, 3) +
-        (-4.442671017) * pow (x, 5) +
-        (+8.289127632) * pow (x, 7);
-    z = (+0.556465955) * pow (z, 1) +
-        (+2.363328174) * pow (z, 3) +
-        (-3.710717148) * pow (z, 5) +
-        (+1.595776157) * pow (z, 7);
-    */
 
     double newLeftWheelVelocity = (linearVelocity - angularVelocity * wheelSeparation_ / 2) / wheelRadius_;
     double newRightWheelVelocity = (linearVelocity + angularVelocity * wheelSeparation_ / 2) / wheelRadius_;

@@ -72,6 +72,11 @@
 // URDF
 #include <urdf/model.h>
 
+// Messages
+#include <sensor_msgs/Range.h>
+#include <pandora_sensor_msgs/Co2Msg.h>
+#include <sensor_msgs/Image.h>
+
 namespace pandora_gazebo_interface
 {
 
@@ -90,6 +95,7 @@ namespace pandora_gazebo_interface
       void readSim(
           ros::Time time,
           ros::Duration period);
+          
       void writeSim(
           ros::Time time,
           ros::Duration period);
@@ -111,7 +117,6 @@ namespace pandora_gazebo_interface
       bool initARM();
       bool initCO2Sensors();
       bool initThermalSensors();
-      bool initMicrophoneSensors();
 
       void readLinks();
       void readJoints();
@@ -121,9 +126,7 @@ namespace pandora_gazebo_interface
       void readARM();
       void readCO2Sensors();
       void readThermalSensors();
-      void readMicrophoneSensors();
 
-      void writeLinks();
       void writeJoints();
 
       void adjustWheelVelocityCommands();
@@ -223,17 +226,23 @@ namespace pandora_gazebo_interface
       std::vector<double> rangeSensorFOV_;
       std::vector<double> rangeSensorMinRange_;
       std::vector<double> rangeSensorMaxRange_;
+      std::vector<double> rangeSensorRangeStored_;
       std::vector<std::vector<double> > rangeSensorRange_;
       std::vector<int> rangeSensorBufferCounter_;
-      std::vector<gazebo::sensors::RaySensorPtr> rangeSensorRay_;
+      
+      ros::Subscriber rangeSensorSubscriber_;
+      void rangeSensorCallback(const sensor_msgs::RangeConstPtr& msg);
 
       unsigned int co2SensorNum_;
       gazebo::common::Time co2SensorUpdateRate_;
       gazebo::common::Time co2SensorLastUpdateTime_;
       std::vector<std::string> co2SensorName_;
       std::vector<std::string> co2SensorFrameID_;
+      std::vector<float> co2SensorCo2PercentageStored_;
       std::vector<float> co2SensorCo2Percentage_;
-      std::vector<gazebo::sensors::CameraSensorPtr>co2SensorCamera_;
+      
+      ros::Subscriber co2SensorSubscriber_;
+      void co2SensorCallback(const pandora_sensor_msgs::Co2MsgConstPtr& msg);
 
       unsigned int thermalSensorNum_;
       gazebo::common::Time thermalSensorUpdateRate_;
@@ -243,16 +252,11 @@ namespace pandora_gazebo_interface
       std::vector<int> thermalSensorHeight_;
       std::vector<int> thermalSensorWidth_;
       std::vector<int> thermalSensorStep_;
+      std::vector<std::vector<uint8_t> > thermalSensorVectorStored_;
       std::vector<std::vector<uint8_t> > thermalSensorVector_;
-      std::vector<gazebo::sensors::CameraSensorPtr> thermalSensorCamera_;
-
-      unsigned int microphoneSensorNum_;
-      gazebo::common::Time microphoneSensorUpdateRate_;
-      gazebo::common::Time microphoneSensorLastUpdateTime_;
-      std::vector<std::string> microphoneSensorName_;
-      std::vector<std::string> microphoneSensorFrameID_;
-      std::vector<double> microphoneSensorSoundCertainty_;
-      std::vector<gazebo::sensors::CameraSensorPtr> microphoneSensorCamera_;
+      
+      ros::Subscriber thermalSensorSubscriber_;
+      void thermalSensorCallback(const sensor_msgs::ImageConstPtr& msg);
   };
 }  // namespace pandora_gazebo_interface
 

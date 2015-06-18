@@ -25,6 +25,7 @@
   <depend>pandora_imu_hardware_interface</depend>
   <depend>pandora_arm_hardware_interface</depend>
   <depend>pandora_xmega_hardware_interface</depend>
+  <depend>pandora_sensor_msgs</depend>
   <depend>pluginlib</depend>
 
   <export>

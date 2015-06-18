@@ -12,6 +12,7 @@ find_package(
   pandora_imu_hardware_interface
   pandora_xmega_hardware_interface
   pandora_arm_hardware_interface
+  pandora_sensor_msgs
   pluginlib
 )
 
@@ -30,6 +31,7 @@ catkin_package(
     pandora_imu_hardware_interface
     pandora_xmega_hardware_interface
     pandora_arm_hardware_interface
+    pandora_sensor_msgs
     pluginlib
 #  DEPENDS
 )
