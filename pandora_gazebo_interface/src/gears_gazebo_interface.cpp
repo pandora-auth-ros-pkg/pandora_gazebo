@@ -220,7 +220,7 @@ namespace pandora_gazebo_interface
     jointName_[1] = "left_rear_wheel_joint";
     jointName_[2] = "right_front_wheel_joint";
     jointName_[3] = "right_rear_wheel_joint";
-    for (unsigned int i = 0; i < 4; i++)
+    for (unsigned int i = 0; i <= 3; i++)
     {
       jointType_[i] = urdf::Joint::CONTINUOUS;
       jointEffort_[i] = 0.0;
@@ -234,7 +234,7 @@ namespace pandora_gazebo_interface
     // Side joints
     jointName_[4] = "left_side_joint";
     jointName_[5] = "right_side_joint";
-    for (unsigned int i = 4; i < 6; i++)
+    for (unsigned int i = 4; i <= 5; i++)
     {
       jointType_[i] = urdf::Joint::REVOLUTE;
       jointEffort_[i] = 0.0;
@@ -338,8 +338,20 @@ namespace pandora_gazebo_interface
     jointControlMethod_[12] = POSITION_PID;
     pidController_[12].initPid(8.0, 1.5, 0.4, 10.0, -10.0);
     
+    // Connect and register the joint state interface
+    for (unsigned int i = 0; i < jointNum_; i++)
+    {
+      hardware_interface::JointStateHandle jointStateHandle(
+          jointName_[i],
+          &jointPosition_[i],
+          &jointVelocity_[i],
+          &jointEffort_[i]);
+      jointStateInterface_.registerHandle(jointStateHandle);
+    }
+    registerInterface(&jointStateInterface_);
+
     // Connect and register the joint velocity interface
-    for (unsigned int i = 0; i < 4; i++)
+    for (unsigned int i = 0; i <= 3; i++)
     {
       hardware_interface::JointHandle jointHandle(
           jointStateInterface_.getHandle(jointName_[i]),
@@ -486,19 +498,7 @@ namespace pandora_gazebo_interface
   }
   
   void GearsGazeboInterface::registerXmegaInterface()
-  {
-    // Connect and register the joint state interface
-    for (unsigned int i = 0; i < jointNum_; i++)
-    {
-      hardware_interface::JointStateHandle jointStateHandle(
-          jointName_[i],
-          &jointPosition_[i],
-          &jointVelocity_[i],
-          &jointEffort_[i]);
-      jointStateInterface_.registerHandle(jointStateHandle);
-    }
-    registerInterface(&jointStateInterface_);
-    
+  { 
     // Electronics battery sensor
     batteryName_[0] = "/PSU_battery";
     batteryData_[0].name = batteryName_[0];
@@ -570,7 +570,6 @@ namespace pandora_gazebo_interface
       ros::Time time,
       ros::Duration period)
   {
-    ROS_INFO("READ!");
     readTime_ = gazebo::common::Time(time.sec, time.nsec);
     readPeriod_ = period;
 
@@ -691,7 +690,6 @@ namespace pandora_gazebo_interface
       ros::Time time,
       ros::Duration period)
   {
-    ROS_INFO("WRITE!");
     writeTime_ = gazebo::common::Time(time.sec, time.nsec);
     writePeriod_ = period;
 
