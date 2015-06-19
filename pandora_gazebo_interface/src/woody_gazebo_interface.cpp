@@ -402,17 +402,17 @@ namespace pandora_gazebo_interface
     // Electronics battery sensor
     batteryName_[0] = "/PSU_battery";
     batteryData_[0].name = batteryName_[0];
-    batteryVoltageMax_[0] = 24.0;
-    batteryVoltageMin_[0] = 18.0;
-    batteryDuration_[0] = 60.0;
+    batteryVoltageMax_[0] = 25.2;
+    batteryVoltageMin_[0] = 22.2;
+    batteryDuration_[0] = 30.0;
     batteryVoltage_[0] = batteryVoltageMax_[0];
     batteryData_[0].voltage = &batteryVoltage_[0];
 
     // Motors battery sensor
     batteryName_[1] = "/motors_battery";
     batteryData_[1].name = batteryName_[1];
-    batteryVoltageMax_[1] = 24.0;
-    batteryVoltageMin_[1] = 18.0;
+    batteryVoltageMax_[1] = 25.2;
+    batteryVoltageMin_[1] = 22.2;
     batteryDuration_[1] = 45.0;
     batteryVoltage_[1] = batteryVoltageMax_[1];
     batteryData_[1].voltage = &batteryVoltage_[1];
