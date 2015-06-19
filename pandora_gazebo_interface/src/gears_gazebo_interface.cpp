@@ -84,8 +84,8 @@ namespace pandora_gazebo_interface
     thermalSensorNum_ = 3;
     
     // The rate that each element gets updated
-    jointReadRate_ = gazebo::common::Time(1 / 50.0);
-    jointWriteRate_ = gazebo::common::Time(1 / 50.0);
+    jointReadRate_ = gazebo::common::Time(1 / 100.0);
+    jointWriteRate_ = gazebo::common::Time(1 / 100.0);
     imuReadRate_ = gazebo::common::Time(1 / 50.0);
     co2SensorReadRate_ = gazebo::common::Time(1 / 2.0);
     thermalSensorReadRate_ = gazebo::common::Time(1 / 1.0);
