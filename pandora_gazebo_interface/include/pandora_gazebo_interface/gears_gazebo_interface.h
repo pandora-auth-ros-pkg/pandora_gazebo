@@ -95,7 +95,7 @@ namespace pandora_gazebo_interface
       void readSim(
           ros::Time time,
           ros::Duration period);
-          
+
       void writeSim(
           ros::Time time,
           ros::Duration period);
@@ -114,7 +114,7 @@ namespace pandora_gazebo_interface
       void writeJoints();
 
       void adjustWheelVelocityCommands();
-      
+
       void rangeSensorCallback(const sensor_msgs::RangeConstPtr& msg);
       void co2SensorCallback(const pandora_sensor_msgs::Co2MsgConstPtr& msg);
       void thermalSensorCallback(const sensor_msgs::ImageConstPtr& msg);
@@ -136,7 +136,7 @@ namespace pandora_gazebo_interface
       const urdf::Model* urdfModel_;
       std::vector<transmission_interface::TransmissionInfo> transmissions_;
       gazebo::physics::WorldPtr world_;
-      
+
       // Gazebo plugin sensors subscribers
       ros::Subscriber rangeSensorSubscriber_;
       ros::Subscriber co2SensorSubscriber_;
@@ -240,7 +240,7 @@ namespace pandora_gazebo_interface
       pandora_hardware_interface::xmega::RangeSensorInterface rangeSensorInterface_;
       gazebo::common::Time rangeSensorReadRate_;
       gazebo::common::Time rangeSensorLastReadTime_;
-      
+
       // Joint states
       hardware_interface::JointStateInterface jointStateInterface_;
   };

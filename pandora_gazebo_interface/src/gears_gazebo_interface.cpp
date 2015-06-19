@@ -71,18 +71,18 @@ namespace pandora_gazebo_interface
     transmissions_ = transmissions;
 
     world_ = parentModel_->GetWorld();
-    
+
     // Physical properties
     wheelRadius_ = 0.09794;
     wheelSeparation_ = 0.344;
-    
+
     // Number of elements
     jointNum_ = 13;
     batteryNum_ = 2;
     rangeSensorNum_ = 3;
     co2SensorNum_ = 1;
     thermalSensorNum_ = 3;
-    
+
     // The rate that each element gets updated
     jointReadRate_ = gazebo::common::Time(1 / 100.0);
     jointWriteRate_ = gazebo::common::Time(1 / 100.0);
@@ -91,7 +91,7 @@ namespace pandora_gazebo_interface
     thermalSensorReadRate_ = gazebo::common::Time(1 / 1.0);
     batteryReadRate_ = gazebo::common::Time(1 / 1.0);
     rangeSensorReadRate_ = gazebo::common::Time(1 / 2.0);
-    
+
     gazebo::common::Time simTime = world_->GetSimTime();
     jointLastReadTime_ = simTime;
     jointLastWriteTime_ = simTime;
@@ -100,7 +100,7 @@ namespace pandora_gazebo_interface
     thermalSensorLastReadTime_ = simTime;
     batteryLastReadTime_ = simTime;
     rangeSensorLastReadTime_ = simTime;
-    
+
     // Resizing vector according to num of elements
     gazeboJoint_.resize(jointNum_);
     jointName_.resize(jointNum_);
@@ -114,13 +114,13 @@ namespace pandora_gazebo_interface
     jointPosition_.resize(jointNum_);
     jointVelocity_.resize(jointNum_);
     jointCommand_.resize(jointNum_);
-    
+
     co2SensorData_.resize(co2SensorNum_);
     co2SensorName_.resize(co2SensorNum_);
     co2SensorFrameID_.resize(co2SensorNum_);
     co2SensorCo2PercentageStored_.resize(co2SensorNum_);
     co2SensorCo2Percentage_.resize(co2SensorNum_);
-    
+
     thermalSensorData_.resize(thermalSensorNum_);
     thermalSensorName_.resize(thermalSensorNum_);
     thermalSensorFrameID_.resize(thermalSensorNum_);
@@ -129,14 +129,14 @@ namespace pandora_gazebo_interface
     thermalSensorStep_.resize(thermalSensorNum_);
     thermalSensorVectorStored_.resize(thermalSensorNum_);
     thermalSensorVector_.resize(thermalSensorNum_);
-    
+
     batteryData_.resize(batteryNum_);
     batteryName_.resize(batteryNum_);
     batteryVoltage_.resize(batteryNum_);
     batteryVoltageMax_.resize(batteryNum_);
     batteryVoltageMin_.resize(batteryNum_);
     batteryDuration_.resize(batteryNum_);
-    
+
     rangeSensorData_.resize(rangeSensorNum_);
     rangeSensorName_.resize(rangeSensorNum_);
     rangeSensorFrameID_.resize(rangeSensorNum_);
@@ -147,13 +147,13 @@ namespace pandora_gazebo_interface
     rangeSensorRangeStored_.resize(rangeSensorNum_);
     rangeSensorRange_.resize(rangeSensorNum_);
     rangeSensorBufferCounter_.resize(rangeSensorNum_);
-    
+
     // Register each hardware_interface
     registerJointInterface();
     registerImuInterface();
     registerArmInterface();
     registerXmegaInterface();
-    
+
     // Load gazebo joints
     for (unsigned int i = 0; i < jointNum_; i++)
     {
@@ -169,13 +169,13 @@ namespace pandora_gazebo_interface
         {
           // const ros::NodeHandle nh (modelNh_, robotnamespace_ + "/gazebo_ros_control/pid_gains/" + jointName_[i]);
           // pidController_[i].init (nh);
-          
+
           break;
         }
         case VELOCITY:
         {
           gazeboJoint_[i]->SetMaxForce(0, jointEffortLimit_[i]);
-          
+
           break;
         }
         default:
@@ -184,24 +184,24 @@ namespace pandora_gazebo_interface
         }
       }
     }
-    
+
     // Load gazebo imu link
     gazeboImuLink_ = parentModel_->GetLink(imuLinkName_);
-    
+
     // CO2 sensors subscriber
     co2SensorSubscriber_ = modelNh_.subscribe(
         "gazebo_sensors/co2",
         1,
         &GearsGazeboInterface::co2SensorCallback,
         this);
-        
+
     // Thermal sensors subscriber
     thermalSensorSubscriber_ = modelNh_.subscribe(
         "gazebo_sensors/thermal",
         1,
         &GearsGazeboInterface::thermalSensorCallback,
         this);
-        
+
     // Range sensors subscriber
     rangeSensorSubscriber_ = modelNh_.subscribe(
         "gazebo_sensors/range",
@@ -212,7 +212,7 @@ namespace pandora_gazebo_interface
     ROS_INFO("gears_gazebo_interface initialized successfully!");
     return true;
   }
-  
+
   void GearsGazeboInterface::registerJointInterface()
   {
     // Wheel joints
@@ -230,7 +230,7 @@ namespace pandora_gazebo_interface
       jointEffortLimit_[i] = 100.0;
       jointControlMethod_[i] = VELOCITY;
     }
-    
+
     // Side joints
     jointName_[4] = "left_side_joint";
     jointName_[5] = "right_side_joint";
@@ -246,7 +246,7 @@ namespace pandora_gazebo_interface
       jointEffortLimit_[i] = 150.0;
       jointControlMethod_[i] = NONE;
     }
-    
+
     // Linear elevator joint
     jointName_[6] = "linear_elevator_joint";
     jointType_[6] = urdf::Joint::PRISMATIC;
@@ -259,7 +259,7 @@ namespace pandora_gazebo_interface
     jointEffortLimit_[6] = 100.0;
     jointControlMethod_[6] = POSITION_PID;
     pidController_[6].initPid(15000.0, 0.0, 0.0, 0.0, 0.0);
-    
+
     // Linear head pitch joint
     jointName_[7] = "linear_head_pitch_joint";
     jointType_[7] = urdf::Joint::REVOLUTE;
@@ -272,7 +272,7 @@ namespace pandora_gazebo_interface
     jointEffortLimit_[7] = 50.0;
     jointControlMethod_[7] = POSITION_PID;
     pidController_[7].initPid(11.0, 2.0, 0.25, 15.0, -15.0);
-    
+
     // Linear head yaw joint
     jointName_[8] = "linear_head_yaw_joint";
     jointType_[8] = urdf::Joint::REVOLUTE;
@@ -285,7 +285,7 @@ namespace pandora_gazebo_interface
     jointEffortLimit_[8] = 50.0;
     jointControlMethod_[8] = POSITION_PID;
     pidController_[8].initPid(12.0, 1.0, 0.45, 10.0, -10.0);
-    
+
     // Laser roll joint
     jointName_[9] = "laser_roll_joint";
     jointType_[9] = urdf::Joint::REVOLUTE;
@@ -311,7 +311,7 @@ namespace pandora_gazebo_interface
     jointEffortLimit_[10] = 50.0;
     jointControlMethod_[10] = POSITION_PID;
     pidController_[10].initPid(2.5, 0.0, 0.3, 0.0, 0.0);
-    
+
     // Kinect pitch joint
     jointName_[11] = "kinect_pitch_joint";
     jointType_[11] = urdf::Joint::REVOLUTE;
@@ -337,7 +337,7 @@ namespace pandora_gazebo_interface
     jointEffortLimit_[12] = 50.0;
     jointControlMethod_[12] = POSITION_PID;
     pidController_[12].initPid(8.0, 1.5, 0.4, 10.0, -10.0);
-    
+
     // Connect and register the joint state interface
     for (unsigned int i = 0; i < jointNum_; i++)
     {
@@ -359,7 +359,7 @@ namespace pandora_gazebo_interface
       velocityJointInterface_.registerHandle(jointHandle);
     }
     registerInterface(&velocityJointInterface_);
-    
+
     /*
     // Connect and register the joint effort interface
     for (unsigned int i = 0; i < 4; i++)
@@ -381,7 +381,7 @@ namespace pandora_gazebo_interface
       positionJointInterface_.registerHandle(jointHandle);
     }
     registerInterface(&positionJointInterface_);
-    
+
     /*
     // Connect and register the joint interface
     for (unsigned int i = 0; i < jointNum; i++)
@@ -398,7 +398,7 @@ namespace pandora_gazebo_interface
     registerInterface(&positionJointInterface_);
     */
   }
-  
+
   void GearsGazeboInterface::registerImuInterface()
   {
     // Imu sensor
@@ -438,7 +438,7 @@ namespace pandora_gazebo_interface
     imuRPYInterface_.registerHandle(imuRPYHandle);
     registerInterface(&imuRPYInterface_);
   }
-  
+
   void GearsGazeboInterface::registerArmInterface()
   {
     // CO2 sensors
@@ -449,7 +449,7 @@ namespace pandora_gazebo_interface
     co2SensorCo2PercentageStored_[0] = 0.0;
     co2SensorCo2Percentage_[0] = co2SensorCo2PercentageStored_[0];
     co2SensorData_[0].co2Percentage = &co2SensorCo2Percentage_[0];
-        
+
     // Connect and register the co2 sensor interface
     for (unsigned int i = 0; i < co2SensorNum_; i++)
     {
@@ -496,9 +496,9 @@ namespace pandora_gazebo_interface
     }
     registerInterface(&thermalSensorInterface_);
   }
-  
+
   void GearsGazeboInterface::registerXmegaInterface()
-  { 
+  {
     // Electronics battery sensor
     batteryName_[0] = "/PSU_battery";
     batteryData_[0].name = batteryName_[0];
@@ -516,7 +516,7 @@ namespace pandora_gazebo_interface
     batteryDuration_[1] = 45.0;
     batteryVoltage_[1] = batteryVoltageMax_[1];
     batteryData_[1].voltage = &batteryVoltage_[1];
-    
+
     // Connect and register the battery interface
     for (unsigned int i = 0; i < batteryNum_; i++)
     {
@@ -524,7 +524,7 @@ namespace pandora_gazebo_interface
       batteryInterface_.registerHandle(batteryHandle);
     }
     registerInterface(&batteryInterface_);
-    
+
     // Range sensors
     rangeSensorName_[0] = "/sensors/linear_sonar";
     rangeSensorFrameID_[0] = "linear_sonar_frame";
@@ -636,7 +636,7 @@ namespace pandora_gazebo_interface
       {
         co2SensorCo2Percentage_[n] = co2SensorCo2PercentageStored_[n];
       }
-      
+
       co2SensorLastReadTime_ = readTime_;
     }
 
@@ -647,7 +647,7 @@ namespace pandora_gazebo_interface
       {
         thermalSensorVector_[n] = thermalSensorVectorStored_[n];
       }
-      
+
       thermalSensorLastReadTime_ = readTime_;
     }
   }
@@ -669,7 +669,7 @@ namespace pandora_gazebo_interface
           // immobilizeRobot (batteryName_[n], batteryVoltage_[n]);
         }
       }
-      
+
       batteryLastReadTime_ = readTime_;
     }
 
@@ -759,7 +759,7 @@ namespace pandora_gazebo_interface
       }
     }
   }
-  
+
   void GearsGazeboInterface::co2SensorCallback(
       const pandora_sensor_msgs::Co2MsgConstPtr& msg)
   {
@@ -771,7 +771,7 @@ namespace pandora_gazebo_interface
       }
     }
   }
-  
+
   void GearsGazeboInterface::thermalSensorCallback(
       const sensor_msgs::ImageConstPtr& msg)
   {
@@ -783,7 +783,7 @@ namespace pandora_gazebo_interface
       }
     }
   }
-  
+
   void GearsGazeboInterface::rangeSensorCallback(
       const sensor_msgs::RangeConstPtr& msg)
   {
