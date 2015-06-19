@@ -247,21 +247,21 @@ namespace pandora_gazebo_interface
       jointControlMethod_[i] = NONE;
     }
 
-    // Linear elevator joint
-    jointName_[6] = "linear_elevator_joint";
-    jointType_[6] = urdf::Joint::PRISMATIC;
+    // Laser roll joint
+    jointName_[6] = "laser_roll_joint";
+    jointType_[6] = urdf::Joint::REVOLUTE;
     jointEffort_[6] = 0.0;
     jointPosition_[6] = 0.0;
     jointVelocity_[6] = 0.0;
     jointCommand_[6] = 0.0;
-    jointLowerLimit_[6] = 0.0;
-    jointUpperLimit_[6] = 0.18;
-    jointEffortLimit_[6] = 100.0;
+    jointLowerLimit_[6] = -1.57079632679;
+    jointUpperLimit_[6] = 1.57079632679;
+    jointEffortLimit_[6] = 50.0;
     jointControlMethod_[6] = POSITION_PID;
-    pidController_[6].initPid(15000.0, 0.0, 0.0, 0.0, 0.0);
+    pidController_[6].initPid(1.8, 0.0, 0.3, 0.0, 0.0);
 
-    // Linear head pitch joint
-    jointName_[7] = "linear_head_pitch_joint";
+    // Laser pitch joint
+    jointName_[7] = "laser_pitch_joint";
     jointType_[7] = urdf::Joint::REVOLUTE;
     jointEffort_[7] = 0.0;
     jointPosition_[7] = 0.0;
@@ -271,10 +271,10 @@ namespace pandora_gazebo_interface
     jointUpperLimit_[7] = 1.57079632679;
     jointEffortLimit_[7] = 50.0;
     jointControlMethod_[7] = POSITION_PID;
-    pidController_[7].initPid(11.0, 2.0, 0.25, 15.0, -15.0);
+    pidController_[7].initPid(2.5, 0.0, 0.3, 0.0, 0.0);
 
-    // Linear head yaw joint
-    jointName_[8] = "linear_head_yaw_joint";
+    // Kinect pitch joint
+    jointName_[8] = "kinect_pitch_joint";
     jointType_[8] = urdf::Joint::REVOLUTE;
     jointEffort_[8] = 0.0;
     jointPosition_[8] = 0.0;
@@ -284,10 +284,10 @@ namespace pandora_gazebo_interface
     jointUpperLimit_[8] = 1.57079632679;
     jointEffortLimit_[8] = 50.0;
     jointControlMethod_[8] = POSITION_PID;
-    pidController_[8].initPid(12.0, 1.0, 0.45, 10.0, -10.0);
+    pidController_[8].initPid(8.5, 1.0, 0.2, 10.0, -10.0);
 
-    // Laser roll joint
-    jointName_[9] = "laser_roll_joint";
+    // Kinect yaw joint
+    jointName_[9] = "kinect_yaw_joint";
     jointType_[9] = urdf::Joint::REVOLUTE;
     jointEffort_[9] = 0.0;
     jointPosition_[9] = 0.0;
@@ -297,23 +297,23 @@ namespace pandora_gazebo_interface
     jointUpperLimit_[9] = 1.57079632679;
     jointEffortLimit_[9] = 50.0;
     jointControlMethod_[9] = POSITION_PID;
-    pidController_[9].initPid(1.8, 0.0, 0.3, 0.0, 0.0);
+    pidController_[9].initPid(8.0, 1.5, 0.4, 10.0, -10.0);
 
-    // Laser pitch joint
-    jointName_[10] = "laser_pitch_joint";
-    jointType_[10] = urdf::Joint::REVOLUTE;
+    // Linear elevator joint
+    jointName_[10] = "linear_elevator_joint";
+    jointType_[10] = urdf::Joint::PRISMATIC;
     jointEffort_[10] = 0.0;
     jointPosition_[10] = 0.0;
     jointVelocity_[10] = 0.0;
     jointCommand_[10] = 0.0;
-    jointLowerLimit_[10] = -1.57079632679;
-    jointUpperLimit_[10] = 1.57079632679;
-    jointEffortLimit_[10] = 50.0;
+    jointLowerLimit_[10] = 0.0;
+    jointUpperLimit_[10] = 0.18;
+    jointEffortLimit_[10] = 100.0;
     jointControlMethod_[10] = POSITION_PID;
-    pidController_[10].initPid(2.5, 0.0, 0.3, 0.0, 0.0);
+    pidController_[10].initPid(15000.0, 0.0, 0.0, 0.0, 0.0);
 
-    // Kinect pitch joint
-    jointName_[11] = "kinect_pitch_joint";
+    // Linear head pitch joint
+    jointName_[11] = "linear_head_pitch_joint";
     jointType_[11] = urdf::Joint::REVOLUTE;
     jointEffort_[11] = 0.0;
     jointPosition_[11] = 0.0;
@@ -323,10 +323,10 @@ namespace pandora_gazebo_interface
     jointUpperLimit_[11] = 1.57079632679;
     jointEffortLimit_[11] = 50.0;
     jointControlMethod_[11] = POSITION_PID;
-    pidController_[11].initPid(8.5, 1.0, 0.2, 10.0, -10.0);
+    pidController_[11].initPid(11.0, 2.0, 0.25, 15.0, -15.0);
 
-    // Kinect yaw joint
-    jointName_[12] = "kinect_yaw_joint";
+    // Linear head yaw joint
+    jointName_[12] = "linear_head_yaw_joint";
     jointType_[12] = urdf::Joint::REVOLUTE;
     jointEffort_[12] = 0.0;
     jointPosition_[12] = 0.0;
@@ -336,7 +336,7 @@ namespace pandora_gazebo_interface
     jointUpperLimit_[12] = 1.57079632679;
     jointEffortLimit_[12] = 50.0;
     jointControlMethod_[12] = POSITION_PID;
-    pidController_[12].initPid(8.0, 1.5, 0.4, 10.0, -10.0);
+    pidController_[12].initPid(12.0, 1.0, 0.45, 10.0, -10.0);
 
     // Connect and register the joint state interface
     for (unsigned int i = 0; i < jointNum_; i++)

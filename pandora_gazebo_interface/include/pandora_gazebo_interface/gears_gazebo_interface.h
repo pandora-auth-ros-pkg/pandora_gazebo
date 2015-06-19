@@ -64,10 +64,10 @@
 
 // pandora_ros_control
 #include <imu_hardware_interface/imu_rpy_interface.h>
-#include <xmega_hardware_interface/battery_interface.h>
-#include <xmega_hardware_interface/range_sensor_interface.h>
 #include <arm_hardware_interface/co2_sensor_interface.h>
 #include <arm_hardware_interface/thermal_sensor_interface.h>
+#include <xmega_hardware_interface/battery_interface.h>
+#include <xmega_hardware_interface/range_sensor_interface.h>
 
 // URDF
 #include <urdf/model.h>
@@ -165,6 +165,7 @@ namespace pandora_gazebo_interface
       std::vector<double> jointPosition_;
       std::vector<double> jointVelocity_;
       std::vector<double> jointCommand_;
+      hardware_interface::JointStateInterface jointStateInterface_;
       hardware_interface::PositionJointInterface positionJointInterface_;
       hardware_interface::VelocityJointInterface velocityJointInterface_;
       hardware_interface::EffortJointInterface effortJointInterface_;
@@ -240,9 +241,6 @@ namespace pandora_gazebo_interface
       pandora_hardware_interface::xmega::RangeSensorInterface rangeSensorInterface_;
       gazebo::common::Time rangeSensorReadRate_;
       gazebo::common::Time rangeSensorLastReadTime_;
-
-      // Joint states
-      hardware_interface::JointStateInterface jointStateInterface_;
   };
 }  // namespace pandora_gazebo_interface
 
