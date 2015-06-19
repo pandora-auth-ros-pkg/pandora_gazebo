@@ -33,10 +33,6 @@
   <include file="$(find pandora_arm_hardware_interface)/arm_controllers/launch/co2_sensor_controller.launch" >
     <arg name="namespace" value="/" />
   </include>
-  
-  <include file="$(find pandora_arm_hardware_interface)/arm_controllers/launch/thermal_sensor_controller.launch" >
-    <arg name="namespace" value="/" />
-  </include>
     
 <!-- ###################################################################### -->
   
