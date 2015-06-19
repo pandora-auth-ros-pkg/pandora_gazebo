@@ -398,7 +398,7 @@ namespace pandora_gazebo_interface
       co2SensorInterface_.registerHandle(co2SensorHandle);
     }
     registerInterface(&co2SensorInterface_);
-    
+
     // Electronics battery sensor
     batteryName_[0] = "/PSU_battery";
     batteryData_[0].name = batteryName_[0];
@@ -533,7 +533,7 @@ namespace pandora_gazebo_interface
 
       co2SensorLastReadTime_ = readTime_;
     }
-    
+
     // Read battery sensors
     if ((batteryLastReadTime_ + batteryReadRate_) < readTime_)
     {
