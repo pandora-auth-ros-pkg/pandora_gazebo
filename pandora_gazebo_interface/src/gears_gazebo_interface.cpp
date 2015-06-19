@@ -71,100 +71,37 @@ namespace pandora_gazebo_interface
     transmissions_ = transmissions;
 
     world_ = parentModel_->GetWorld();
-
-    initLinks();
-    initJoints();
-    initXMEGA();
-    initARM();
-    registerInterfaces();
-
-    ROS_INFO("gears_gazebo_interface initialized successfully!");
-    return true;
-  }
-
-  void GearsGazeboInterface::readSim(
-      ros::Time time,
-      ros::Duration period)
-  {
-    readTime_ = gazebo::common::Time(time.sec, time.nsec);
-    readPeriod_ = period;
-
-    readLinks();
-    readJoints();
-    readXMEGA();
-    readARM();
-  }
-
-  void GearsGazeboInterface::writeSim(
-      ros::Time time,
-      ros::Duration period)
-  {
-    writeTime_ = gazebo::common::Time(time.sec, time.nsec);
-    writePeriod_ = period;
-
-    writeJoints();
-  }
-
-  void GearsGazeboInterface::initLinks()
-  {
-    // Number of links
-    linkNum_ = 1;  // FIXME
-
-    linkUpdateRate_ = gazebo::common::Time(1 / 50.0);  // FIXME
-    linkLastUpdateTime_ = world_->GetSimTime();
-
-    // Resize vectors
-    gazeboLink_.resize(linkNum_);
-    linkName_.resize(linkNum_);
-
-    // Initialize link data
-    initIMU();
-
-    // Load gazebo links
-    for (unsigned int i = 0; i < linkNum_; i++)
-    {
-      gazeboLink_[i] = parentModel_->GetLink(linkName_[i]);
-    }
-  }
-
-  void GearsGazeboInterface::initIMU()
-  {
-    linkName_[0] = "base_link";  // FIXME XXX
-
-    imuOrientation_[0] = 0;  // FIXME
-    imuOrientation_[1] = 0;  // FIXME
-    imuOrientation_[2] = 0;  // FIXME
-    imuOrientation_[3] = 1;  // FIXME
-
-    imuSensorData_.orientation = imuOrientation_;
-    imuSensorData_.name = "/sensors/imu";  // FIXME
-    imuSensorData_.frame_id = linkName_[0];
-
-    imuRoll_ = new double;
-    imuPitch_ = new double;
-    imuYaw_ = new double;
-
-    *imuRoll_ = 0;
-    *imuPitch_ = 0;
-    *imuYaw_ = 0;
-
-    imuRPYData_.roll = imuRoll_;
-    imuRPYData_.pitch = imuPitch_;
-    imuRPYData_.yaw = imuYaw_;
-    imuRPYData_.name = "/sensors/imu_rpy";  // FIXME
-    imuRPYData_.frame_id = linkName_[0];
-  }
-
-  void GearsGazeboInterface::initJoints()
-  {
-    // Number of joints
-    jointNum_ = 13;  // FIXME
-    // jointNum_ = transmissions.size ();
-
-    jointUpdateRate_ = gazebo::common::Time(1 / 50.0);    // FIXME
-    jointLastUpdateTime_ = world_->GetSimTime();
-
-    // Resize vectors
+    
+    // Physical properties
+    wheelRadius_ = 0.09794;
+    wheelSeparation_ = 0.344;
+    
+    // Number of elements
+    jointNum_ = 13;
+    batteryNum_ = 2;
+    rangeSensorNum_ = 3;
+    co2SensorNum_ = 1;
+    thermalSensorNum_ = 3;
+    
+    // The rate that each element gets updated
+    jointReadRate_ = gazebo::common::Time(1 / 50.0);
+    jointWriteRate_ = gazebo::common::Time(1 / 50.0);
+    imuReadRate_ = gazebo::common::Time(1 / 50.0);
+    co2SensorReadRate_ = gazebo::common::Time(1 / 2.0);
+    thermalSensorReadRate_ = gazebo::common::Time(1 / 1.0);
+    batteryReadRate_ = gazebo::common::Time(1 / 1.0);
+    rangeSensorReadRate_ = gazebo::common::Time(1 / 2.0);
+    
+    gazebo::common::Time simTime = world_->GetSimTime();
+    jointLastReadTime_ = simTime;
+    jointLastWriteTime_ = simTime;
+    imuLastReadTime_ = simTime;
+    co2SensorLastReadTime_ = simTime;
+    thermalSensorLastReadTime_ = simTime;
+    batteryLastReadTime_ = simTime;
+    rangeSensorLastReadTime_ = simTime;
+    
+    // Resizing vector according to num of elements
     gazeboJoint_.resize(jointNum_);
     jointName_.resize(jointNum_);
     jointType_.resize(jointNum_);
@@ -177,208 +114,29 @@ namespace pandora_gazebo_interface
     jointPosition_.resize(jointNum_);
     jointVelocity_.resize(jointNum_);
     jointCommand_.resize(jointNum_);
-
-    wheelVelocityMultiplier_ = 1.0;  // FIXME
-    wheelRadius_ = 0.09794;  // FIXME
-    wheelSeparation_ = 0.344;  // FIXME
-
-    // Initialize link data
-    initWheels();
-
-    initSides();
-    initLinear();
-    initLaser();
-    initKinect();
-
-    // Load gazebo joints
-    for (unsigned int i = 0; i < jointNum_; i++)
-    {
-      gazeboJoint_[i] = parentModel_->GetJoint(jointName_[i]);
-    }
-
-    // Load PID controllers and initialize / set the limits.
-    for (unsigned int i = 0; i < jointNum_; i++)
-    {
-      switch (jointControlMethod_[i])
-      {
-        case POSITION_PID:
-        {
-          // const ros::NodeHandle nh (modelNh_, robotnamespace_ + "/gazebo_ros_control/pid_gains/" + jointName_[i]);
-          // pidController_[i].init (nh);
-
-          break;
-        }
-        case VELOCITY:
-        {
-          gazeboJoint_[i]->SetMaxForce(0, jointEffortLimit_[i]);
-
-          break;
-        }
-        default:
-        {
-          break;
-        }
-      }
-    }
-  }
-
-  void GearsGazeboInterface::initWheels()
-  {
-    jointName_[0] = "left_front_wheel_joint";  // FIXME
-    jointName_[1] = "left_rear_wheel_joint";  // FIXME
-    jointName_[2] = "right_front_wheel_joint";  // FIXME
-    jointName_[3] = "right_rear_wheel_joint";  // FIXME
-
-    for (unsigned int i = 0; i < 4; i++)
-    {
-      jointType_[i] = urdf::Joint::CONTINUOUS;  // FIXME
-      jointEffort_[i] = 0.0;
-      jointPosition_[i] = 0.0;
-      jointVelocity_[i] = 0.0;
-      jointCommand_[i] = 0.0;
-      jointEffortLimit_[i] = 100.0;  // FIXME
-      jointControlMethod_[i] = VELOCITY;  // FIXME
-    }
-  }
-
-  void GearsGazeboInterface::initSides()
-  {
-    jointName_[4] = "left_side_joint";  // FIXME
-    jointName_[5] = "right_side_joint";  // FIXME
-
-    for (unsigned int i = 4; i < 6; i++)
-    {
-      jointType_[i] = urdf::Joint::REVOLUTE;  // FIXME
-      jointEffort_[i] = 0.0;
-      jointPosition_[i] = 0.0;
-      jointVelocity_[i] = 0.0;
-      jointCommand_[i] = 0.0;
-      jointLowerLimit_[i] = -0.785;  // FIXME
-      jointUpperLimit_[i] = 0.785;  // FIXME
-      jointEffortLimit_[i] = 150.0;  // FIXME
-      jointControlMethod_[i] = NONE;  // FIXME
-    }
-  }
-
-  void GearsGazeboInterface::initLinear()
-  {
-    // Elevator
-    jointName_[6] = "linear_elevator_joint";  // FIXME
-    jointType_[6] = urdf::Joint::PRISMATIC;  // FIXME
-    jointEffort_[6] = 0.0;
-    jointPosition_[6] = 0.0;
-    jointVelocity_[6] = 0.0;
-    jointCommand_[6] = 0.0;
-    jointLowerLimit_[6] = 0.0;  // FIXME
-    jointUpperLimit_[6] = 0.18;  // FIXME
-    jointEffortLimit_[6] = 100.0;  // FIXME
-    jointControlMethod_[6] = POSITION_PID;  // FIXME
-    pidController_[6].initPid(15000.0, 0.0, 0.0, 0.0, 0.0);  // FIXME
-
-    // Head Pitch
-    jointName_[7] = "linear_head_pitch_joint";  // FIXME
-    jointType_[7] = urdf::Joint::REVOLUTE;  // FIXME
-    jointEffort_[7] = 0.0;
-    jointPosition_[7] = 0.0;
-    jointVelocity_[7] = 0.0;
-    jointCommand_[7] = 0.0;
-    jointLowerLimit_[7] = -1.57079632679;  // FIXME
-    jointUpperLimit_[7] = 1.57079632679;  // FIXME
-    jointEffortLimit_[7] = 50.0;  // FIXME
-    jointControlMethod_[7] = POSITION_PID;  // FIXME
-    pidController_[7].initPid(11.0, 2.0, 0.25, 15.0, -15.0);  // FIXME
-
-    // Head Yaw
-    jointName_[8] = "linear_head_yaw_joint";  // FIXME
-    jointType_[8] = urdf::Joint::REVOLUTE;  // FIXME
-    jointEffort_[8] = 0.0;
-    jointPosition_[8] = 0.0;
-    jointVelocity_[8] = 0.0;
-    jointCommand_[8] = 0.0;
-    jointLowerLimit_[8] = -1.57079632679;  // FIXME
-    jointUpperLimit_[8] = 1.57079632679;  // FIXME
-    jointEffortLimit_[8] = 50.0;  // FIXME
-    jointControlMethod_[8] = POSITION_PID;  // FIXME
-    pidController_[8].initPid(12.0, 1.0, 0.45, 10.0, -10.0);  // FIXME
-  }
-
-  void GearsGazeboInterface::initLaser()
-  {
-    // Roll
-    jointName_[9] = "laser_roll_joint";  // FIXME
-    jointType_[9] = urdf::Joint::REVOLUTE;  // FIXME
-    jointEffort_[9] = 0.0;
-    jointPosition_[9] = 0.0;
-    jointVelocity_[9] = 0.0;
-    jointCommand_[9] = 0.0;
-    jointLowerLimit_[9] = -1.57079632679;  // FIXME
-    jointUpperLimit_[9] = 1.57079632679;  // FIXME
-    jointEffortLimit_[9] = 50.0;  // FIXME
-    jointControlMethod_[9] = POSITION_PID;  // FIXME
-    pidController_[9].initPid(1.8, 0.0, 0.3, 0.0, 0.0);  // FIXME
-
-    // Pitch
-    jointName_[10] = "laser_pitch_joint";
-    jointType_[10] = urdf::Joint::REVOLUTE;
-    jointEffort_[10] = 0.0;
-    jointPosition_[10] = 0.0;
-    jointVelocity_[10] = 0.0;
-    jointCommand_[10] = 0.0;
-    jointLowerLimit_[10] = -1.57079632679;  // FIXME
-    jointUpperLimit_[10] = 1.57079632679;  // FIXME
-    jointEffortLimit_[10] = 50.0;  // FIXME
-    jointControlMethod_[10] = POSITION_PID;  // FIXME
-    pidController_[10].initPid(2.5, 0.0, 0.3, 0.0, 0.0);  // FIXME
-  }
-
-  void GearsGazeboInterface::initKinect()
-  {
-    // Pitch
-    jointName_[11] = "kinect_pitch_joint";  // FIXME
-    jointType_[11] = urdf::Joint::REVOLUTE;  // FIXME
-    jointEffort_[11] = 0.0;
-    jointPosition_[11] = 0.0;
-    jointVelocity_[11] = 0.0;
-    jointCommand_[11] = 0.0;
-    jointLowerLimit_[11] = -1.57079632679;  // FIXME
-    jointUpperLimit_[11] = 1.57079632679;  // FIXME
-    jointEffortLimit_[11] = 50.0;  // FIXME
-    jointControlMethod_[11] = POSITION_PID;  // FIXME
-    pidController_[11].initPid(8.5, 1.0, 0.2, 10.0, -10.0);  // FIXME
-
-    // Yaw
-    jointName_[12] = "kinect_yaw_joint";  // FIXME
-    jointType_[12] = urdf::Joint::REVOLUTE;  // FIXME
-    jointEffort_[12] = 0.0;
-    jointPosition_[12] = 0.0;
-    jointVelocity_[12] = 0.0;
-    jointCommand_[12] = 0.0;
-    jointLowerLimit_[12] = -1.57079632679;  // FIXME
-    jointUpperLimit_[12] = 1.57079632679;  // FIXME
-    jointEffortLimit_[12] = 50.0;  // FIXME
-    jointControlMethod_[12] = POSITION_PID;  // FIXME
-    pidController_[12].initPid(8.0, 1.5, 0.4, 10.0, -10.0);  // FIXME
-  }
-
-  void GearsGazeboInterface::initXMEGA()
-  {
-    // Number of batteries and range sensors
-    batteryNum_ = 2;  // FIXME
-    rangeSensorNum_ = 3;  // FIXME
-
-    // Update rates of read methods
-    batteryUpdateRate_ = gazebo::common::Time(1 / 1.0);  // FIXME
-    batteryLastUpdateTime_ = world_->GetSimTime();
-    rangeSensorUpdateRate_ = gazebo::common::Time(1 / 2.0);  // FIXME
-    rangeSensorLastUpdateTime_ = world_->GetSimTime();
-
-    // Resize vectors
+    
+    co2SensorData_.resize(co2SensorNum_);
+    co2SensorName_.resize(co2SensorNum_);
+    co2SensorFrameID_.resize(co2SensorNum_);
+    co2SensorCo2PercentageStored_.resize(co2SensorNum_);
+    co2SensorCo2Percentage_.resize(co2SensorNum_);
+    
+    thermalSensorData_.resize(thermalSensorNum_);
+    thermalSensorName_.resize(thermalSensorNum_);
+    thermalSensorFrameID_.resize(thermalSensorNum_);
+    thermalSensorHeight_.resize(thermalSensorNum_);
+    thermalSensorWidth_.resize(thermalSensorNum_);
+    thermalSensorStep_.resize(thermalSensorNum_);
+    thermalSensorVectorStored_.resize(thermalSensorNum_);
+    thermalSensorVector_.resize(thermalSensorNum_);
+    
     batteryData_.resize(batteryNum_);
     batteryName_.resize(batteryNum_);
     batteryVoltage_.resize(batteryNum_);
     batteryVoltageMax_.resize(batteryNum_);
     batteryVoltageMin_.resize(batteryNum_);
     batteryDuration_.resize(batteryNum_);
+    
     rangeSensorData_.resize(rangeSensorNum_);
     rangeSensorName_.resize(rangeSensorNum_);
     rangeSensorFrameID_.resize(rangeSensorNum_);
@@ -389,174 +147,198 @@ namespace pandora_gazebo_interface
     rangeSensorRangeStored_.resize(rangeSensorNum_);
     rangeSensorRange_.resize(rangeSensorNum_);
     rangeSensorBufferCounter_.resize(rangeSensorNum_);
-
-    // Initialize XMEGA data
-    initBatteries();
-    initRangeSensors();
-  }
-
-  void GearsGazeboInterface::initBatteries()
-  {
-    // PSU
-    batteryName_[0] = "/PSU_battery";  // FIXME
-    batteryData_[0].name = batteryName_[0];
-    batteryVoltageMax_[0] = 24.0;  // FIXME
-    batteryVoltageMin_[0] = 18.0;  // FIXME
-    batteryDuration_[0] = 60.0;  // FIXME
-    batteryVoltage_[0] = batteryVoltageMax_[0];
-    batteryData_[0].voltage = &batteryVoltage_[0];
-
-    // Motors
-    batteryName_[1] = "/motors_battery";  // FIXME
-    batteryData_[1].name = batteryName_[1];
-    batteryVoltageMax_[1] = 24.0;  // FIXME
-    batteryVoltageMin_[1] = 18.0;  // FIXME
-    batteryDuration_[1] = 45.0;  // FIXME
-    batteryVoltage_[1] = batteryVoltageMax_[1];
-    batteryData_[1].voltage = &batteryVoltage_[1];
-  }
-
-  void GearsGazeboInterface::initRangeSensors()
-  {
-    rangeSensorName_[0] = "/sensors/linear_sonar";  // FIXME
-    rangeSensorFrameID_[0] = "linear_sonar_frame";  // FIXME
-    rangeSensorData_[0].name = rangeSensorName_[0];
-    rangeSensorData_[0].frameId = rangeSensorFrameID_[0];
-
-    rangeSensorName_[1] = "/sensors/left_sonar";  // FIXME
-    rangeSensorFrameID_[1] = "left_sonar_frame";  // FIXME
-    rangeSensorData_[1].name = rangeSensorName_[1];
-    rangeSensorData_[1].frameId = rangeSensorFrameID_[1];
-
-    rangeSensorName_[2] = "/sensors/right_sonar";  // FIXME
-    rangeSensorFrameID_[2] = "right_sonar_frame";  // FIXME
-    rangeSensorData_[2].name = rangeSensorName_[2];
-    rangeSensorData_[2].frameId = rangeSensorFrameID_[2];
     
+    // Register each hardware_interface
+    registerJointInterface();
+    registerImuInterface();
+    registerArmInterface();
+    registerXmegaInterface();
+    
+    // Load gazebo joints
+    for (unsigned int i = 0; i < jointNum_; i++)
+    {
+      gazeboJoint_[i] = parentModel_->GetJoint(jointName_[i]);
+    }
+
+    // Load PID controllers and initialize/set the limits
+    for (unsigned int i = 0; i < jointNum_; i++)
+    {
+      switch (jointControlMethod_[i])
+      {
+        case POSITION_PID:
+        {
+          // const ros::NodeHandle nh (modelNh_, robotnamespace_ + "/gazebo_ros_control/pid_gains/" + jointName_[i]);
+          // pidController_[i].init (nh);
+          
+          break;
+        }
+        case VELOCITY:
+        {
+          gazeboJoint_[i]->SetMaxForce(0, jointEffortLimit_[i]);
+          
+          break;
+        }
+        default:
+        {
+          break;
+        }
+      }
+    }
+    
+    // Load gazebo imu link
+    gazeboImuLink_ = parentModel_->GetLink(imuLinkName_);
+    
+    // CO2 sensors subscriber
+    co2SensorSubscriber_ = modelNh_.subscribe(
+        "gazebo_sensors/co2",
+        1,
+        &GearsGazeboInterface::co2SensorCallback,
+        this);
+        
+    // Thermal sensors subscriber
+    thermalSensorSubscriber_ = modelNh_.subscribe(
+        "gazebo_sensors/thermal",
+        1,
+        &GearsGazeboInterface::thermalSensorCallback,
+        this);
+        
+    // Range sensors subscriber
     rangeSensorSubscriber_ = modelNh_.subscribe(
         "gazebo_sensors/range",
         1,
         &GearsGazeboInterface::rangeSensorCallback,
         this);
 
-    for (unsigned int i = 0; i < rangeSensorNum_; i++)
+    ROS_INFO("gears_gazebo_interface initialized successfully!");
+    return true;
+  }
+  
+  void GearsGazeboInterface::registerJointInterface()
+  {
+    // Wheel joints
+    jointName_[0] = "left_front_wheel_joint";
+    jointName_[1] = "left_rear_wheel_joint";
+    jointName_[2] = "right_front_wheel_joint";
+    jointName_[3] = "right_rear_wheel_joint";
+    for (unsigned int i = 0; i < 4; i++)
     {
-      rangeSensorRadiationType_[i] = 0;  // FIXME
-      rangeSensorFOV_[i] = 60.0;  // FIXME
-      rangeSensorMinRange_[i] = 0.2;  // FIXME
-      rangeSensorMaxRange_[i] = 4.0;  // FIXME
-      rangeSensorRangeStored_[i] = 0.0;
-      rangeSensorRange_[i].resize(5, rangeSensorMaxRange_[i]);
-      rangeSensorData_[i].radiationType = &rangeSensorRadiationType_[i];
-      rangeSensorData_[i].fieldOfView = &rangeSensorFOV_[i];
-      rangeSensorData_[i].minRange = &rangeSensorMinRange_[i];
-      rangeSensorData_[i].maxRange = &rangeSensorMaxRange_[i];
-      rangeSensorData_[i].range = &rangeSensorRange_[i][0];
-      rangeSensorBufferCounter_[i] = 0;
+      jointType_[i] = urdf::Joint::CONTINUOUS;
+      jointEffort_[i] = 0.0;
+      jointPosition_[i] = 0.0;
+      jointVelocity_[i] = 0.0;
+      jointCommand_[i] = 0.0;
+      jointEffortLimit_[i] = 100.0;
+      jointControlMethod_[i] = VELOCITY;
     }
-  }
-
-  void GearsGazeboInterface::initARM()
-  {
-    // Number of co2 and thermal sensors
-    co2SensorNum_ = 1;  // FIXME
-    thermalSensorNum_ = 3;  // FIXME
-
-    // Update rates of read methods
-    co2SensorUpdateRate_ = gazebo::common::Time(1 / 2.0);  // FIXME
-    co2SensorLastUpdateTime_ = world_->GetSimTime();
-    thermalSensorUpdateRate_ = gazebo::common::Time(1 / 1.0);  // FIXME
-    thermalSensorLastUpdateTime_ = world_->GetSimTime();
-
-    // Resize vectors
-    co2SensorData_.resize(co2SensorNum_);
-    co2SensorName_.resize(co2SensorNum_);
-    co2SensorFrameID_.resize(co2SensorNum_);
-    co2SensorCo2PercentageStored_.resize(co2SensorNum_);
-    co2SensorCo2Percentage_.resize(co2SensorNum_);
-    thermalSensorData_.resize(thermalSensorNum_);
-    thermalSensorName_.resize(thermalSensorNum_);
-    thermalSensorFrameID_.resize(thermalSensorNum_);
-    thermalSensorHeight_.resize(thermalSensorNum_);
-    thermalSensorWidth_.resize(thermalSensorNum_);
-    thermalSensorStep_.resize(thermalSensorNum_);
-    thermalSensorVectorStored_.resize(thermalSensorNum_);
-    thermalSensorVector_.resize(thermalSensorNum_);
-
-    // Initialize ARM data
-    initCO2Sensors();
-    initThermalSensors();
-  }
-
-  void GearsGazeboInterface::initCO2Sensors()
-  {
-    co2SensorName_[0] = "/sensors/co2";  // FIXME
-    co2SensorData_[0].name = co2SensorName_[0];
-    co2SensorFrameID_[0] = "co2_frame";  // FIXME
-    co2SensorData_[0].frameId = co2SensorFrameID_[0];
-    co2SensorCo2PercentageStored_[0] = 0.0;
-    co2SensorCo2Percentage_[0] = co2SensorCo2PercentageStored_[0];
-    co2SensorData_[0].co2Percentage = &co2SensorCo2Percentage_[0];
     
-    co2SensorSubscriber_ = modelNh_.subscribe(
-        "gazebo_sensors/co2",
-        1,
-        &GearsGazeboInterface::co2SensorCallback,
-        this);
-  }
-
-  void GearsGazeboInterface::initThermalSensors()
-  {
-    thermalSensorName_[0] = "/sensors/left_thermal";  // FIXME
-    thermalSensorData_[0].name = thermalSensorName_[0];
-    thermalSensorFrameID_[0] = "left_thermal_optical_frame";  // FIXME
-    thermalSensorData_[0].frameId = thermalSensorFrameID_[0];
-
-    thermalSensorName_[1] = "/sensors/center_thermal";  // FIXME XXX
-    thermalSensorData_[1].name = thermalSensorName_[1];
-    thermalSensorFrameID_[1] = "middle_thermal_optical_frame";  // FIXME
-    thermalSensorData_[1].frameId = thermalSensorFrameID_[1];
-
-    thermalSensorName_[2] = "/sensors/right_thermal";  // FIXME
-    thermalSensorData_[2].name = thermalSensorName_[2];
-    thermalSensorFrameID_[2] = "right_thermal_optical_frame";  // FIXME
-    thermalSensorData_[2].frameId = thermalSensorFrameID_[2];
+    // Side joints
+    jointName_[4] = "left_side_joint";
+    jointName_[5] = "right_side_joint";
+    for (unsigned int i = 4; i < 6; i++)
+    {
+      jointType_[i] = urdf::Joint::REVOLUTE;
+      jointEffort_[i] = 0.0;
+      jointPosition_[i] = 0.0;
+      jointVelocity_[i] = 0.0;
+      jointCommand_[i] = 0.0;
+      jointLowerLimit_[i] = -0.785;
+      jointUpperLimit_[i] = 0.785;
+      jointEffortLimit_[i] = 150.0;
+      jointControlMethod_[i] = NONE;
+    }
     
-    thermalSensorSubscriber_ = modelNh_.subscribe(
-        "gazebo_sensors/thermal",
-        1,
-        &GearsGazeboInterface::thermalSensorCallback,
-        this);
+    // Linear elevator joint
+    jointName_[6] = "linear_elevator_joint";
+    jointType_[6] = urdf::Joint::PRISMATIC;
+    jointEffort_[6] = 0.0;
+    jointPosition_[6] = 0.0;
+    jointVelocity_[6] = 0.0;
+    jointCommand_[6] = 0.0;
+    jointLowerLimit_[6] = 0.0;
+    jointUpperLimit_[6] = 0.18;
+    jointEffortLimit_[6] = 100.0;
+    jointControlMethod_[6] = POSITION_PID;
+    pidController_[6].initPid(15000.0, 0.0, 0.0, 0.0, 0.0);
+    
+    // Linear head pitch joint
+    jointName_[7] = "linear_head_pitch_joint";
+    jointType_[7] = urdf::Joint::REVOLUTE;
+    jointEffort_[7] = 0.0;
+    jointPosition_[7] = 0.0;
+    jointVelocity_[7] = 0.0;
+    jointCommand_[7] = 0.0;
+    jointLowerLimit_[7] = -1.57079632679;
+    jointUpperLimit_[7] = 1.57079632679;
+    jointEffortLimit_[7] = 50.0;
+    jointControlMethod_[7] = POSITION_PID;
+    pidController_[7].initPid(11.0, 2.0, 0.25, 15.0, -15.0);
+    
+    // Linear head yaw joint
+    jointName_[8] = "linear_head_yaw_joint";
+    jointType_[8] = urdf::Joint::REVOLUTE;
+    jointEffort_[8] = 0.0;
+    jointPosition_[8] = 0.0;
+    jointVelocity_[8] = 0.0;
+    jointCommand_[8] = 0.0;
+    jointLowerLimit_[8] = -1.57079632679;
+    jointUpperLimit_[8] = 1.57079632679;
+    jointEffortLimit_[8] = 50.0;
+    jointControlMethod_[8] = POSITION_PID;
+    pidController_[8].initPid(12.0, 1.0, 0.45, 10.0, -10.0);
+    
+    // Laser roll joint
+    jointName_[9] = "laser_roll_joint";
+    jointType_[9] = urdf::Joint::REVOLUTE;
+    jointEffort_[9] = 0.0;
+    jointPosition_[9] = 0.0;
+    jointVelocity_[9] = 0.0;
+    jointCommand_[9] = 0.0;
+    jointLowerLimit_[9] = -1.57079632679;
+    jointUpperLimit_[9] = 1.57079632679;
+    jointEffortLimit_[9] = 50.0;
+    jointControlMethod_[9] = POSITION_PID;
+    pidController_[9].initPid(1.8, 0.0, 0.3, 0.0, 0.0);
 
-    for (unsigned int i = 0; i < thermalSensorNum_; i++)
-    {
-      thermalSensorHeight_[i] = 8;  // FIXME
-      thermalSensorData_[i].height = &thermalSensorHeight_[i];
-      thermalSensorWidth_[i] = 8;  // FIXME
-      thermalSensorData_[i].width = &thermalSensorWidth_[i];
-      thermalSensorStep_[i] = 8;  // FIXME
-      thermalSensorData_[i].step = &thermalSensorStep_[i];
-      int resolution = thermalSensorHeight_[i] * thermalSensorWidth_[i];
-      thermalSensorVectorStored_[i].resize(resolution, 0);
-      thermalSensorVector_[i].resize(resolution, 0);
-      thermalSensorData_[i].data = &thermalSensorVector_[i][0];
-    }
-  }
+    // Laser pitch joint
+    jointName_[10] = "laser_pitch_joint";
+    jointType_[10] = urdf::Joint::REVOLUTE;
+    jointEffort_[10] = 0.0;
+    jointPosition_[10] = 0.0;
+    jointVelocity_[10] = 0.0;
+    jointCommand_[10] = 0.0;
+    jointLowerLimit_[10] = -1.57079632679;
+    jointUpperLimit_[10] = 1.57079632679;
+    jointEffortLimit_[10] = 50.0;
+    jointControlMethod_[10] = POSITION_PID;
+    pidController_[10].initPid(2.5, 0.0, 0.3, 0.0, 0.0);
+    
+    // Kinect pitch joint
+    jointName_[11] = "kinect_pitch_joint";
+    jointType_[11] = urdf::Joint::REVOLUTE;
+    jointEffort_[11] = 0.0;
+    jointPosition_[11] = 0.0;
+    jointVelocity_[11] = 0.0;
+    jointCommand_[11] = 0.0;
+    jointLowerLimit_[11] = -1.57079632679;
+    jointUpperLimit_[11] = 1.57079632679;
+    jointEffortLimit_[11] = 50.0;
+    jointControlMethod_[11] = POSITION_PID;
+    pidController_[11].initPid(8.5, 1.0, 0.2, 10.0, -10.0);
 
-  void GearsGazeboInterface::registerInterfaces()
-  {
-    // Connect and register the joint state handle
-    for (unsigned int i = 0; i < jointNum_; i++)
-    {
-      hardware_interface::JointStateHandle jointStateHandle(
-          jointName_[i],
-          &jointPosition_[i],
-          &jointVelocity_[i],
-          &jointEffort_[i]);
-      jointStateInterface_.registerHandle(jointStateHandle);
-    }
-
-    // Connect and register the joint velocity handle
+    // Kinect yaw joint
+    jointName_[12] = "kinect_yaw_joint";
+    jointType_[12] = urdf::Joint::REVOLUTE;
+    jointEffort_[12] = 0.0;
+    jointPosition_[12] = 0.0;
+    jointVelocity_[12] = 0.0;
+    jointCommand_[12] = 0.0;
+    jointLowerLimit_[12] = -1.57079632679;
+    jointUpperLimit_[12] = 1.57079632679;
+    jointEffortLimit_[12] = 50.0;
+    jointControlMethod_[12] = POSITION_PID;
+    pidController_[12].initPid(8.0, 1.5, 0.4, 10.0, -10.0);
+    
+    // Connect and register the joint velocity interface
     for (unsigned int i = 0; i < 4; i++)
     {
       hardware_interface::JointHandle jointHandle(
@@ -564,6 +346,19 @@ namespace pandora_gazebo_interface
           &jointCommand_[i]);
       velocityJointInterface_.registerHandle(jointHandle);
     }
+    registerInterface(&velocityJointInterface_);
+    
+    /*
+    // Connect and register the joint effort interface
+    for (unsigned int i = 0; i < 4; i++)
+    {
+      hardware_interface::JointHandle jointHandle(
+          jointStateInterface_.getHandle(jointName_[i]),
+          &jointCommand_[i]);
+      effortJointInterface_.registerHandle(jointHandle);
+    }
+    registerInterface(&effortJointInterface_);
+    */
 
     // Connect and register the joint position handle
     for (unsigned int i = 4; i < jointNum_; i++)
@@ -573,134 +368,421 @@ namespace pandora_gazebo_interface
           &jointCommand_[i]);
       positionJointInterface_.registerHandle(jointHandle);
     }
+    registerInterface(&positionJointInterface_);
+    
+    /*
+    // Connect and register the joint interface
+    for (unsigned int i = 0; i < jointNum; i++)
+    {
+      hardware_interface::JointHandle jointHandle(
+          jointStateInterface_.getHandle(jointName_[i]),
+          &jointCommand_[i]);
+      velocityJointInterface_.registerHandle(jointHandle);
+      effortJointInterface_.registerHandle(jointHandle);
+      positionJointInterface_.registerHandle(jointHandle);
+    }
+    registerInterface(&velocityJointInterface_);
+    registerInterface(&effortJointInterface_);
+    registerInterface(&positionJointInterface_);
+    */
+  }
+  
+  void GearsGazeboInterface::registerImuInterface()
+  {
+    // Imu sensor
+    imuLinkName_ = "base_link";
 
-    // Connect and register the imu sensor handle
+    imuOrientation_[0] = 0;
+    imuOrientation_[1] = 0;
+    imuOrientation_[2] = 0;
+    imuOrientation_[3] = 1;
+
+    imuSensorData_.orientation = imuOrientation_;
+    imuSensorData_.name = "/sensors/imu";
+    imuSensorData_.frame_id = imuLinkName_;
+
+    // Connect and register the imu sensor interface
     hardware_interface::ImuSensorHandle imuSensorHandle(imuSensorData_);
     imuSensorInterface_.registerHandle(imuSensorHandle);
+    registerInterface(&imuSensorInterface_);
 
-    // Connect and register the imu rpy handle
+    // Imu RPY
+    imuRoll_ = new double;
+    imuPitch_ = new double;
+    imuYaw_ = new double;
+
+    *imuRoll_ = 0;
+    *imuPitch_ = 0;
+    *imuYaw_ = 0;
+
+    imuRPYData_.roll = imuRoll_;
+    imuRPYData_.pitch = imuPitch_;
+    imuRPYData_.yaw = imuYaw_;
+    imuRPYData_.name = "/sensors/imu_rpy";
+    imuRPYData_.frame_id = imuLinkName_;
+
+    // Connect and register the imu rpy interface
     pandora_hardware_interface::imu::ImuRPYHandle imuRPYHandle(imuRPYData_);
     imuRPYInterface_.registerHandle(imuRPYHandle);
-
-    // Connect and register the battery handles
-    for (unsigned int i = 0; i < batteryNum_; i++)
-    {
-      pandora_hardware_interface::xmega::BatteryHandle batteryHandle(batteryData_[i]);
-      batteryInterface_.registerHandle(batteryHandle);
-    }
-
-    // Connect and register the range sensor handles
-    for (unsigned int i = 0; i < rangeSensorNum_; i++)
-    {
-      pandora_hardware_interface::xmega::RangeSensorHandle rangeSensorHandle(rangeSensorData_[i]);
-      rangeSensorInterface_.registerHandle(rangeSensorHandle);
-    }
-
-    // Connect and register the co2 sensor handles
+    registerInterface(&imuRPYInterface_);
+  }
+  
+  void GearsGazeboInterface::registerArmInterface()
+  {
+    // CO2 sensors
+    co2SensorName_[0] = "/sensors/co2";
+    co2SensorData_[0].name = co2SensorName_[0];
+    co2SensorFrameID_[0] = "co2_frame";
+    co2SensorData_[0].frameId = co2SensorFrameID_[0];
+    co2SensorCo2PercentageStored_[0] = 0.0;
+    co2SensorCo2Percentage_[0] = co2SensorCo2PercentageStored_[0];
+    co2SensorData_[0].co2Percentage = &co2SensorCo2Percentage_[0];
+        
+    // Connect and register the co2 sensor interface
     for (unsigned int i = 0; i < co2SensorNum_; i++)
     {
       pandora_hardware_interface::arm::Co2SensorHandle co2SensorHandle(co2SensorData_[i]);
       co2SensorInterface_.registerHandle(co2SensorHandle);
     }
+    registerInterface(&co2SensorInterface_);
 
-    // Connect and register the thermal sensor handles
+    // Thermal sensors
+    thermalSensorName_[0] = "/sensors/left_thermal";
+    thermalSensorData_[0].name = thermalSensorName_[0];
+    thermalSensorFrameID_[0] = "left_thermal_optical_frame";
+    thermalSensorData_[0].frameId = thermalSensorFrameID_[0];
+
+    thermalSensorName_[1] = "/sensors/center_thermal";
+    thermalSensorData_[1].name = thermalSensorName_[1];
+    thermalSensorFrameID_[1] = "middle_thermal_optical_frame";
+    thermalSensorData_[1].frameId = thermalSensorFrameID_[1];
+
+    thermalSensorName_[2] = "/sensors/right_thermal";
+    thermalSensorData_[2].name = thermalSensorName_[2];
+    thermalSensorFrameID_[2] = "right_thermal_optical_frame";
+    thermalSensorData_[2].frameId = thermalSensorFrameID_[2];
+
+    for (unsigned int i = 0; i < thermalSensorNum_; i++)
+    {
+      thermalSensorHeight_[i] = 8;
+      thermalSensorData_[i].height = &thermalSensorHeight_[i];
+      thermalSensorWidth_[i] = 8;
+      thermalSensorData_[i].width = &thermalSensorWidth_[i];
+      thermalSensorStep_[i] = 8;
+      thermalSensorData_[i].step = &thermalSensorStep_[i];
+      int resolution = thermalSensorHeight_[i] * thermalSensorWidth_[i];
+      thermalSensorVectorStored_[i].resize(resolution, 0);
+      thermalSensorVector_[i].resize(resolution, 0);
+      thermalSensorData_[i].data = &thermalSensorVector_[i][0];
+    }
+
+    // Connect and register the thermal sensor interface
     for (unsigned int i = 0; i < thermalSensorNum_; i++)
     {
       pandora_hardware_interface::arm::ThermalSensorHandle thermalSensorHandle(thermalSensorData_[i]);
       thermalSensorInterface_.registerHandle(thermalSensorHandle);
     }
-
-    // Register interfaces
-    registerInterface(&jointStateInterface_);
-    registerInterface(&positionJointInterface_);
-    registerInterface(&velocityJointInterface_);
-    registerInterface(&imuSensorInterface_);
-    registerInterface(&imuRPYInterface_);
-    registerInterface(&batteryInterface_);
-    registerInterface(&rangeSensorInterface_);
-    registerInterface(&co2SensorInterface_);
     registerInterface(&thermalSensorInterface_);
   }
-
-  void GearsGazeboInterface::readLinks()
+  
+  void GearsGazeboInterface::registerXmegaInterface()
   {
-    // Read robot orientation for IMU
-    gazebo::math::Quaternion quaternion = gazeboLink_[0]->GetWorldPose().rot;
-    imuOrientation_[0] = quaternion.x;
-    imuOrientation_[1] = quaternion.y;
-    imuOrientation_[2] = quaternion.z;
-    imuOrientation_[3] = quaternion.w;
+    // Connect and register the joint state interface
+    for (unsigned int i = 0; i < jointNum_; i++)
+    {
+      hardware_interface::JointStateHandle jointStateHandle(
+          jointName_[i],
+          &jointPosition_[i],
+          &jointVelocity_[i],
+          &jointEffort_[i]);
+      jointStateInterface_.registerHandle(jointStateHandle);
+    }
+    registerInterface(&jointStateInterface_);
+    
+    // Electronics battery sensor
+    batteryName_[0] = "/PSU_battery";
+    batteryData_[0].name = batteryName_[0];
+    batteryVoltageMax_[0] = 24.0;
+    batteryVoltageMin_[0] = 18.0;
+    batteryDuration_[0] = 60.0;
+    batteryVoltage_[0] = batteryVoltageMax_[0];
+    batteryData_[0].voltage = &batteryVoltage_[0];
 
-    // Read robot rpy for IMU
-    *imuRoll_ = quaternion.GetRoll() * 360 / (gazebo::math::Angle::TwoPi.Radian());
-    *imuPitch_ = quaternion.GetPitch() * 360 / (gazebo::math::Angle::TwoPi.Radian());
-    *imuYaw_ = quaternion.GetYaw() * 360 / (gazebo::math::Angle::TwoPi.Radian());
+    // Motors battery sensor
+    batteryName_[1] = "/motors_battery";
+    batteryData_[1].name = batteryName_[1];
+    batteryVoltageMax_[1] = 24.0;
+    batteryVoltageMin_[1] = 18.0;
+    batteryDuration_[1] = 45.0;
+    batteryVoltage_[1] = batteryVoltageMax_[1];
+    batteryData_[1].voltage = &batteryVoltage_[1];
+    
+    // Connect and register the battery interface
+    for (unsigned int i = 0; i < batteryNum_; i++)
+    {
+      pandora_hardware_interface::xmega::BatteryHandle batteryHandle(batteryData_[i]);
+      batteryInterface_.registerHandle(batteryHandle);
+    }
+    registerInterface(&batteryInterface_);
+    
+    // Range sensors
+    rangeSensorName_[0] = "/sensors/linear_sonar";
+    rangeSensorFrameID_[0] = "linear_sonar_frame";
+    rangeSensorData_[0].name = rangeSensorName_[0];
+    rangeSensorData_[0].frameId = rangeSensorFrameID_[0];
+
+    rangeSensorName_[1] = "/sensors/left_sonar";
+    rangeSensorFrameID_[1] = "left_sonar_frame";
+    rangeSensorData_[1].name = rangeSensorName_[1];
+    rangeSensorData_[1].frameId = rangeSensorFrameID_[1];
+
+    rangeSensorName_[2] = "/sensors/right_sonar";
+    rangeSensorFrameID_[2] = "right_sonar_frame";
+    rangeSensorData_[2].name = rangeSensorName_[2];
+    rangeSensorData_[2].frameId = rangeSensorFrameID_[2];
+
+    for (unsigned int i = 0; i < rangeSensorNum_; i++)
+    {
+      rangeSensorRadiationType_[i] = 0;
+      rangeSensorFOV_[i] = 60.0;
+      rangeSensorMinRange_[i] = 0.2;
+      rangeSensorMaxRange_[i] = 4.0;
+      rangeSensorRangeStored_[i] = 0.0;
+      rangeSensorRange_[i].resize(5, rangeSensorMaxRange_[i]);
+      rangeSensorData_[i].radiationType = &rangeSensorRadiationType_[i];
+      rangeSensorData_[i].fieldOfView = &rangeSensorFOV_[i];
+      rangeSensorData_[i].minRange = &rangeSensorMinRange_[i];
+      rangeSensorData_[i].maxRange = &rangeSensorMaxRange_[i];
+      rangeSensorData_[i].range = &rangeSensorRange_[i][0];
+      rangeSensorBufferCounter_[i] = 0;
+    }
+
+    // Connect and register the range sensor interface
+    for (unsigned int i = 0; i < rangeSensorNum_; i++)
+    {
+      pandora_hardware_interface::xmega::RangeSensorHandle rangeSensorHandle(rangeSensorData_[i]);
+      rangeSensorInterface_.registerHandle(rangeSensorHandle);
+    }
+    registerInterface(&rangeSensorInterface_);
+  }
+
+  void GearsGazeboInterface::readSim(
+      ros::Time time,
+      ros::Duration period)
+  {
+    ROS_INFO("READ!");
+    readTime_ = gazebo::common::Time(time.sec, time.nsec);
+    readPeriod_ = period;
+
+    readJoints();
+    readImu();
+    readArm();
+    readXmega();
   }
 
   void GearsGazeboInterface::readJoints()
   {
-    for (unsigned int i = 0; i < jointNum_; i++)
+    if ((jointLastReadTime_ + jointReadRate_) < readTime_)
     {
-      // Read joint position
-      switch (jointType_[i])
+      for (unsigned int i = 0; i < jointNum_; i++)
       {
-        case urdf::Joint::PRISMATIC:
+        // Read joint position
+        switch (jointType_[i])
         {
-          jointPosition_[i] = gazeboJoint_[i]->GetAngle(0).Radian();
+          case urdf::Joint::PRISMATIC:
+          {
+            jointPosition_[i] = gazeboJoint_[i]->GetAngle(0).Radian();
 
-          break;
+            break;
+          }
+          default:
+          {
+            jointPosition_[i] +=
+                angles::shortest_angular_distance(jointPosition_[i], gazeboJoint_[i]->GetAngle(0).Radian());
+
+            break;
+          }
         }
-        default:
-        {
-          jointPosition_[i] +=
-              angles::shortest_angular_distance(jointPosition_[i], gazeboJoint_[i]->GetAngle(0).Radian());
 
-          break;
-        }
-      }
-
-      // Read joint velocity
-      jointVelocity_[i] = gazeboJoint_[i]->GetVelocity(0);
-    }
-  }
-
-  void GearsGazeboInterface::readXMEGA()
-  {
-    if ((batteryLastUpdateTime_ + batteryUpdateRate_) < readTime_)
-    {
-      readBatteries();
-      batteryLastUpdateTime_ = readTime_;
-    }
-
-    if ((rangeSensorLastUpdateTime_ + rangeSensorUpdateRate_) < readTime_)
-    {
-      readRangeSensors();
-      rangeSensorLastUpdateTime_ = readTime_;
-    }
-  }
-
-  void GearsGazeboInterface::readBatteries()
-  {
-    for (unsigned int n = 0; n < batteryNum_; n++)
-    {
-      double reduction = (batteryVoltageMax_[n] - batteryVoltageMin_[n]) / (batteryDuration_[n] * 60.0);
-      reduction /= batteryUpdateRate_.sec + batteryUpdateRate_.nsec / pow(10, 9);
-      batteryVoltage_[n] -= reduction;
-
-      if (batteryVoltage_[n] < batteryVoltageMin_[n])
-      {
-        ROS_WARN_ONCE("WARNING: The battery \"%s\" has died!", batteryName_[n].c_str());
-        // immobilizeRobot (batteryName_[n], batteryVoltage_[n]);  //  TODO(gerom)
+        // Read joint velocity
+        jointVelocity_[i] = gazeboJoint_[i]->GetVelocity(0);
       }
     }
   }
 
-  void GearsGazeboInterface::readRangeSensors()
+  void GearsGazeboInterface::readImu()
   {
-    for (unsigned int n = 0; n < rangeSensorNum_; n++)
+    if ((imuLastReadTime_ + imuReadRate_) < readTime_)
     {
-      rangeSensorRange_[n][rangeSensorBufferCounter_[n]] = rangeSensorRangeStored_[n];
-      rangeSensorBufferCounter_[n] = fmod(rangeSensorBufferCounter_[n] + 1, 5);
+      // Read robot orientation for IMU
+      gazebo::math::Quaternion quaternion = gazeboImuLink_->GetWorldPose().rot;
+      imuOrientation_[0] = quaternion.x;
+      imuOrientation_[1] = quaternion.y;
+      imuOrientation_[2] = quaternion.z;
+      imuOrientation_[3] = quaternion.w;
+
+      // Read robot rpy for IMU
+      *imuRoll_ = quaternion.GetRoll() * 360 / (gazebo::math::Angle::TwoPi.Radian());
+      *imuPitch_ = quaternion.GetPitch() * 360 / (gazebo::math::Angle::TwoPi.Radian());
+      *imuYaw_ = quaternion.GetYaw() * 360 / (gazebo::math::Angle::TwoPi.Radian());
+    }
+  }
+
+  void GearsGazeboInterface::readArm()
+  {
+    // Read co2 sensors
+    if ((co2SensorLastReadTime_ + co2SensorReadRate_) < readTime_)
+    {
+      for (unsigned int n = 0; n < co2SensorNum_; n++)
+      {
+        co2SensorCo2Percentage_[n] = co2SensorCo2PercentageStored_[n];
+      }
+      
+      co2SensorLastReadTime_ = readTime_;
+    }
+
+    // Read thermal sensors
+    if ((thermalSensorLastReadTime_ + thermalSensorReadRate_) < readTime_)
+    {
+      for (unsigned int n = 0; n < thermalSensorNum_; n++)
+      {
+        thermalSensorVector_[n] = thermalSensorVectorStored_[n];
+      }
+      
+      thermalSensorLastReadTime_ = readTime_;
+    }
+  }
+
+  void GearsGazeboInterface::readXmega()
+  {
+    // Read battery sensors
+    if ((batteryLastReadTime_ + batteryReadRate_) < readTime_)
+    {
+      for (unsigned int n = 0; n < batteryNum_; n++)
+      {
+        double reduction = (batteryVoltageMax_[n] - batteryVoltageMin_[n]) / (batteryDuration_[n] * 60.0);
+        reduction /= batteryReadRate_.sec + batteryReadRate_.nsec / pow(10, 9);
+        batteryVoltage_[n] -= reduction;
+
+        if (batteryVoltage_[n] < batteryVoltageMin_[n])
+        {
+          ROS_WARN_ONCE("WARNING: The battery \"%s\" has died!", batteryName_[n].c_str());
+          // immobilizeRobot (batteryName_[n], batteryVoltage_[n]);
+        }
+      }
+      
+      batteryLastReadTime_ = readTime_;
+    }
+
+    // Read range sensors
+    if ((rangeSensorLastReadTime_ + rangeSensorReadRate_) < readTime_)
+    {
+      for (unsigned int n = 0; n < rangeSensorNum_; n++)
+      {
+        rangeSensorRange_[n][rangeSensorBufferCounter_[n]] = rangeSensorRangeStored_[n];
+        rangeSensorBufferCounter_[n] = fmod(rangeSensorBufferCounter_[n] + 1, 5);
+      }
+
+      rangeSensorLastReadTime_ = readTime_;
+    }
+  }
+
+  void GearsGazeboInterface::writeSim(
+      ros::Time time,
+      ros::Duration period)
+  {
+    ROS_INFO("WRITE!");
+    writeTime_ = gazebo::common::Time(time.sec, time.nsec);
+    writePeriod_ = period;
+
+    writeJoints();
+  }
+
+  void GearsGazeboInterface::writeJoints()
+  {
+    if ((jointLastWriteTime_ + jointWriteRate_) < writeTime_)
+    {
+      adjustWheelVelocityCommands();
+
+      for (unsigned int i = 0; i < jointNum_; i++)
+      {
+        switch (jointControlMethod_[i])
+        {
+          case POSITION_PID:
+          {
+            double error;
+            double jointCommand = clamp(jointCommand_[i], jointLowerLimit_[i], jointUpperLimit_[i]);
+
+            switch (jointType_[i])
+            {
+              case urdf::Joint::REVOLUTE:
+              {
+                angles::shortest_angular_distance_with_limits(
+                    jointPosition_[i],
+                    jointCommand,
+                    jointLowerLimit_[i],
+                    jointUpperLimit_[i],
+                    error);
+
+                break;
+              }
+              default:
+              {
+                error = jointCommand - jointPosition_[i];
+
+                break;
+              }
+            }
+
+            double pidCommand = pidController_[i].computeCommand(error, writePeriod_);
+            double effortLimit = jointEffortLimit_[i];
+            double effort = clamp(pidCommand, -effortLimit, effortLimit);
+            gazeboJoint_[i]->SetForce(0, effort);
+
+            break;
+          }
+          case VELOCITY:
+          {
+            gazeboJoint_[i]->SetVelocity(0, jointCommand_[i]);
+
+            break;
+          }
+          case EFFORT:
+          {
+            gazeboJoint_[i]->SetForce(0, jointCommand_[i]);
+
+            break;
+          }
+          default:
+          {
+            break;
+          }
+        }
+      }
+    }
+  }
+  
+  void GearsGazeboInterface::co2SensorCallback(
+      const pandora_sensor_msgs::Co2MsgConstPtr& msg)
+  {
+    for (unsigned int n = 0; n < co2SensorNum_; n++)
+    {
+      if (msg->header.frame_id == co2SensorFrameID_[n])
+      {
+        co2SensorCo2PercentageStored_[n] = msg->co2_percentage;
+      }
+    }
+  }
+  
+  void GearsGazeboInterface::thermalSensorCallback(
+      const sensor_msgs::ImageConstPtr& msg)
+  {
+    for (unsigned int n = 0; n < thermalSensorNum_; n++)
+    {
+      if (msg->header.frame_id == thermalSensorFrameID_[n])
+      {
+        thermalSensorVectorStored_[n] = msg->data;
+      }
     }
   }
   
@@ -716,117 +798,6 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void GearsGazeboInterface::readARM()
-  {
-    if ((co2SensorLastUpdateTime_ + co2SensorUpdateRate_) < readTime_)
-    {
-      readCO2Sensors();
-      co2SensorLastUpdateTime_ = readTime_;
-    }
-
-    if ((thermalSensorLastUpdateTime_ + thermalSensorUpdateRate_) < readTime_)
-    {
-      readThermalSensors();
-      thermalSensorLastUpdateTime_ = readTime_;
-    }
-  }
-
-  void GearsGazeboInterface::readCO2Sensors()
-  {
-    for (unsigned int n = 0; n < co2SensorNum_; n++)
-    {
-      co2SensorCo2Percentage_[n] = co2SensorCo2PercentageStored_[n];
-    }
-  }
-  
-  void GearsGazeboInterface::co2SensorCallback(
-      const pandora_sensor_msgs::Co2MsgConstPtr& msg)
-  {
-    for (unsigned int n = 0; n < co2SensorNum_; n++)
-    {
-      if (msg->header.frame_id == co2SensorFrameID_[n])
-      {
-        co2SensorCo2PercentageStored_[n] = msg->co2_percentage;
-      }
-    }
-  }
-
-  void GearsGazeboInterface::readThermalSensors()
-  {
-    for (unsigned int n = 0; n < thermalSensorNum_; n++)
-    {
-      thermalSensorVector_[n] = thermalSensorVectorStored_[n];
-    }
-  }
-  
-  void GearsGazeboInterface::thermalSensorCallback(
-      const sensor_msgs::ImageConstPtr& msg)
-  {
-    for (unsigned int n = 0; n < thermalSensorNum_; n++)
-    {
-      if (msg->header.frame_id == thermalSensorFrameID_[n])
-      {
-        thermalSensorVectorStored_[n] = msg->data;
-      }
-    }
-  }
-
-
-  void GearsGazeboInterface::writeJoints()
-  {
-    adjustWheelVelocityCommands();
-
-    for (unsigned int i = 0; i < jointNum_; i++)
-    {
-      switch (jointControlMethod_[i])
-      {
-        case POSITION_PID:
-        {
-          double error;
-          double jointCommand = clamp(jointCommand_[i], jointLowerLimit_[i], jointUpperLimit_[i]);
-
-          switch (jointType_[i])
-          {
-            case urdf::Joint::REVOLUTE:
-            {
-              angles::shortest_angular_distance_with_limits(
-                  jointPosition_[i],
-                  jointCommand,
-                  jointLowerLimit_[i],
-                  jointUpperLimit_[i],
-                  error);
-
-              break;
-            }
-            default:
-            {
-              error = jointCommand - jointPosition_[i];
-
-              break;
-            }
-          }
-
-          double pidCommand = pidController_[i].computeCommand(error, writePeriod_);
-          double effortLimit = jointEffortLimit_[i];
-          double effort = clamp(pidCommand, -effortLimit, effortLimit);
-          gazeboJoint_[i]->SetForce(0, effort);
-
-          break;
-        }
-        case VELOCITY:
-        {
-          gazeboJoint_[i]->SetVelocity(0, jointCommand_[i] * wheelVelocityMultiplier_);
-
-          break;
-        }
-        default:
-        {
-          break;
-        }
-      }
-    }
-  }
-
   void GearsGazeboInterface::adjustWheelVelocityCommands()
   {
     double leftWheelVelocity = jointCommand_[0];
@@ -835,7 +806,6 @@ namespace pandora_gazebo_interface
     double x = (rightWheelVelocity + leftWheelVelocity) * wheelRadius_ / 2;
     double z = (rightWheelVelocity - leftWheelVelocity) * wheelRadius_ / wheelSeparation_;
 
-    // TODO: Calculate the new values
     double linearVelocity =
         (+9.446060513) * (0.1000) * pow(x, 1) +
         (+1.315202284) * (1.0000) * pow(x, 3) +
@@ -854,5 +824,4 @@ namespace pandora_gazebo_interface
     jointCommand_[2] = newRightWheelVelocity;
     jointCommand_[3] = newRightWheelVelocity;
   }
-
 }  // namespace pandora_gazebo_interface
