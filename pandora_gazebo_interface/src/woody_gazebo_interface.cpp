@@ -291,41 +291,8 @@ namespace pandora_gazebo_interface
     }
     registerInterface(&jointStateInterface_);
 
-    // Connect and register the joint velocity interface
-    for (unsigned int i = 0; i <= 3; i++)
-    {
-      hardware_interface::JointHandle jointHandle(
-          jointStateInterface_.getHandle(jointName_[i]),
-          &jointCommand_[i]);
-      velocityJointInterface_.registerHandle(jointHandle);
-    }
-    registerInterface(&velocityJointInterface_);
-
-    /*
-    // Connect and register the joint effort interface
-    for (unsigned int i = 0; i < 4; i++)
-    {
-      hardware_interface::JointHandle jointHandle(
-          jointStateInterface_.getHandle(jointName_[i]),
-          &jointCommand_[i]);
-      effortJointInterface_.registerHandle(jointHandle);
-    }
-    registerInterface(&effortJointInterface_);
-    */
-
-    // Connect and register the joint position handle
-    for (unsigned int i = 4; i < jointNum_; i++)
-    {
-      hardware_interface::JointHandle jointHandle(
-          jointStateInterface_.getHandle(jointName_[i]),
-          &jointCommand_[i]);
-      positionJointInterface_.registerHandle(jointHandle);
-    }
-    registerInterface(&positionJointInterface_);
-
-    /*
-    // Connect and register the joint interface
-    for (unsigned int i = 0; i < jointNum; i++)
+    // Connect and register the joint interfaces
+    for (unsigned int i = 0; i < jointNum_; i++)
     {
       hardware_interface::JointHandle jointHandle(
           jointStateInterface_.getHandle(jointName_[i]),
@@ -337,7 +304,6 @@ namespace pandora_gazebo_interface
     registerInterface(&velocityJointInterface_);
     registerInterface(&effortJointInterface_);
     registerInterface(&positionJointInterface_);
-    */
   }
 
   void WoodyGazeboInterface::registerImuInterface()
