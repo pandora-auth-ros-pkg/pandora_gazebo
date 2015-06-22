@@ -1,6 +1,4 @@
 <launch>
-    
-<!-- ###################################################################### -->
   
   <!-- Joint State -->
   <rosparam command="load" ns="/"
@@ -17,8 +15,6 @@
   <!-- Robot Wheels -->
   <rosparam command="load" ns="/"
             file="$(find pandora_gazebo_controllers)/config/woody/default_controllers/default_woody_wheel_controllers.yaml" />
-    
-<!-- ###################################################################### -->
   
   <!-- Load the controllers -->
   <node name="controller_spawner" 
@@ -33,7 +29,5 @@
               woody_left_rear_wheel_controller
               woody_right_front_wheel_controller
               woody_right_rear_wheel_controller" />
-    
-<!-- ###################################################################### -->
               
 </launch>

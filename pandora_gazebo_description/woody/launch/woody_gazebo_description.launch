@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="ros_control" default="true" />
+  <arg name="tune" default="false" />
+  
+  <group if="$(arg ros_control)" >
+    <include file="$(find pandora_gazebo_controllers)/launch/woody/pandora_woody_controllers.launch" />
+  </group>
+
+  <param name="robot_description"
+         command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/woody/urdf/woody.gazebo.xacro'
+                  ros_control:=$(arg ros_control) tune:=$(arg tune)"/>
+  
+  <group unless="$(arg ros_control)" >
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
+      <rosparam command="load" file="$(find pandora_robots_description)/config/woody/joint_states.yaml" />
+    </node>
+  </group>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+</launch>

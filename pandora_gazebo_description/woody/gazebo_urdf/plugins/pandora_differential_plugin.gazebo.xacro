@@ -4,8 +4,7 @@
 
 <!-- ###################################################################### -->
 
-  <xacro:macro name="pandora_differential_plugin"
-               params="publish_joint_states" >
+  <xacro:macro name="pandora_differential_plugin" >
                
     <gazebo>
 
@@ -15,7 +14,7 @@
         <!-- ============================================================== -->
         <robotNamespace>${robot_namespace}</robotNamespace>
         <!-- ============================================================== -->
-        <publishJointStates>${publish_joint_states}</publishJointStates>
+        <publishJointStates>false</publishJointStates>
         <!-- ============================================================== -->
         <baseLink>base_link</baseLink>
         <!-- ============================================================== -->

@@ -1,6 +1,4 @@
 <launch>
-    
-<!-- ###################################################################### -->
   
   <!-- Joint State -->
   <rosparam command="load" ns="/"
@@ -25,8 +23,6 @@
   <!-- Robot Wheels -->
   <rosparam command="load" ns="/"
             file="$(find pandora_gazebo_controllers)/config/gears/default_controllers/default_gears_wheel_controllers.yaml" />
-    
-<!-- ###################################################################### -->
   
   <!-- Load the controllers -->
   <node name="controller_spawner" 
@@ -44,7 +40,5 @@
               gears_left_rear_wheel_controller
               gears_right_front_wheel_controller
               gears_right_rear_wheel_controller" />
-    
-<!-- ###################################################################### -->
               
 </launch>

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<robot name="woody"
+       xmlns:xacro="http://ros.org/wiki/xacro" >
+
+  <!-- Import Files -->
+  <xacro:include filename="$(find pandora_robots_description)/woody/urdf/woody.urdf.xacro" />
+
+  <xacro:include filename="$(find pandora_gazebo_description)/sensors/*.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/plugins/*.gazebo.xacro" />
+
+  <!-- Load URDF -->
+  <xacro:woody_urdf /> 
+
+  <!-- Load gazebo sensors -->
+  <xacro:if value="$(arg enable_laser)" >
+    <xacro:laser_sensor range="4" />
+  </xacro:if>
+  <xacro:if value="$(arg enable_kinect)" >
+    <xacro:kinect_sensor />
+  </xacro:if>
+  <xacro:if value="$(arg enable_webcam)" >
+    <xacro:thermal_sensor />
+  </xacro:if>
+  <xacro:if value="$(arg enable_sonar)" >
+    <xacro:webcam_sensor prefix_y="left" />
+    <xacro:webcam_sensor prefix_y="right" />
+  </xacro:if>
+  <xacro:if value="$(arg enable_thermal)" >
+    <xacro:sonar_sensor name="left" />
+    <xacro:sonar_sensor name="right" />
+  </xacro:if>
+  <xacro:if value="$(arg enable_temperature)" >
+    <xacro:co2_sensor />
+  </xacro:if>
+  <xacro:if value="$(arg enable_co2)" >
+    <xacro:temperature_sensor prefix_y="middle" />
+    <xacro:temperature_sensor prefix_y="left" />
+    <xacro:temperature_sensor prefix_y="right" />
+  </xacro:if>
+  <xacro:if value="$(arg enable_microphone)" >
+    <xacro:microphone_sensor />
+  </xacro:if>
+
+  <!-- Load Plugins -->
+  <xacro:pandora_differential_plugin />
+  <xacro:pandora_p3d_plugin />
+  <xacro:gazebo_ros_control_plugin interface="pandora_gazebo_interface/WoodyGazeboInterface" />
+  <xacro:if value="$(arg tune)" >
+    <xacro:pandora_wheel_physics_plugin/>
+    <!--<xacro:pandora_fdir_plugin />-->
+  </xacro:if>     
+
+</robot>
