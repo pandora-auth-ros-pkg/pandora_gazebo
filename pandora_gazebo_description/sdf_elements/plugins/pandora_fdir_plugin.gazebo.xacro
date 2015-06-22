@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+  <xacro:macro name="pandora_fdir">
+    <gazebo>
+      <plugin name="PandoraFdirPlugin" filename="libpandora_gazebo_plugins_pandora_fdir_plugin.so" >
+        <robotNamespace>/</robotNamespace>
+        <leftFrontWheelLink>left_front_wheel_link</leftFrontWheelLink>
+        <leftRearWheelLink>left_rear_wheel_link</leftRearWheelLink>
+        <rightFrontWheelLink>right_front_wheel_link</rightFrontWheelLink>
+        <rightRearWheelLink>right_rear_wheel_link</rightRearWheelLink>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+</robot>

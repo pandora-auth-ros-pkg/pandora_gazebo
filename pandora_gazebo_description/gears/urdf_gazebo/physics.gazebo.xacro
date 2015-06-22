@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+  <gazebo reference="left_front_wheel_link" >
+    <minDepth>${wheel_min_depth}</minDepth>
+    <mu1>${wheel_mu_1}</mu1>
+    <mu2>${wheel_mu_2}</mu2>
+    <fdir1>1 0 0</fdir1>
+    <kp>${wheel_k_p}</kp>
+    <kd>${wheel_k_d}</kd>
+    <maxContacts>${wheel_max_contacts}</maxContacts>
+  </gazebo>
+  <gazebo reference="left_rear_wheel_link" >
+    <minDepth>${wheel_min_depth}</minDepth>
+    <mu1>${wheel_mu_1}</mu1>
+    <mu2>${wheel_mu_2}</mu2>
+    <fdir1>1 0 0</fdir1>
+    <kp>${wheel_k_p}</kp>
+    <kd>${wheel_k_d}</kd>
+    <maxContacts>${wheel_max_contacts}</maxContacts>
+  </gazebo>
+  <gazebo reference="right_front_wheel_link" >
+    <minDepth>${wheel_min_depth}</minDepth>
+    <mu1>${wheel_mu_1}</mu1>
+    <mu2>${wheel_mu_2}</mu2>
+    <fdir1>1 0 0</fdir1>
+    <kp>${wheel_k_p}</kp>
+    <kd>${wheel_k_d}</kd>
+    <maxContacts>${wheel_max_contacts}</maxContacts>
+  </gazebo>
+  <gazebo reference="right_rear_wheel_link" >
+    <minDepth>${wheel_min_depth}</minDepth>
+    <mu1>${wheel_mu_1}</mu1>
+    <mu2>${wheel_mu_2}</mu2>
+    <fdir1>1 0 0</fdir1>
+    <kp>${wheel_k_p}</kp>
+    <kd>${wheel_k_d}</kd>
+    <maxContacts>${wheel_max_contacts}</maxContacts>
+  </gazebo>
+
+  <gazebo reference="left_side_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="right_side_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
+  <gazebo reference="laser_roll_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="laser_pitch_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
+  <gazebo reference="kinect_pitch_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="kinect_yaw_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
+  <gazebo reference="linear_elevator_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="linear_head_pitch_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="linear_head_yaw_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
+</robot>
