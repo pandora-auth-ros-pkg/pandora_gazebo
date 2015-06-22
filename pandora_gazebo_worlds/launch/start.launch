@@ -9,12 +9,10 @@
   <arg name="z" default="0.175"/>
   <arg name="Y" default="0"/>
   
-  <arg name="ros_control" default="true"/>
   <arg name="tune" default="false" />
 
   <!-- Load robot_description -->
   <include file="$(find pandora_gazebo_description)/$(arg robot)/launch/$(arg robot)_gazebo_description.launch" >
-    <arg name="ros_control" value="$(arg ros_control)" />
     <arg name="tune" value="$(arg tune)" />
   </include>
   
