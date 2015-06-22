@@ -12,7 +12,7 @@
               filename="libgazebo_ros_skid_steer_drive.so" >
 
         <!-- ============================================================== -->
-        <robotNamespace>${robot_namespace}</robotNamespace>
+        <robotNamespace>/</robotNamespace>
         <!-- ============================================================== -->
         <updateRate>100.0</updateRate>
         <!-- ============================================================== -->
@@ -24,7 +24,7 @@
         <wheelSeparation>${track}</wheelSeparation>
         <wheelDiameter>${ 2 * wheel_radius }</wheelDiameter>
         <!-- ============================================================== -->
-        <torque>${wheel_joint_max_torque}</torque>
+        <torque>50</torque>
         <!-- ============================================================== -->
         <robotBaseFrame>base_link</robotBaseFrame>
         <topicName>cmd_vel</topicName>
