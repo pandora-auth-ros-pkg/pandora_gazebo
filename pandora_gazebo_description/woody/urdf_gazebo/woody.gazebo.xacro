@@ -22,24 +22,22 @@
   <xacro:if value="${enable_kinect}" >
     <xacro:kinect_sensor />
   </xacro:if>
-  <xacro:if value="${enable_webcam}" >
+  <xacro:if value="${enable_thermal}" >
     <xacro:thermal_sensor />
   </xacro:if>
-  <xacro:if value="${enable_sonar}" >
+  <xacro:if value="${enable_webcam}" >
     <xacro:webcam_sensor prefix_y="left" />
     <xacro:webcam_sensor prefix_y="right" />
   </xacro:if>
-  <xacro:if value="${enable_thermal}" >
+  <xacro:if value="${enable_sonar}" >
     <xacro:sonar_sensor name="left" />
     <xacro:sonar_sensor name="right" />
   </xacro:if>
-  <xacro:if value="${enable_temperature}" >
+  <xacro:if value="${enable_co2}" >
     <xacro:co2_sensor />
   </xacro:if>
-  <xacro:if value="${enable_co2}" >
+  <xacro:if value="${enable_temperature}" >
     <xacro:temperature_sensor prefix_y="middle" />
-    <xacro:temperature_sensor prefix_y="left" />
-    <xacro:temperature_sensor prefix_y="right" />
   </xacro:if>
   <xacro:if value="${enable_microphone}" >
     <xacro:microphone_sensor />
