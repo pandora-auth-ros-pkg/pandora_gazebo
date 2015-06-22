@@ -3,22 +3,15 @@
   <arg name="gui" default="true"/>
   <arg name="robot" default="woody"/>
   
-  <arg name="simplified" default="true"/>
-  
-  <arg name="control" default="true"/>
-  <arg name="interface" default="true"/>
+  <arg name="ros_control" default="true"/>
   <arg name="tune" default="false" />
   
   <include file="$(find pandora_gazebo_worlds)/launch/start.launch">
     <arg name="world" value="physics_test_world"/>
     <arg name="robot" value="$(arg robot)"/>
-    <arg name="gui" value="$(arg gui)"/> 
-    <arg name="x" value="2.5"/> 
-    <arg name="y" value="2.5"/> 
+    <arg name="gui" value="$(arg gui)"/>
     <arg name="z" value="0.5"/>
-    <arg name="simplified" value="$(arg simplified)"/>
-    <arg name="control" value="$(arg control)"/>
-    <arg name="interface" value="$(arg interface)" />
+    <arg name="ros_control" value="$(arg ros_control)"/>
     <arg name="tune" value="$(arg tune)" />
   </include>
 
