@@ -541,7 +541,7 @@ namespace gazebo
     double angle_diff = left_angle_abs - right_angle_abs;
 
     // Maximum hardcoded force to be applied
-    double max_force = 20.0;
+    double max_force = 15.0;
 
     // Apply the correction forces at the side joints accordingly
     if ((this->left_angle_ * this->right_angle_) > 0)
