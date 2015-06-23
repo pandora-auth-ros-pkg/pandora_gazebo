@@ -638,16 +638,20 @@ namespace pandora_gazebo_interface
     double x = (rightWheelVelocity + leftWheelVelocity) * wheelRadius_ / 2;
     double z = (rightWheelVelocity - leftWheelVelocity) * wheelRadius_ / wheelSeparation_;
 
-    double linearVelocity =
+    double linearVelocity = x;
+    /*
         (+9.446060513) * (0.1000) * pow(x, 1) +
         (+1.315202284) * (1.0000) * pow(x, 3) +
         (-6.404744656) * (1.0000) * pow(x, 5) +
         (+2.449775997) * (1.0000) * pow(x, 7);
-    double angularVelocity =
+    */
+    double angularVelocity = z;
+    /*
         (+4.219745338) * (0.1000) * pow(z, 1) +
         (+3.166949881) * (0.0100) * pow(z, 3) +
         (-1.104404291) * (0.0100) * pow(z, 5) +
         (+8.216225035) * (0.0001) * pow(z, 7);
+    */
 
     double newLeftWheelVelocity = (linearVelocity - angularVelocity * wheelSeparation_ / 2) / wheelRadius_;
     double newRightWheelVelocity = (linearVelocity + angularVelocity * wheelSeparation_ / 2) / wheelRadius_;
