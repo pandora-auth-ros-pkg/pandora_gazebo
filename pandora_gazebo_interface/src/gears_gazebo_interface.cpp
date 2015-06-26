@@ -40,12 +40,12 @@
 namespace
 {
 
-  double clamp(
-      const double val,
+  void clamp(
+      double& val,
       const double min_val,
       const double max_val)
   {
-    return std::min(std::max(val, min_val), max_val);
+    val = std::min(std::max(val, min_val), max_val);
   }
 
 }  // namespace
@@ -709,7 +709,8 @@ namespace pandora_gazebo_interface
           case POSITION_PID:
           {
             double error;
-            double jointCommand = clamp(jointCommand_[i], jointLowerLimit_[i], jointUpperLimit_[i]);
+            double jointCommand = jointCommand_[i];
+            clamp(jointCommand, jointLowerLimit_[i], jointUpperLimit_[i]);
 
             switch (jointType_[i])
             {
@@ -734,7 +735,8 @@ namespace pandora_gazebo_interface
 
             double pidCommand = pidController_[i].computeCommand(error, writePeriod_);
             double effortLimit = jointEffortLimit_[i];
-            double effort = clamp(pidCommand, -effortLimit, effortLimit);
+            double effort = pidCommand;
+            clamp(effort, -effortLimit, effortLimit);
             gazeboJoint_[i]->SetForce(0, effort);
 
             break;
