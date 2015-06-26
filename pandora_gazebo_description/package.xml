@@ -20,7 +20,6 @@
   <exec_depend>pandora_robots_description</exec_depend>
   <exec_depend>pandora_gazebo_interface</exec_depend>
   <exec_depend>pandora_gazebo_plugins</exec_depend>
-  <exec_depend>pandora_gazebo_controllers</exec_depend>
   <exec_depend>gazebo_ros_control</exec_depend>
   <exec_depend>gazebo_plugins</exec_depend>
   

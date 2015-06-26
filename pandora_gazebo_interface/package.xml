@@ -22,6 +22,7 @@
   <depend>gazebo_plugins</depend>
   <depend>gazebo_ros_control</depend>
   <depend>control_toolbox</depend>
+  <depend>pandora_motor_hardware_interface</depend>
   <depend>pandora_imu_hardware_interface</depend>
   <depend>pandora_arm_hardware_interface</depend>
   <depend>pandora_xmega_hardware_interface</depend>

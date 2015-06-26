@@ -36,19 +36,19 @@
   
   <!-- Laser -->
   <rosparam command="load" ns="/"
-            file="$(find pandora_gazebo_controllers)/config/laser_controllers.yaml" />
+            file="$(find pandora_gazebo_interface)/config/laser_controllers.yaml" />
   
   <!-- Kinect -->
   <rosparam command="load" ns="/"
-            file="$(find pandora_gazebo_controllers)/config/kinect_controllers.yaml" />
+            file="$(find pandora_gazebo_interface)/config/kinect_controllers.yaml" />
   
   <!-- Linear Elevator -->
   <rosparam command="load" ns="/"
-            file="$(find pandora_gazebo_controllers)/config/linear_elevator_controller.yaml" />
+            file="$(find pandora_gazebo_interface)/config/linear_elevator_controller.yaml" />
   
   <!-- Linear Head -->
   <rosparam command="load" ns="/"
-            file="$(find pandora_gazebo_controllers)/config/linear_head_controllers.yaml" />
+            file="$(find pandora_gazebo_interface)/config/linear_head_controllers.yaml" />
   
   <!-- Load the controllers -->
   <node name="controller_spawner" 

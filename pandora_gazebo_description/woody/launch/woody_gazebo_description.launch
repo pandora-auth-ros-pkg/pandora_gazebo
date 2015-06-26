@@ -4,7 +4,7 @@
 
   <arg name="tune" default="false" />
   
-  <include file="$(find pandora_gazebo_controllers)/launch/woody_controllers.launch" />
+  <include file="$(find pandora_gazebo_interface)/launch/woody_controllers.launch" />
 
   <param name="robot_description"
          command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/woody/urdf_gazebo/woody.gazebo.xacro' tune:=$(arg tune)" />

@@ -19,8 +19,6 @@
   <exec_depend>pandora_robots_description</exec_depend>
 
   <export>
-    
     <gazebo_ros gazebo_media_path="${prefix}" />
-
   </export>
 </package>

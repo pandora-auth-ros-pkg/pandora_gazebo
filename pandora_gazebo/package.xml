@@ -12,10 +12,10 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   
+  <exec_depend>pandora_gazebo_description</exec_depend>
+  <exec_depend>pandora_gazebo_interface</exec_depend>
   <exec_depend>pandora_gazebo_plugins</exec_depend>
   <exec_depend>pandora_gazebo_worlds</exec_depend>
-  <exec_depend>pandora_gazebo_controllers</exec_depend>
- 
 
   <export>
     <metapackage/>
