@@ -31,11 +31,11 @@
 
   <!-- Laser -->
   <rosparam command="load" ns="/"
-            file="$(find pandora_gazebo_controllers)/config/woody/pandora_controllers/pandora_laser_controllers.yaml" />
+            file="$(find pandora_gazebo_controllers)/config/laser_controllers.yaml" />
 
   <!-- Kinect -->
   <rosparam command="load" ns="/"
-            file="$(find pandora_gazebo_controllers)/config/woody/pandora_controllers/pandora_kinect_controllers.yaml" />
+            file="$(find pandora_gazebo_controllers)/config/kinect_controllers.yaml" />
 
   <!-- Load the controllers -->
   <node name="controller_spawner" 

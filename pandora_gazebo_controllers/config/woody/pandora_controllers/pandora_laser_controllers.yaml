@@ -1,9 +1,0 @@
-# Laser Position Controllers ---------------------------------------
-
-laser_roll_controller:
-  type: position_controllers/JointPositionController
-  joint: laser_roll_joint
-
-laser_pitch_controller:
-  type: position_controllers/JointPositionController
-  joint: laser_pitch_joint
