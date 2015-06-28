@@ -1,14 +1,18 @@
-<?xml version="1.0"?>
 <package format="2">
-  <name>pandora_gazebo</name> <!-- This is a meta package! -->
+  <name>pandora_gazebo</name>
   <version>0.1.0</version>
   <description>Packages used for creating a simulated environment for PANDORA ugv.</description>
 
-  <maintainer email="zalidis@gmail.com">Chris Zalidis</maintainer>
+  <maintainer email="geromidg@gmail.com">Dimitris Geromichalos</maintainer>
 
   <license>BSD</license>
 
-  <author>Manos Tsardoulias, Chris Zalidis</author>
+  <url type="bugtracker">https://github.com/pandora-auth-ros-pkg/pandora_gazebo/issues</url>
+  <url type="repository">https://github.com/pandora-auth-ros-pkg/pandora_gazebo.git</url>
+
+  <author>Dimitris Geromichalos</author>
+  <author>Chris Zalidis</author>
+  <author>Manos Tsardoulias</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   

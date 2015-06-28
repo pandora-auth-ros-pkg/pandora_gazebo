@@ -1,17 +1,18 @@
-<?xml version="1.0"?>
 <package format="2">
   <name>pandora_gazebo_plugins</name>
-  <version>0.0.0</version>
+  <version>0.1.0</version>
   <description>Contains plugins used for gazebo simulation/</description>
 
-
-  <maintainer email="zalidis@gmail.com">Chris Zalidis</maintainer>
+  <maintainer email="geromidg@gmail.com">Dimitris Geromichalos</maintainer>
+  <maintainer email="zisikons@gmail.com">Konstantinos Zisis</maintainer>
 
   <license>BSD</license>
 
   <url type="bugtracker">https://github.com/pandora-auth-ros-pkg/pandora_gazebo/issues</url>
-  <url type="repository">https://github.com/pandora-auth-ros-pkg/pandora_gazebo</url>
+  <url type="repository">https://github.com/pandora-auth-ros-pkg/pandora_gazebo.git</url>
 
+  <author>Dimitris Geromichalos</author>
+  <author>Konstantinos Zisis</author>
   <author>Chris Zalidis</author>
 
   <buildtool_depend>catkin</buildtool_depend>
