@@ -8,12 +8,18 @@
 
   <xacro:include filename="$(find pandora_gazebo_description)/woody/urdf_gazebo/sdf_configurations.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/woody/urdf_gazebo/physics.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/woody/urdf_gazebo/differential_side_joint.gazebo.xacro" />
 
   <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/sensors/*.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/plugins/*.gazebo.xacro" />
 
   <!-- Load URDF -->
-  <xacro:woody_urdf /> 
+  <xacro:woody_urdf />
+
+  <!-- Load Differential Side Joints -->
+  <xacro:differential_side_joint prefix_y="left" reflect_y="1" />
+  <xacro:differential_side_joint prefix_y="right" reflect_y="-1" />
+
 
   <!-- Load gazebo sensors -->
   <xacro:if value="${enable_laser}" >
@@ -50,6 +56,6 @@
   <xacro:if value="$(arg tune)" >
     <xacro:pandora_wheel_physics />
     <!--<xacro:pandora_fdir />-->
-  </xacro:if>     
+  </xacro:if>
 
 </robot>

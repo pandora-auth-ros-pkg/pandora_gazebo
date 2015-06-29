@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+  <xacro:macro name="differential_side_joint"
+             params="prefix_y reflect_y">
+
+    <gazebo>
+      <!--=========================================================== -->
+      <joint name="${prefix_y}_pin_parallel_joint" 
+             type="revolute">
+      
+        <parent>${prefix_y}_differential_link_pin</parent> 
+        <child>${prefix_y}_side_link</child>
+
+        <pose>-0.1645 ${reflect_y * 0.01616} -0.0106 0 0 0</pose>
+        
+        <axis>
+          <xyz>0 1 0</xyz>
+
+          <limit>
+            <lower>-0.78</lower>
+            <upper>0.78</upper>
+          </limit>
+
+          <dynamics>
+            <friction>0</friction>
+            <damping>0</damping>
+          </dynamics>
+        </axis>
+
+      </joint>
+      <!--=========================================================== -->
+    </gazebo>
+  </xacro:macro>
+</robot>
