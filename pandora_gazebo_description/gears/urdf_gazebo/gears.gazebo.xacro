@@ -7,13 +7,13 @@
   <xacro:include filename="$(find pandora_robots_description)/gears/urdf/gears.urdf.xacro" />
 
   <xacro:include filename="$(find pandora_gazebo_description)/gears/urdf_gazebo/sdf_configurations.xacro" />
-  <xacro:include filename="$(find pandora_gazebo_description)/gears/urdf_gazebo/physics.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/gears/urdf_gazebo/references.gazebo.xacro" />
 
   <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/sensors/*.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/plugins/*.gazebo.xacro" />
 
   <!-- Load URDF -->
-  <xacro:gears_urdf /> 
+  <xacro:gears_urdf />
 
   <!-- Load gazebo sensors -->
   <xacro:if value="${enable_laser}" >
@@ -50,6 +50,6 @@
   <xacro:if value="$(arg tune)" >
     <xacro:pandora_wheel_physics />
     <!--<xacro:pandora_fdir />-->
-  </xacro:if>     
+  </xacro:if>
 
 </robot>
