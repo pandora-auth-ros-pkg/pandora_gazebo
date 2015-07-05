@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 
-<robot name="woody"
+<robot name="gio"
        xmlns:xacro="http://ros.org/wiki/xacro" >
 
   <!-- Import Files -->
-  <xacro:include filename="$(find pandora_robots_description)/woody/urdf/woody.urdf.xacro" />
+  <xacro:include filename="$(find pandora_robots_description)/gio/urdf/gio.urdf.xacro" />
 
-  <xacro:include filename="$(find pandora_gazebo_description)/woody/urdf_gazebo/sdf_configurations.xacro" />
-  <xacro:include filename="$(find pandora_gazebo_description)/woody/urdf_gazebo/references.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/gio/urdf_gazebo/sdf_configurations.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/gio/urdf_gazebo/references.gazebo.xacro" />
 
   <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/sensors/*.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/plugins/*.gazebo.xacro" />
 
   <!-- Load URDF -->
-  <xacro:woody_urdf />
+  <xacro:gio_urdf />
 
   <!-- Load gazebo sensors -->
   <xacro:if value="${enable_laser}" >
@@ -44,7 +44,7 @@
   </xacro:if>
 
   <!-- Load Plugins -->
-  <xacro:gazebo_ros_control interface="pandora_gazebo_interface/WoodyGazeboInterface" />
+  <xacro:gazebo_ros_control interface="pandora_gazebo_interface/GioGazeboInterface" />
   <xacro:pandora_differential />
   <xacro:pandora_p3d />
   <xacro:if value="$(arg tune)" >

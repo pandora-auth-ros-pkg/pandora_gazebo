@@ -56,10 +56,10 @@ target_link_libraries(
   ${GAZEBO_LIBRARIES})
 
 add_library(
-  ${PROJECT_NAME}_woody_gazebo_interface
-  src/woody_gazebo_interface.cpp)
+  ${PROJECT_NAME}_gio_gazebo_interface
+  src/gio_gazebo_interface.cpp)
 target_link_libraries(
-  ${PROJECT_NAME}_woody_gazebo_interface
+  ${PROJECT_NAME}_gio_gazebo_interface
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES})
 

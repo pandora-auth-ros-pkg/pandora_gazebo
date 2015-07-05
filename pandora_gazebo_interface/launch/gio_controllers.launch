@@ -1,17 +1,17 @@
 <launch>
-            
+
   <!-- Load Skid Steer -->
   <include file="$(find pandora_motor_hardware_interface)/motor_controllers/launch/skid_steer_drive_controller.launch" >
-    <arg name="robot" value="woody" />
+    <arg name="robot" value="gio" />
     <arg name="sim" value="true" />
     <arg name="namespace" value="/" />
   </include>
-              
+
   <!-- Load IMU -->
   <include file="$(find pandora_imu_hardware_interface)/imu_controllers/launch/imu_controllers.launch" >
     <arg name="namespace" value="/" />
   </include>
-            
+
   <!-- Load ARM -->
   <include file="$(find pandora_arm_hardware_interface)/arm_controllers/launch/joint_states_controller.launch" >
     <arg name="namespace" value="/" />
@@ -38,12 +38,12 @@
             file="$(find pandora_gazebo_interface)/config/kinect_controllers.yaml" />
 
   <!-- Load the controllers -->
-  <node name="controller_spawner" 
-        pkg="controller_manager" type="controller_manager" respawn="false" output="screen" ns="/" 
+  <node name="controller_spawner"
+        pkg="controller_manager" type="controller_manager" respawn="false" output="screen" ns="/"
         args="spawn
               laser_roll_controller
               laser_pitch_controller
               kinect_pitch_controller
               kinect_yaw_controller" />
-                
+
 </launch>

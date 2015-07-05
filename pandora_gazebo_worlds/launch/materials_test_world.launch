@@ -1,10 +1,10 @@
 <launch>
 
   <arg name="gui" default="true"/>
-  <arg name="robot" default="woody"/>
-  
+  <arg name="robot" default="gio"/>
+
   <arg name="tune" default="false" />
-  
+
   <include file="$(find pandora_gazebo_worlds)/launch/start.launch">
     <arg name="world" value="materials_test_world"/>
     <arg name="robot" value="$(arg robot)"/>

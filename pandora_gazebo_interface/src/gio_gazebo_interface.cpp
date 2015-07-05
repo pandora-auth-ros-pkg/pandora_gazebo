@@ -35,7 +35,7 @@
  * Author: Geromichalos Dimitrios Panagiotis <geromidg@gmail.com>
  *********************************************************************/
 
-#include "pandora_gazebo_interface/woody_gazebo_interface.h"
+#include "pandora_gazebo_interface/gio_gazebo_interface.h"
 
 namespace
 {
@@ -53,11 +53,11 @@ namespace
 namespace pandora_gazebo_interface
 {
 
-  WoodyGazeboInterface::~WoodyGazeboInterface()
+  GioGazeboInterface::~GioGazeboInterface()
   {
   }
 
-  bool WoodyGazeboInterface::initSim(
+  bool GioGazeboInterface::initSim(
       const std::string& robotnamespace,
       ros::NodeHandle modelNh,
       gazebo::physics::ModelPtr parentModel,
@@ -179,21 +179,21 @@ namespace pandora_gazebo_interface
     co2SensorSubscriber_ = modelNh_.subscribe(
         "gazebo_sensors/co2",
         1,
-        &WoodyGazeboInterface::co2SensorCallback,
+        &GioGazeboInterface::co2SensorCallback,
         this);
 
     // Range sensors subscriber
     rangeSensorSubscriber_ = modelNh_.subscribe(
         "gazebo_sensors/range",
         1,
-        &WoodyGazeboInterface::rangeSensorCallback,
+        &GioGazeboInterface::rangeSensorCallback,
         this);
 
-    ROS_INFO("woody_gazebo_interface initialized successfully!");
+    ROS_INFO("gio_gazebo_interface initialized successfully!");
     return true;
   }
 
-  void WoodyGazeboInterface::registerJointInterface()
+  void GioGazeboInterface::registerJointInterface()
   {
     // Wheel joints
     jointName_[0] = "left_front_wheel_joint";
@@ -306,7 +306,7 @@ namespace pandora_gazebo_interface
     registerInterface(&positionJointInterface_);
   }
 
-  void WoodyGazeboInterface::registerImuInterface()
+  void GioGazeboInterface::registerImuInterface()
   {
     // Imu sensor
     imuLinkName_ = "base_link";
@@ -346,7 +346,7 @@ namespace pandora_gazebo_interface
     registerInterface(&imuRPYInterface_);
   }
 
-  void WoodyGazeboInterface::registerArmInterface()
+  void GioGazeboInterface::registerArmInterface()
   {
     // CO2 sensors
     co2SensorName_[0] = "/sensors/co2";
@@ -427,7 +427,7 @@ namespace pandora_gazebo_interface
     registerInterface(&rangeSensorInterface_);
   }
 
-  void WoodyGazeboInterface::readSim(
+  void GioGazeboInterface::readSim(
       ros::Time time,
       ros::Duration period)
   {
@@ -439,7 +439,7 @@ namespace pandora_gazebo_interface
     readArm();
   }
 
-  void WoodyGazeboInterface::readJoints()
+  void GioGazeboInterface::readJoints()
   {
     if ((jointLastReadTime_ + jointReadRate_) < readTime_)
     {
@@ -469,7 +469,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void WoodyGazeboInterface::readImu()
+  void GioGazeboInterface::readImu()
   {
     if ((imuLastReadTime_ + imuReadRate_) < readTime_)
     {
@@ -487,7 +487,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void WoodyGazeboInterface::readArm()
+  void GioGazeboInterface::readArm()
   {
     // Read co2 sensors
     if ((co2SensorLastReadTime_ + co2SensorReadRate_) < readTime_)
@@ -532,7 +532,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void WoodyGazeboInterface::writeSim(
+  void GioGazeboInterface::writeSim(
       ros::Time time,
       ros::Duration period)
   {
@@ -542,7 +542,7 @@ namespace pandora_gazebo_interface
     writeJoints();
   }
 
-  void WoodyGazeboInterface::writeJoints()
+  void GioGazeboInterface::writeJoints()
   {
     if ((jointLastWriteTime_ + jointWriteRate_) < writeTime_)
     {
@@ -608,7 +608,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void WoodyGazeboInterface::co2SensorCallback(
+  void GioGazeboInterface::co2SensorCallback(
       const pandora_sensor_msgs::Co2MsgConstPtr& msg)
   {
     for (unsigned int n = 0; n < co2SensorNum_; n++)
@@ -620,7 +620,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void WoodyGazeboInterface::rangeSensorCallback(
+  void GioGazeboInterface::rangeSensorCallback(
       const sensor_msgs::RangeConstPtr& msg)
   {
     for (unsigned int n = 0; n < rangeSensorNum_; n++)
@@ -632,7 +632,7 @@ namespace pandora_gazebo_interface
     }
   }
 
-  void WoodyGazeboInterface::adjustWheelVelocityCommands()
+  void GioGazeboInterface::adjustWheelVelocityCommands()
   {
     double leftWheelVelocity = jointCommand_[0];
     double rightWheelVelocity = jointCommand_[2];

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="tune" default="false" />
+
+  <include file="$(find pandora_gazebo_interface)/launch/gio_controllers.launch" />
+
+  <param name="robot_description"
+         command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/gio/urdf_gazebo/gio.gazebo.xacro' tune:=$(arg tune)" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+</launch>
