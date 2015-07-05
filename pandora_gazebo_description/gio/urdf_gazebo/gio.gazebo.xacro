@@ -12,9 +12,6 @@
   <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/sensors/*.gazebo.xacro" />
   <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/plugins/*.gazebo.xacro" />
 
-  <!-- Load URDF -->
-  <xacro:gio_urdf />
-
   <!-- Load gazebo sensors -->
   <xacro:if value="${enable_laser}" >
     <xacro:laser_sensor range="${laser_range}" />
@@ -45,7 +42,6 @@
 
   <!-- Load Plugins -->
   <xacro:gazebo_ros_control interface="pandora_gazebo_interface/GioGazeboInterface" />
-  <xacro:pandora_differential />
   <xacro:pandora_p3d />
   <xacro:if value="$(arg tune)" >
     <xacro:pandora_wheel_physics />
