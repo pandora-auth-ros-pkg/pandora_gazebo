@@ -42,6 +42,10 @@
     </joint>
   </gazebo>
 
+  <gazebo reference="linear_actuator_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
   <gazebo reference="left_front_wheel_link" >
     <minDepth>${wheel_min_depth}</minDepth>
     <mu1>${wheel_mu_1}</mu1>
