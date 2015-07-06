@@ -45,6 +45,12 @@
   <gazebo reference="linear_actuator_joint" >
     <implicitSpringDamper>true</implicitSpringDamper>
   </gazebo>
+  <gazebo reference="camera_effector_pan_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="camera_effector_tilt_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
 
   <gazebo reference="left_front_wheel_link" >
     <minDepth>${wheel_min_depth}</minDepth>
