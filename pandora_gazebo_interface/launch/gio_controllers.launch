@@ -1,7 +1,7 @@
 <launch>
 
   <!-- Load Skid Steer -->
-  <include file="$(find pandora_motor_hardware_interface)/motor_controllers/launch/skid_steer_drive_controller.launch" >
+  <include file="$(find pandora_motor_hardware_interface)/motor_controllers/launch/skid_steer_velocity_controller.launch" >
     <arg name="robot" value="gio" />
     <arg name="sim" value="true" />
     <arg name="namespace" value="/" />
