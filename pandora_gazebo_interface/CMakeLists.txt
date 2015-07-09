@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(pandora_gazebo_interface)
+
 find_package(
   catkin
   REQUIRED COMPONENTS
@@ -44,8 +45,6 @@ include_directories(
 link_directories(
   ${GAZEBO_LIBRARY_DIRS}
   ${catkin_LIBRARY_DIRS})
-
-set(CMAKE_BUILD_TYPE Debug)
 
 add_library(
   ${PROJECT_NAME}_gears_gazebo_interface
