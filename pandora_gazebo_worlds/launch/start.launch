@@ -31,7 +31,10 @@
   <node name="gazebo" pkg="gazebo_ros" type="gzserver"
         args="$(find pandora_gazebo_worlds)/worlds/$(arg world)/$(arg world).world"
         respawn="false" output="screen">
-    <!--<remap unless="false" from="gazebo_sensors" to="sensors"/>-->
+    <remap from="/linear_actuator_controller/command" to="/linear_actuator/command" />
+    <remap from="/camera_effector_pan_controller/command" to="/camera_effector/pan_command" />
+    <remap from="/camera_effector_tilt_controller/command" to="/camera_effector/tilt_command" />
+    <!--<remap from="gazebo_sensors" to="sensors"/>-->
   </node>
 
 </launch>
