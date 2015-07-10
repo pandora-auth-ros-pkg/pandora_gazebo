@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+  <xacro:macro name="laser_sensor" params="range" >
+    <gazebo reference="laser_link" >
+      <sensor name="laser" type="ray" >
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>683</samples>
+              <resolution>1</resolution>
+              <min_angle>-2.00712864</min_angle>
+              <max_angle>2.00712864</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.08</min>
+            <max>${range}</max>
+            <resolution>0.01</resolution>
+          </range>
+        </ray>
+
+        <plugin name="laser" filename="libRayPlugin.so" />
+
+        <plugin name="laser2Ros" filename="libgazebo_ros_laser.so" >
+          <frameName>/laser_link</frameName>
+          <topicName>/laser/scan</topicName>
+        </plugin>
+
+        <always_on>1</always_on>
+        <update_rate>10</update_rate>
+        <visualize>true</visualize>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+</robot>
