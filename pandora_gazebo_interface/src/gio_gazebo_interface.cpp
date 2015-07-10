@@ -73,7 +73,7 @@ namespace pandora_gazebo_interface
     world_ = parentModel_->GetWorld();
 
     // Physical properties
-    wheelRadius_ = 0.09794;
+    wheelRadius_ = 0.0922;
     wheelSeparation_ = 0.344;
 
     // Number of elements
