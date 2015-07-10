@@ -2,7 +2,7 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro" >
 
-  <xacro:macro name="camera_effector" >
+  <xacro:macro name="camera_effector_sensor" >
     <gazebo reference="pi_camera_frame" >
       <sensor name="pi_camera" type="camera" >
         <camera>
@@ -20,7 +20,7 @@
 
         <plugin name="camera2ros" filename="libgazebo_ros_camera.so" >
           <frameName>pi_camera_optical_frame</frameName>
-          <cameraName>pi_camera</cameraName>
+          <cameraName>rpi2/pi_camera</cameraName>
           <imageTopicName>image</imageTopicName>
         </plugin>
 
