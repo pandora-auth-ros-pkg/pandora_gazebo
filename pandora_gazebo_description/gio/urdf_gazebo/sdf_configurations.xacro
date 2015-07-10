@@ -9,10 +9,10 @@
   <xacro:property name="enable_laser" value="true" />
   <xacro:property name="enable_kinect" value="true" />
   <xacro:property name="enable_thermal" value="false" />
+  <xacro:property name="enable_camera_effector" value="true" />
   <xacro:property name="enable_webcam" value="true" />
   <xacro:property name="enable_sonar" value="true" />
   <xacro:property name="enable_co2" value="true" />
-  <xacro:property name="enable_temperature" value="false" />
   <xacro:property name="enable_microphone" value="false" />
 
   <!-- Wheel physics -->

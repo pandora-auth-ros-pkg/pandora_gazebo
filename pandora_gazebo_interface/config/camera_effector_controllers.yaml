@@ -1,6 +1,6 @@
 # Camera Effector Controllers ---------------------------------------
 
-camera_effector_pan__controller:
+camera_effector_pan_controller:
   type: position_controllers/JointPositionController
   joint: camera_effector_pan_joint
 

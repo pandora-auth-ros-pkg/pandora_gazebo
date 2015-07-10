@@ -77,7 +77,7 @@ namespace pandora_gazebo_interface
     wheelSeparation_ = 0.344;
 
     // Number of elements
-    jointNum_ = 10;
+    jointNum_ = 13;
     batteryNum_ = 2;
     rangeSensorNum_ = 2;
     co2SensorNum_ = 1;
@@ -278,6 +278,45 @@ namespace pandora_gazebo_interface
     jointEffortLimit_[9] = 50.0;
     jointControlMethod_[9] = POSITION_PID;
     pidController_[9].initPid(8.0, 1.5, 0.4, 10.0, -10.0);
+
+    // Linear actuaator joint
+    jointName_[10] = "linear_actuator_joint";
+    jointType_[10] = urdf::Joint::PRISMATIC;
+    jointEffort_[10] = 0.0;
+    jointPosition_[10] = 0.0;
+    jointVelocity_[10] = 0.0;
+    jointCommand_[10] = 0.0;
+    jointLowerLimit_[10] = 0.0;
+    jointUpperLimit_[10] = 0.14;
+    jointEffortLimit_[10] = 100.0;
+    jointControlMethod_[10] = POSITION_PID;
+    pidController_[10].initPid(15000.0, 0.0, 0.0, 0.0, 0.0);
+
+    // Camera effector pan joint
+    jointName_[11] = "camera_effector_pan_joint";
+    jointType_[11] = urdf::Joint::REVOLUTE;
+    jointEffort_[11] = 0.0;
+    jointPosition_[11] = 0.0;
+    jointVelocity_[11] = 0.0;
+    jointCommand_[11] = 0.0;
+    jointLowerLimit_[11] = -1.3962;
+    jointUpperLimit_[11] = 1.3962;
+    jointEffortLimit_[11] = 50.0;
+    jointControlMethod_[11] = POSITION_PID;
+    pidController_[11].initPid(11.0, 2.0, 0.25, 15.0, -15.0);
+
+    // Camera effector tilt joint
+    jointName_[12] = "camera_effector_tilt_joint";
+    jointType_[12] = urdf::Joint::REVOLUTE;
+    jointEffort_[12] = 0.0;
+    jointPosition_[12] = 0.0;
+    jointVelocity_[12] = 0.0;
+    jointCommand_[12] = 0.0;
+    jointLowerLimit_[12] = -0.6;
+    jointUpperLimit_[12] = 0.6;
+    jointEffortLimit_[12] = 50.0;
+    jointControlMethod_[12] = POSITION_PID;
+    pidController_[12].initPid(12.0, 1.0, 0.45, 10.0, -10.0);
 
     // Connect and register the joint state interface
     for (unsigned int i = 0; i < jointNum_; i++)
