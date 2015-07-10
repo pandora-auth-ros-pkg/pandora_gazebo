@@ -1,0 +1,9 @@
+# Camera Effector Controllers ---------------------------------------
+
+camera_effector_pan__controller:
+  type: position_controllers/JointPositionController
+  joint: camera_effector_pan_joint
+
+camera_effector_tilt_controller:
+  type: position_controllers/JointPositionController
+  joint: camera_effector_tilt_joint

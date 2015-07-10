@@ -1,0 +1,5 @@
+# Linear Actuator Position Controller -----------------------------------
+
+linear_actuator_controller:
+  type: position_controllers/JointPositionController
+  joint: linear_actuator_joint

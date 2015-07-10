@@ -37,6 +37,14 @@
   <rosparam command="load" ns="/"
             file="$(find pandora_gazebo_interface)/config/kinect_controllers.yaml" />
 
+  <!-- Linear Actuator -->
+  <rosparam command="load" ns="/"
+            file="$(find pandora_gazebo_interface)/config/linear_actuator_controller.yaml" />
+
+  <!-- Camera Effector -->
+  <rosparam command="load" ns="/"
+            file="$(find pandora_gazebo_interface)/config/camera_effector_controllers.yaml" />
+
   <!-- Load the controllers -->
   <node name="controller_spawner"
         pkg="controller_manager" type="controller_manager" respawn="false" output="screen" ns="/"
@@ -44,6 +52,9 @@
               laser_roll_controller
               laser_pitch_controller
               kinect_pitch_controller
-              kinect_yaw_controller" />
+              kinect_yaw_controller
+              linear_actuator_controller
+              camera_effector_pan_controller
+              camera_effector_tilt_controller" />
 
 </launch>
