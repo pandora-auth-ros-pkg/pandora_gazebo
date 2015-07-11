@@ -1,0 +1,9 @@
+# Linear Head Position Controllers ---------------------------------------
+
+linear_head_pitch_controller:
+  type: position_controllers/JointPositionController
+  joint: linear_head_pitch_joint
+
+linear_head_yaw_controller:
+  type: position_controllers/JointPositionController
+  joint: linear_head_yaw_joint
