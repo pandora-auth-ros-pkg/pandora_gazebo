@@ -1,17 +1,5 @@
 <class_libraries>
-  <library path="lib/libpandora_gazebo_interface_gears_gazebo_interface">
-    <class
-      name="pandora_gazebo_interface/GearsGazeboInterface"
-      type="pandora_gazebo_interface::GearsGazeboInterface"
-      base_class_type="gazebo_ros_control::RobotHWSim">
-      <description>
-        This is the gazebo interface for Pandora's Gears robot.
-      </description>
-    </class>
-  </library>
-
   <library path="lib/libpandora_gazebo_interface_gio_gazebo_interface">
-
     <class
       name="pandora_gazebo_interface/GioGazeboInterface"
       type="pandora_gazebo_interface::GioGazeboInterface"

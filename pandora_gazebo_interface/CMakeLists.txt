@@ -45,15 +45,7 @@ include_directories(
 link_directories(
   ${GAZEBO_LIBRARY_DIRS}
   ${catkin_LIBRARY_DIRS})
-
-add_library(
-  ${PROJECT_NAME}_gears_gazebo_interface
-  src/gears_gazebo_interface.cpp)
-target_link_libraries(
-  ${PROJECT_NAME}_gears_gazebo_interface
-  ${catkin_LIBRARIES}
-  ${GAZEBO_LIBRARIES})
-
+  
 add_library(
   ${PROJECT_NAME}_gio_gazebo_interface
   src/gio_gazebo_interface.cpp)
