@@ -444,7 +444,7 @@ namespace pandora_gazebo_interface
     for (unsigned int i = 0; i < rangeSensorNum_; i++)
     {
       rangeSensorRadiationType_[i] = 0;
-      rangeSensorFOV_[i] = 1.0472;
+      rangeSensorFOV_[i] = 0.1953;
       rangeSensorMinRange_[i] = 0.2;
       rangeSensorMaxRange_[i] = 4.0;
       rangeSensorRangeStored_[i] = 0.0;
