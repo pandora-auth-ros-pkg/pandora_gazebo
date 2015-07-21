@@ -20,8 +20,8 @@
     <xacro:kinect_sensor />
   </xacro:if>
   <xacro:if value="${enable_picam}" >
-    <xacro:picam_sensor prefix="front" />
-    <xacro:picam_sensor prefix="rear" />
+    <xacro:front_picam_sensor />
+    <xacro:rear_picam_sensor />
   </xacro:if>
   <xacro:if value="${enable_webcam}" >
     <xacro:webcam_sensor prefix="left" />
