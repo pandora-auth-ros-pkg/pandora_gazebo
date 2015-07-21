@@ -2,11 +2,11 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro" >
 
-  <xacro:macro name="webcam_sensor" params="prefix_y" >
-    <gazebo reference="${prefix_y}_camera_frame" >
-      <sensor name="${prefix_y}_camera" type="camera" >
+  <xacro:macro name="webcam_sensor" params="prefix" >
+    <gazebo reference="${prefix}_webcam_frame" >
+      <sensor name="${prefix}_webcam" type="camera" >
         <camera>
-          <horizontal_fov>1.047197551</horizontal_fov>
+          <horizontal_fov>1.06465084</horizontal_fov>
           <image>
             <width>1280</width>
             <height>720</height>
@@ -19,8 +19,8 @@
         </camera>
 
         <plugin name="camera2ros" filename="libgazebo_ros_camera.so" >
-          <frameName>${prefix_y}_camera_optical_frame</frameName>
-          <cameraName>${prefix_y}_camera</cameraName>
+          <frameName>${prefix}_webcam_optical_frame</frameName>
+          <cameraName>${prefix}_camera</cameraName>
           <imageTopicName>image</imageTopicName>
         </plugin>
 

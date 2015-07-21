@@ -19,15 +19,16 @@
   <xacro:if value="${enable_kinect}" >
     <xacro:kinect_sensor />
   </xacro:if>
-  <xacro:if value="${enable_thermal}" >
-    <xacro:thermal_sensor />
-  </xacro:if>
-  <xacro:if value="${enable_camera_effector}" >
-    <xacro:camera_effector_sensor />
+  <xacro:if value="${enable_picam}" >
+    <xacro:picam_sensor prefix="front" />
+    <xacro:picam_sensor prefix="rear" />
   </xacro:if>
   <xacro:if value="${enable_webcam}" >
-    <xacro:webcam_sensor prefix_y="left" />
-    <xacro:webcam_sensor prefix_y="right" />
+    <xacro:webcam_sensor prefix="left" />
+    <xacro:webcam_sensor prefix="right" />
+  </xacro:if>
+  <xacro:if value="${enable_thermal}" >
+    <xacro:thermal_sensor />
   </xacro:if>
   <xacro:if value="${enable_sonar}" >
     <xacro:sonar_sensor name="left" />

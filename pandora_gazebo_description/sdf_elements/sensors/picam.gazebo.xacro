@@ -2,9 +2,9 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro" >
 
-  <xacro:macro name="camera_effector_sensor" >
-    <gazebo reference="pi_camera_frame" >
-      <sensor name="pi_camera" type="camera" >
+  <xacro:macro name="picam_sensor" params="prefix" >
+    <gazebo reference="${prefix}_picam_frame" >
+      <sensor name="${prefix}_picam" type="camera" >
         <camera>
           <horizontal_fov>0.93375114982</horizontal_fov>
           <image>
