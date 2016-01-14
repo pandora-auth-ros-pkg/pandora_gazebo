@@ -161,7 +161,12 @@ namespace pandora_gazebo_interface
         }
         case VELOCITY:
         {
+        #if GAZEBO_MAJOR_VERSION > 2
+          gazeboJoint_[i]->SetParam("fmax", 0, jointEffortLimit_[i]);
+        #else
           gazeboJoint_[i]->SetMaxForce(0, jointEffortLimit_[i]);
+        #endif
+
 
           break;
         }
@@ -628,7 +633,11 @@ namespace pandora_gazebo_interface
           }
           case VELOCITY:
           {
+          #if GAZEBO_MAJOR_VERSION > 2
+            gazeboJoint_[i]->SetParam("vel", 0, jointCommand_[i]);
+          #else
             gazeboJoint_[i]->SetVelocity(0, jointCommand_[i]);
+          #endif
 
             break;
           }
