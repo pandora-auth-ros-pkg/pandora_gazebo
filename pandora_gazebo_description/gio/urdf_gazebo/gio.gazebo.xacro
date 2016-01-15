@@ -43,6 +43,8 @@
 
   <!-- Load Plugins -->
   <xacro:gazebo_ros_control interface="pandora_gazebo_interface/GioGazeboInterface" />
+  <xacro:pandora_differential />
+  <!--<xacro:ros_skid_steer_drive />-->
   <xacro:pandora_p3d />
   <xacro:if value="$(arg tune)" >
     <xacro:pandora_wheel_physics />

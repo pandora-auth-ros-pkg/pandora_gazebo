@@ -2,45 +2,45 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro" >
 
-  <gazebo>
-    <joint name="differential_left_pin_parallel_joint"
-           type="revolute" >
-      <parent>differential_left_pin_link</parent>
-      <child>left_side_link</child>
-      <pose>0.0 0.0 -0.06533 0.0 0.0 0.0</pose>
-      <axis>
-        <xyz>0 1 0</xyz>
-        <limit>
-          <lower>-0.785</lower>
-          <upper>0.785</upper>
-        </limit>
-        <dynamics>
-          <friction>0</friction>
-          <damping>10</damping>
-        </dynamics>
-      </axis>
-    </joint>
-  </gazebo>
+  <!--<gazebo>-->
+    <!--<joint name="differential_left_pin_parallel_joint"-->
+           <!--type="revolute" >-->
+      <!--<parent>differential_left_pin_link</parent>-->
+      <!--<child>left_side_link</child>-->
+      <!--<pose>0.0 0.0 -0.06533 0.0 0.0 0.0</pose>-->
+      <!--<axis>-->
+        <!--<xyz>0 1 0</xyz>-->
+        <!--<limit>-->
+          <!--<lower>-0.785</lower>-->
+          <!--<upper>0.785</upper>-->
+        <!--</limit>-->
+        <!--<dynamics>-->
+          <!--<friction>0</friction>-->
+          <!--<damping>10</damping>-->
+        <!--</dynamics>-->
+      <!--</axis>-->
+    <!--</joint>-->
+  <!--</gazebo>-->
 
-  <gazebo>
-    <joint name="differential_right_pin_parallel_joint"
-           type="revolute" >
-      <parent>differential_right_pin_link</parent>
-      <child>right_side_link</child>
-      <pose>0.0 0.0 -0.06533 0.0 0.0 0.0</pose>
-      <axis>
-        <xyz>0 1 0</xyz>
-        <limit>
-          <lower>-0.785</lower>
-          <upper>0.785</upper>
-        </limit>
-        <dynamics>
-          <friction>0</friction>
-          <damping>10</damping>
-        </dynamics>
-      </axis>
-    </joint>
-  </gazebo>
+  <!--<gazebo>-->
+    <!--<joint name="differential_right_pin_parallel_joint"-->
+           <!--type="revolute" >-->
+      <!--<parent>differential_right_pin_link</parent>-->
+      <!--<child>right_side_link</child>-->
+      <!--<pose>0.0 0.0 -0.06533 0.0 0.0 0.0</pose>-->
+      <!--<axis>-->
+        <!--<xyz>0 1 0</xyz>-->
+        <!--<limit>-->
+          <!--<lower>-0.785</lower>-->
+          <!--<upper>0.785</upper>-->
+        <!--</limit>-->
+        <!--<dynamics>-->
+          <!--<friction>0</friction>-->
+          <!--<damping>10</damping>-->
+        <!--</dynamics>-->
+      <!--</axis>-->
+    <!--</joint>-->
+  <!--</gazebo>-->
 
   <gazebo reference="linear_actuator_joint" >
     <implicitSpringDamper>true</implicitSpringDamper>

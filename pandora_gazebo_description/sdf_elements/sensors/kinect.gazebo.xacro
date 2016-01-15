@@ -26,6 +26,7 @@
           <depthImageTopicName>depth/image</depthImageTopicName>
           <depthImageCameraInfoTopicName>depth/image/info</depthImageCameraInfoTopicName>
           <pointCloudCutoff>0.4</pointCloudCutoff>
+          <pointCloudCutoffMax>5</pointCloudCutoffMax>
         </plugin>
 
         <always_on>1</always_on>
