@@ -42,6 +42,7 @@
 #include <boost/bind.hpp>
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/physics.hh>
+#include <gazebo/physics/ode/ODESurfaceParams.hh>
 #include <gazebo/common/common.hh>
 #include <stdio.h>
 #include <dynamic_reconfigure/server.h>
@@ -63,16 +64,16 @@ namespace gazebo
 
       // Robot Wheels (to  be initialized with Proper Function)
       physics::LinkPtr left_front_wheel_link_;
-      physics ::LinkPtr left_rear_wheel_link_;
-      physics ::LinkPtr right_front_wheel_link_;
-      physics ::LinkPtr right_rear_wheel_link_;
+      physics::LinkPtr left_rear_wheel_link_;
+      physics::LinkPtr right_front_wheel_link_;
+      physics::LinkPtr right_rear_wheel_link_;
 
 
       // Robot Wheels Parameters
-      physics ::SurfaceParamsPtr left_front_wheel_params_;
-      physics ::SurfaceParamsPtr left_rear_wheel_params_;
-      physics ::SurfaceParamsPtr right_front_wheel_params_;
-      physics ::SurfaceParamsPtr right_rear_wheel_params_;
+      physics::SurfaceParamsPtr left_front_wheel_params_;
+      physics::SurfaceParamsPtr left_rear_wheel_params_;
+      physics::SurfaceParamsPtr right_front_wheel_params_;
+      physics::SurfaceParamsPtr right_rear_wheel_params_;
 
       // Dynamic Reconfigure Attributes:
       dynamic_reconfigure::Server<pandora_gazebo_plugins::WheelPhysicsConfig> *reconfig_server;
