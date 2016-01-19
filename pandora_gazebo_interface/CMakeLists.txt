@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(pandora_gazebo_interface)
 
+# Enable C++11 support, in order to link with gazebo6
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+
 find_package(
   catkin
   REQUIRED COMPONENTS
