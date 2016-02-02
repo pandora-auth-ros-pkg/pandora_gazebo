@@ -111,10 +111,9 @@ namespace gazebo
     // /\brief Start a thread for the differential dynamic reconfigure node
     // FIXME: Wait for the rest of the plugin to load
 
-    /* Dynamic reconfigure DISABLED!
+    // Dynamic reconfigure DISABLED!
     this->reconfigure_thread_.reset(
         new boost::thread(boost::bind(&GazeboRosDifferential::LoadReconfigureThread,this)));
-    */
 
     this->joint_state_pub_Queue = this->pmq.addPub<sensor_msgs::JointState>();
 
@@ -337,7 +336,8 @@ namespace gazebo
 
   void GazeboRosDifferential::LoadReconfigureThread()
   {
-    this->reconfigure_srv_.reset(new dynamic_reconfigure::Server<pandora_gazebo_plugins::DifferentialConfig>());
+    ros::NodeHandle nh("~differential");
+    this->reconfigure_srv_.reset(new dynamic_reconfigure::Server<pandora_gazebo_plugins::DifferentialConfig>(nh));
     this->reconfigure_callback_ = boost::bind(&GazeboRosDifferential::ConfigCallback, this, _1, _2);
     this->reconfigure_srv_->setCallback(this->reconfigure_callback_);
 
