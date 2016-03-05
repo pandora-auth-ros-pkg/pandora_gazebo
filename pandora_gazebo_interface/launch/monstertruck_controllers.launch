@@ -1,0 +1,25 @@
+<launch>
+
+  <!-- Load Monstertruck Controller -->
+  <include file="$(find pandora_monstertruck_hardware_interface)/monstertruck_steer_drive_controller/launch/monstertruck_steer_drive_controller.launch" >
+    <arg name="robot" value="monstertruck" />
+    <arg name="namespace" value="/" />
+  </include>
+
+  <!-- Load IMU -->
+  <include file="$(find pandora_imu_hardware_interface)/imu_controllers/launch/imu_controllers.launch" >
+    <arg name="namespace" value="/" />
+  </include>
+
+  <!-- Laser -->
+  <rosparam command="load" ns="/"
+            file="$(find pandora_gazebo_interface)/config/laser_controllers.yaml" />
+
+  <!-- Load the controllers -->
+  <node name="controller_spawner"
+        pkg="controller_manager" type="controller_manager" respawn="false" output="screen" ns="/"
+        args="spawn
+              laser_roll_controller
+              laser_pitch_controller" />
+
+</launch>
