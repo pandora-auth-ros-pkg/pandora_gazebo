@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<robot name="monstertruck"
+       xmlns:xacro="http://ros.org/wiki/xacro" >
+
+  <!-- Import Files -->
+  <xacro:include filename="$(find pandora_robots_description)/monstertruck/urdf/monstertruck.urdf.xacro" />
+
+  <xacro:include filename="$(find pandora_gazebo_description)/monstertruck/urdf_gazebo/sdf_configurations.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/monstertruck/urdf_gazebo/references.gazebo.xacro" />
+
+  <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/sensors/*.gazebo.xacro" />
+  <xacro:include filename="$(find pandora_gazebo_description)/sdf_elements/plugins/*.gazebo.xacro" />
+
+  <!-- Load gazebo sensors -->
+  <xacro:if value="${enable_laser}" >
+    <xacro:laser_sensor_gpu range="${laser_range}" update_rate="${laser_update_rate}" />
+  </xacro:if>
+  <xacro:if value="${enable_picam}" >
+    <xacro:front_picam_sensor />
+  </xacro:if>
+
+  <!-- Load Plugins -->
+  <xacro:gazebo_ros_control interface="pandora_gazebo_interface/MonstertruckGazeboInterface" />
+  <xacro:ros_imu />
+  <xacro:pandora_p3d />
+  <xacro:if value="$(arg tune)" >
+    <xacro:pandora_wheel_physics />
+  </xacro:if>
+
+</robot>
