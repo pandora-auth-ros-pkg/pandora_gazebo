@@ -77,13 +77,6 @@ namespace pandora_gazebo_interface
     wheelbase_ = 0.32;
     wheelTrack_ = 0.26;
 
-
-    // Number of joints
-    // 4 wheel steer joints
-    // 4 wheel drive joints
-    // 2 laser stabilizer joints (roll and pitch)
-    jointNum_ = 10;
-
     // The rate that each element gets updated
     jointReadRate_ = gazebo::common::Time(1 / 100.0);
     jointWriteRate_ = gazebo::common::Time(1 / 100.0);
@@ -94,29 +87,32 @@ namespace pandora_gazebo_interface
     jointLastWriteTime_ = simTime;
     imuLastReadTime_ = simTime;
 
-    // Resizing vector according to num of elements
-    gazeboJoint_.resize(jointNum_);
-    jointName_.resize(jointNum_);
-    jointType_.resize(jointNum_);
-    jointControlMethod_.resize(jointNum_);
-    pidController_.resize(jointNum_);
-    jointLowerLimit_.resize(jointNum_);
-    jointUpperLimit_.resize(jointNum_);
-    jointEffortLimit_.resize(jointNum_);
-    jointEffort_.resize(jointNum_);
-    jointPosition_.resize(jointNum_);
-    jointVelocity_.resize(jointNum_);
-    jointCommand_.resize(jointNum_);
 
     // Register each hardware_interface
     registerJointInterface();
     registerImuInterface();
+
+    // initialize joint position, velocity, effort and command variables
+    for (int i = 0; i < jointNum_; i++)
+    {
+      jointPosition_[i] = 0;
+      jointVelocity_[i] = 0;
+      jointEffort_[i] = 0;
+      jointCommand_[i] = 0;
+    }
 
     // Load gazebo joints
     for (unsigned int i = 0; i < jointNum_; i++)
     {
       gazeboJoint_[i] = parentModel_->GetJoint(jointName_[i]);
     }
+
+    // jointCommand_[10] = 10 * M_PI / 180;
+    // jointCommand_[11] = 10 * M_PI / 180;
+    // jointCommand_[12] = 10 * M_PI / 180;
+    // jointCommand_[13] = 10 * M_PI / 180;
+    jointCommand_[8] = 0.3;
+    jointCommand_[9] = -0.3;
 
     // Load PID controllers and initialize/set the limits
     for (unsigned int i = 0; i < jointNum_; i++)
@@ -127,7 +123,6 @@ namespace pandora_gazebo_interface
         {
           // const ros::NodeHandle nh (modelNh_, robotnamespace_ + "/gazebo_ros_control/pid_gains/" + jointName_[i]);
           // pidController_[i].init (nh);
-
           break;
         }
         case VELOCITY:
@@ -155,69 +150,84 @@ namespace pandora_gazebo_interface
 
   void MonstertruckGazeboInterface::registerJointInterface()
   {
-    // wheel drive joints
-    jointName_[0] = "left_front_wheel_drive_joint";
-    jointName_[1] = "left_rear_wheel_drive_joint";
-    jointName_[2] = "right_front_wheel_drive_joint";
-    jointName_[3] = "right_rear_wheel_drive_joint";
+    XmlRpc::XmlRpcValue jointList;
+    modelNh_.getParam("joint_list", jointList);
+    ROS_ASSERT(jointList.getType() == XmlRpc::XmlRpcValue::TypeArray);
 
-    for (unsigned int i = 0; i <= 3; i++)
+    // get number of joints
+    jointNum_ = jointList.size();
+
+    // Resizing vector according to num of elements
+    gazeboJoint_.resize(jointNum_);
+    jointName_.resize(jointNum_);
+    jointType_.resize(jointNum_);
+    jointControlMethod_.resize(jointNum_);
+    pidController_.resize(jointNum_);
+    jointLowerLimit_.resize(jointNum_);
+    jointUpperLimit_.resize(jointNum_);
+    jointEffortLimit_.resize(jointNum_);
+    jointEffort_.resize(jointNum_);
+    jointPosition_.resize(jointNum_);
+    jointVelocity_.resize(jointNum_);
+    jointCommand_.resize(jointNum_);
+
+    // load joints from param server
+    for (int i = 0; i < jointNum_; i++)
     {
-      jointType_[i] = urdf::Joint::CONTINUOUS;
-      jointEffort_[i] = 0.0;
-      jointPosition_[i] = 0.0;
-      jointVelocity_[i] = 0.0;
-      jointCommand_[i] = 0.0;
-      jointEffortLimit_[i] = 100.0;
-      jointControlMethod_[i] = VELOCITY;
+      // load joint name
+      ROS_ASSERT(jointList[i]["name"].getType() == XmlRpc::XmlRpcValue::TypeString);
+      jointName_[i] = static_cast<std::string>(jointList[i]["name"]);
+
+      // load joint effort limit
+      ROS_ASSERT(jointList[i]["effort_limit"].getType() == XmlRpc::XmlRpcValue::TypeDouble);
+      jointEffortLimit_[i] = static_cast<double>(jointList[i]["effort_limit"]);
+
+      // load joint control method
+      ROS_ASSERT(jointList[i]["control_method"].getType() == XmlRpc::XmlRpcValue::TypeInt);
+      jointControlMethod_[i] =
+        static_cast<ControlMethod>(
+          static_cast<int>((jointList[i]["control_method"])));
+
+      // load joint type
+      ROS_ASSERT(jointList[i]["type"].getType() == XmlRpc::XmlRpcValue::TypeString);
+      std::string type = static_cast<std::string>(jointList[i]["type"]);
+      if (type == "continuous")
+        jointType_[i] = urdf::Joint::CONTINUOUS;
+      else if (type == "revolute")
+        jointType_[i] = urdf::Joint::REVOLUTE;
+      else if (type == "prismatic")
+        jointType_[i] = urdf::Joint::PRISMATIC;
+      else
+      {
+        ROS_ERROR("Unidentified joint type: %s[%s]", jointName_[i].c_str(),
+          type.c_str());
+        exit(-1);
+      }
+
+      if ( jointType_[i] == urdf::Joint::REVOLUTE
+        || jointType_[i] == urdf::Joint::PRISMATIC )
+      {
+        // load joint upper limit
+        ROS_ASSERT(jointList[i]["upper_limit"].getType() == XmlRpc::XmlRpcValue::TypeDouble);
+        jointUpperLimit_[i] = static_cast<double>(jointList[i]["upper_limit"]);
+
+        // load joint lower limit
+        ROS_ASSERT(jointList[i]["lower_limit"].getType() == XmlRpc::XmlRpcValue::TypeDouble);
+        jointLowerLimit_[i] = static_cast<double>(jointList[i]["lower_limit"]);
+
+        // load joint pid gains
+        ROS_ASSERT(
+          jointList[i]["pid"]["p"].getType() == XmlRpc::XmlRpcValue::TypeDouble
+          && jointList[i]["pid"]["i"].getType() == XmlRpc::XmlRpcValue::TypeDouble
+          && jointList[i]["pid"]["d"].getType() == XmlRpc::XmlRpcValue::TypeDouble);
+        pidController_[i].initPid(
+          static_cast<double>(jointList[i]["pid"]["p"]),
+          static_cast<double>(jointList[i]["pid"]["i"]),
+          static_cast<double>(jointList[i]["pid"]["d"]),
+          0.0,
+          0.0);
+      }
     }
-
-    // wheel steer joints
-    jointName_[4] = "left_front_wheel_steer_joint";
-    jointName_[5] = "left_rear_wheel_steer_joint";
-    jointName_[6] = "right_front_wheel_steer_joint";
-    jointName_[7] = "right_rear_wheel_steer_joint";
-
-    for (unsigned int i = 4; i <= 7; i++)
-    {
-      jointType_[i] = urdf::Joint::REVOLUTE;
-      jointEffort_[i] = 0.0;
-      jointPosition_[i] = 0.0;
-      jointVelocity_[i] = 0.0;
-      jointCommand_[i] = 0.0;
-      jointLowerLimit_[i] = -angles::from_degrees(20);
-      jointUpperLimit_[i] = angles::from_degrees(20);
-      jointEffortLimit_[i] = 100.0;
-      jointControlMethod_[i] = POSITION_PID;
-      pidController_[i].initPid(8.0, 1.5, 0.4, 0.0, 0.0);  // TODO(gkouros): calibrate pid gains
-    }
-
-    // Laser roll joint
-    jointName_[8] = "laser_roll_joint";
-    jointType_[8] = urdf::Joint::REVOLUTE;
-    jointEffort_[8] = 0.0;
-    jointPosition_[8] = 0.0;
-    jointVelocity_[8] = 0.0;
-    jointCommand_[8] = 0.0;
-    jointLowerLimit_[8] = -1.57079632679;
-    jointUpperLimit_[8] = 1.57079632679;
-    jointEffortLimit_[8] = 50.0;
-    jointControlMethod_[8] = POSITION_PID;
-    pidController_[8].initPid(1.8, 0.0, 0.3, 0.0, 0.0);
-
-    // Laser pitch joint
-    jointName_[9] = "laser_pitch_joint";
-    jointType_[9] = urdf::Joint::REVOLUTE;
-    jointEffort_[9] = 0.0;
-    jointPosition_[9] = 0.0;
-    jointVelocity_[9] = 0.0;
-    jointCommand_[9] = 0.0;
-    jointLowerLimit_[9] = -1.57079632679;
-    jointUpperLimit_[9] = 1.57079632679;
-    jointEffortLimit_[9] = 50.0;
-    jointControlMethod_[9] = POSITION_PID;
-    pidController_[9].initPid(2.5, 0.0, 0.3, 0.0, 0.0);
-
 
     // Connect and register the joint state interface
     for (unsigned int i = 0; i < jointNum_; i++)
@@ -408,6 +418,7 @@ namespace pandora_gazebo_interface
           }
           default:
           {
+            ROS_ERROR("Unidentified joint control method");
             break;
           }
         }

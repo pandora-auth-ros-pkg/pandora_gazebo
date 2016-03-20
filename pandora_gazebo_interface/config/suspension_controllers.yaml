@@ -1,0 +1,21 @@
+# suspension controllers
+front_virtual_suspension_controller:
+  joint: front_virtual_suspension_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 300, i: 0.0, d: 70}
+
+rear_virtual_suspension_controller:
+  joint: rear_virtual_suspension_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 300, i: 0.0, d: 70}
+
+# axle controllers
+front_axle_controller:
+  joint: front_axle_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 300, i: 0.0, d: 70}
+
+rear_axle_controller:
+  joint: rear_axle_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 300, i: 0.0, d: 70}

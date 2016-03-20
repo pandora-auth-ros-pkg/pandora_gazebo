@@ -1,0 +1,96 @@
+control_method:
+  - &none 0
+  - &effort 1
+  - &position 2
+  - &position_pid 3
+  - &velocity 4
+  - &velocity_pid 5
+
+
+joint_list:
+  - name: "left_front_wheel_drive_joint"
+    type: continuous
+    control_method: *velocity
+    effort_limit: 100.0
+  - name: "left_rear_wheel_drive_joint"
+    type: continuous
+    control_method: *velocity
+    effort_limit: 100.0
+  - name: "right_front_wheel_drive_joint"
+    type: continuous
+    control_method: *velocity
+    effort_limit: 100.0
+  - name: "right_rear_wheel_drive_joint"
+    type: continuous
+    control_method: *velocity
+    effort_limit: 100.0
+  - name: "left_front_wheel_steer_joint"
+    type: revolute
+    control_method: *position_pid
+    effort_limit: 100.0
+    upper_limit: deg(25)
+    lower_limit: deg(-25)
+    pid: {p: 8.0, i: 1.5, d: 0.4}
+  - name: "left_rear_wheel_steer_joint"
+    type: revolute
+    control_method: *position_pid
+    effort_limit: 100.0
+    upper_limit: deg(25)
+    lower_limit: deg(-25)
+    pid: {p: 8.0, i: 1.5, d: 0.4}
+  - name: "right_front_wheel_steer_joint"
+    type: revolute
+    control_method: *position_pid
+    effort_limit: 100.0
+    upper_limit: deg(25)
+    lower_limit: deg(-25)
+    pid: {p: 8.0, i: 1.5, d: 0.4}
+  - name: "right_rear_wheel_steer_joint"
+    type: revolute
+    control_method: *position_pid
+    effort_limit: 100.0
+    upper_limit: deg(25)
+    lower_limit: deg(-25)
+    pid: {p: 8.0, i: 1.5, d: 0.4}
+  - name: "front_virtual_suspension_joint"
+    type: prismatic
+    control_method: *position_pid
+    effort_limit: 10.0
+    upper_limit: 0.03
+    lower_limit: 0.0
+    pid: {p: 100.0, i: 0.0, d: 10.0}
+  - name: "rear_virtual_suspension_joint"
+    type: prismatic
+    control_method: *position_pid
+    effort_limit: 10.0
+    upper_limit: 0.03
+    lower_limit: 0.0
+    pid: {p: 100.0, i: 0.0, d: 10.0}
+  - name: "front_axle_joint"
+    type: revolute
+    control_method: *position_pid
+    effort_limit: 10.0
+    upper_limit: deg(10)
+    lower_limit: deg(-10)
+    pid: {p: 100.0, i: 0.0, d: 10.0}
+  - name: "rear_axle_joint"
+    type: revolute
+    control_method: *position_pid
+    effort_limit: 10.0
+    upper_limit: deg(10)
+    lower_limit: deg(-10)
+    pid: {p: 100.0, i: 0.0, d: 10.0}
+  - name: "laser_roll_joint"
+    type: revolute
+    control_method: *position_pid
+    effort_limit: 50.0
+    upper_limit: deg(45)
+    lower_limit: deg(-45)
+    pid: {p: 1.8, i: 0.0, d: 0.3}
+  - name: "laser_pitch_joint"
+    type: revolute
+    control_method: *position_pid
+    effort_limit: 50.0
+    upper_limit: deg(45)
+    lower_limit: deg(-45)
+    pid: {p: 2.5, i: 0.0, d: 0.3}

@@ -59,6 +59,19 @@
     <implicitSpringDamper>true</implicitSpringDamper>
   </gazebo>
 
+  <gazebo reference="front_virtual_suspension_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="rear_virtual_suspension_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="front_axle_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="rear_axle_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
   <gazebo reference="laser_roll_joint" >
     <implicitSpringDamper>true</implicitSpringDamper>
   </gazebo>

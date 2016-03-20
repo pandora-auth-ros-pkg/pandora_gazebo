@@ -11,9 +11,15 @@
     <arg name="namespace" value="/" />
   </include>
 
+  <!-- Joints -->
+  <rosparam command="load" ns="/" file="$(find pandora_gazebo_interface)/config/joints.yaml" />
+
   <!-- Laser -->
   <rosparam command="load" ns="/"
             file="$(find pandora_gazebo_interface)/config/laser_controllers.yaml" />
+
+  <!-- Suspensions -->
+  <!-- <rosparam command="load" ns="/" file="$(find pandora_gazebo_interface)/config/suspension_controllers.yaml" /> -->
 
   <!-- Load the controllers -->
   <node name="controller_spawner"
@@ -21,5 +27,9 @@
         args="spawn
               laser_roll_controller
               laser_pitch_controller" />
+              <!-- front_virtual_suspension_controller -->
+              <!-- rear_virtual_suspension_controller -->
+              <!-- front_axle_controller -->
+              <!-- rear_axle_controller" />-->
 
 </launch>
