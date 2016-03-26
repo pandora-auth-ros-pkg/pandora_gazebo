@@ -55,28 +55,28 @@ joint_list:
   - name: "front_virtual_suspension_joint"
     type: prismatic
     control_method: *position_pid
-    effort_limit: 10.0
+    effort_limit: 50.0
     upper_limit: 0.03
     lower_limit: 0.0
-    pid: {p: 100.0, i: 0.0, d: 10.0}
+    pid: {p: 10000.0, i: 1.0, d: 10.0}
   - name: "rear_virtual_suspension_joint"
     type: prismatic
     control_method: *position_pid
-    effort_limit: 10.0
+    effort_limit: 50.0
     upper_limit: 0.03
     lower_limit: 0.0
-    pid: {p: 100.0, i: 0.0, d: 10.0}
+    pid: {p: 10000.0, i: 1.0, d: 10.0}
   - name: "front_axle_joint"
     type: revolute
     control_method: *position_pid
-    effort_limit: 10.0
+    effort_limit: 1.0
     upper_limit: deg(10)
     lower_limit: deg(-10)
     pid: {p: 100.0, i: 0.0, d: 10.0}
   - name: "rear_axle_joint"
     type: revolute
     control_method: *position_pid
-    effort_limit: 10.0
+    effort_limit: 1.0
     upper_limit: deg(10)
     lower_limit: deg(-10)
     pid: {p: 100.0, i: 0.0, d: 10.0}

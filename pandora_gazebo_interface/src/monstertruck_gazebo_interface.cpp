@@ -107,13 +107,6 @@ namespace pandora_gazebo_interface
       gazeboJoint_[i] = parentModel_->GetJoint(jointName_[i]);
     }
 
-    // jointCommand_[10] = 10 * M_PI / 180;
-    // jointCommand_[11] = 10 * M_PI / 180;
-    // jointCommand_[12] = 10 * M_PI / 180;
-    // jointCommand_[13] = 10 * M_PI / 180;
-    jointCommand_[8] = 0.3;
-    jointCommand_[9] = -0.3;
-
     // Load PID controllers and initialize/set the limits
     for (unsigned int i = 0; i < jointNum_; i++)
     {
@@ -144,7 +137,7 @@ namespace pandora_gazebo_interface
     // Load gazebo imu link
     gazeboImuLink_ = parentModel_->GetLink(imuLinkName_);
 
-    ROS_INFO("gio_gazebo_interface initialized successfully!");
+    ROS_INFO("monstertruck_gazebo_interface initialized successfully!");
     return true;
   }
 
