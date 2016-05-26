@@ -341,9 +341,9 @@ namespace pandora_gazebo_interface
       imuOrientation_[3] = quaternion.w;
 
       // Read robot rpy for IMU
-      *imuRoll_ = angles::from_degrees(quaternion.GetRoll());
-      *imuPitch_ = angles::from_degrees(quaternion.GetPitch());
-      *imuYaw_ = angles::from_degrees(quaternion.GetYaw());
+      *imuRoll_ = angles::to_degrees(quaternion.GetRoll());
+      *imuPitch_ = angles::to_degrees(quaternion.GetPitch());
+      *imuYaw_ = angles::to_degrees(quaternion.GetYaw());
     }
   }
 
