@@ -16,9 +16,6 @@
   <xacro:if value="${enable_laser}" >
     <xacro:laser_sensor_gpu range="${laser_range}" update_rate="${laser_update_rate}" />
   </xacro:if>
-  <xacro:if value="${enable_picam}" >
-    <xacro:front_picam_sensor />
-  </xacro:if>
 
   <!-- Load Plugins -->
   <xacro:gazebo_ros_control interface="pandora_gazebo_interface/MonstertruckGazeboInterface" />

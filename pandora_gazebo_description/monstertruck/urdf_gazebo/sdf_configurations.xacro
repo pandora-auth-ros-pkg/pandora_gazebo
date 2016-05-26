@@ -8,7 +8,6 @@
 
   <!-- Enable gazebo sensors -->
   <xacro:property name="enable_laser" value="true" />
-  <xacro:property name="enable_picam" value="true" />
 
   <!-- Calibrate Wheel physics TODO(gkouros) -->
   <xacro:property name="wheel_mu_1" value="0.7" />
