@@ -20,9 +20,9 @@
   <!-- Load Plugins -->
   <xacro:gazebo_ros_control interface="pandora_gazebo_interface/MonstertruckGazeboInterface" />
   <xacro:ros_imu />
-  <xacro:pandora_p3d />
-  <xacro:if value="$(arg tune)" >
-    <xacro:pandora_wheel_physics />
-  </xacro:if>
+  <!-- <xacro:pandora_p3d /> -->
+  <!-- <xacro:if value="$(arg tune)" > -->
+    <!-- <xacro:pandora_wheel_physics /> -->
+  <!-- </xacro:if> -->
 
 </robot>

@@ -87,7 +87,6 @@ namespace pandora_gazebo_interface
     jointLastWriteTime_ = simTime;
     imuLastReadTime_ = simTime;
 
-
     // Register each hardware_interface
     registerJointInterface();
     registerImuInterface();
@@ -247,6 +246,11 @@ namespace pandora_gazebo_interface
     registerInterface(&velocityJointInterface_);
     registerInterface(&effortJointInterface_);
     registerInterface(&positionJointInterface_);
+
+
+    // initialize the joint name to idx map
+    for (unsigned int i = 0; i < jointNum_; i++)
+      jointNameToIdxMap_.insert(std::pair<std::string, int>(jointName_[i], i));
   }
 
   void MonstertruckGazeboInterface::registerImuInterface()
@@ -327,6 +331,9 @@ namespace pandora_gazebo_interface
         jointVelocity_[i] = gazeboJoint_[i]->GetVelocity(0);
       }
     }
+
+    // update axle joint commands
+    updateAxleCommands();
   }
 
   void MonstertruckGazeboInterface::readImu()
@@ -352,6 +359,34 @@ namespace pandora_gazebo_interface
     writeTime_ = gazebo::common::Time(time.sec, time.nsec);
     writePeriod_ = period;
     writeJoints();
+  }
+
+  void MonstertruckGazeboInterface::updateAxleCommands()
+  {
+    if ( !(jointNameToIdxMap_.count("front_axle_joint")
+      && jointNameToIdxMap_.count("rear_axle_joint")
+      && jointNameToIdxMap_.count("front_axle_suspension_joint")
+      && jointNameToIdxMap_.count("rear_axle_suspension_joint")) )
+    {
+      ROS_ERROR("Axle joints not found!");
+      return;
+    }
+
+    double phiF, phiR, dlf, drf, dlr, drr;
+    dlf = jointPosition_[jointNameToIdxMap_["left_front_wheel_suspension_joint"]];
+    drf = jointPosition_[jointNameToIdxMap_["right_front_wheel_suspension_joint"]];
+    dlr = jointPosition_[jointNameToIdxMap_["left_rear_wheel_suspension_joint"]];
+    drr = jointPosition_[jointNameToIdxMap_["right_rear_wheel_suspension_joint"]];
+
+    phiF = asin((dlf - drf) / wheelbase_);
+    phiR = asin((dlr - drr) / wheelbase_);
+
+    jointCommand_[jointNameToIdxMap_["front_axle_joint"]] =  phiF;
+    jointCommand_[jointNameToIdxMap_["rear_axle_joint"]] = phiR;
+    jointCommand_[jointNameToIdxMap_["front_axle_suspension_joint"]] =
+      wheelbase_ / 2 * fabs(sin(phiF)) + std::min(dlf, dlr);
+    jointCommand_[jointNameToIdxMap_["rear_axle_suspension_joint"]] =
+      wheelbase_ / 2 * fabs(sin(phiR)) + std::min(dlr, drr);
   }
 
   void MonstertruckGazeboInterface::writeJoints()

@@ -59,10 +59,23 @@
     <implicitSpringDamper>true</implicitSpringDamper>
   </gazebo>
 
-  <gazebo reference="front_virtual_suspension_joint" >
+  <gazebo reference="left_front_wheel_suspension_joint" >
     <implicitSpringDamper>true</implicitSpringDamper>
   </gazebo>
-  <gazebo reference="rear_virtual_suspension_joint" >
+  <gazebo reference="left_rear_wheel_suspension_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="right_front_wheel_suspension_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="right_rear_wheel_suspension_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
+  <gazebo reference="front_axle_suspension_joint" >
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="rear_axle_suspension_joint" >
     <implicitSpringDamper>true</implicitSpringDamper>
   </gazebo>
   <gazebo reference="front_axle_joint" >

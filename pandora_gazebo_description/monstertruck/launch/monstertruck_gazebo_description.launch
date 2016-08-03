@@ -1,10 +1,10 @@
-<?xml version="1.0"?>
-
 <launch>
 
   <arg name="tune" default="false" />
 
-  <include file="$(find pandora_gazebo_interface)/launch/monstertruck_controllers.launch" />
+  <include file="$(find pandora_gazebo_interface)/launch/monstertruck_controllers.launch">
+    <arg name="tune" value="$(arg tune)" />
+  </include>
 
   <param name="robot_description"
          command="$(find xacro)/xacro.py '$(find pandora_gazebo_description)/monstertruck/urdf_gazebo/monstertruck.gazebo.xacro' tune:=$(arg tune)" />

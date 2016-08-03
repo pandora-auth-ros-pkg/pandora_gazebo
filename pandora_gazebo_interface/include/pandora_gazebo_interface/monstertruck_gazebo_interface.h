@@ -97,6 +97,8 @@ namespace pandora_gazebo_interface
       void readJoints();
       void readImu();
 
+      void updateAxleCommands();
+
       void writeJoints();
 
       enum ControlMethod
@@ -131,6 +133,7 @@ namespace pandora_gazebo_interface
       // Joints
       unsigned int jointNum_;
       std::vector<std::string> jointName_;
+      std::map<std::string, int> jointNameToIdxMap_;
       std::vector<int> jointType_;
       std::vector<ControlMethod> jointControlMethod_;
       std::vector<control_toolbox::Pid> pidController_;
