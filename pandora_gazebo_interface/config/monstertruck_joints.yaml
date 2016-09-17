@@ -60,14 +60,14 @@ joint_list:
   - name: "left_front_wheel_suspension_joint"
     type: prismatic
     control_method: *position_pid
-    effort_limit: 20.0
+    effort_limit: 25.0
     upper_limit: 0.03
     lower_limit: -0.01
     pid: {p: 10000.0, i: 10.0, d: 10.0}
   - name: "left_rear_wheel_suspension_joint"
     type: prismatic
     control_method: *position_pid
-    effort_limit: 20.0
+    effort_limit: 25.0
     upper_limit: 0.03
     lower_limit: -0.01
     pid: {p: 10000.0, i: 10.0, d: 10.0}
