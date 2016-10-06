@@ -6,7 +6,7 @@
     <gazebo>
       <plugin name="RosImuPlugin" filename="libgazebo_ros_imu.so" >
         <updateRate>50.0</updateRate>
-        <topicName>/sensors/imu_all</topicName>
+        <topicName>/sensors/imu</topicName>
         <serviceName>default_imu</serviceName>
         <robotNamespace>/</robotNamespace>
         <bodyName>base_link</bodyName>
