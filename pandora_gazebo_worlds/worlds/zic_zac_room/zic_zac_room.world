@@ -76,23 +76,23 @@
         </visual>
       </link>
     </model>
-    <model name="slope_room">
+    <model name="zic_zac_room">
       <static>true</static>
-      <link name="slope_room_link">
-        <pose>6.75 0 0 0 0 -3.1415</pose>
-        <collision name="slope_room_collision">
+      <link name="zic_zac_room_link">
+        <pose>4.0 0.8 0.75 0 0 0</pose>
+        <collision name="zic_zac_room_collision">
           <geometry>
             <mesh>
-              <uri>file://rooms/slope_room.dae</uri>
+              <uri>file://rooms/zic_zac_room.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
         </collision>
-        <visual name="slope_room_visual">
+        <visual name="zic_zac_room_visual">
           <cast_shadows>false</cast_shadows>
           <geometry>
             <mesh>
-              <uri>file://rooms/slope_room.dae</uri>
+              <uri>file://rooms/zic_zac_room.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
