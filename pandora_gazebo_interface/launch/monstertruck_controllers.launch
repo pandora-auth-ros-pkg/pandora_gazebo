@@ -1,0 +1,65 @@
+<launch>
+
+  <arg name="tune" default="false" />
+
+  <!-- Load Monstertruck Controller -->
+  <group unless="$(arg tune)">
+    <include file="$(find pandora_monstertruck_hardware_interface)/monstertruck_steer_drive_controller/launch/monstertruck_steer_drive_controller.launch" >
+      <arg name="robot" value="monstertruck" />
+      <arg name="namespace" value="/" />
+    </include>
+  </group>
+
+  <!-- Load IMU -->
+  <include file="$(find pandora_imu_hardware_interface)/imu_controllers/launch/imu_controllers.launch" >
+    <arg name="namespace" value="/" />
+  </include>
+
+  <!-- Joints -->
+  <rosparam command="load" ns="/" file="$(find pandora_gazebo_interface)/config/monstertruck_joints.yaml" />
+
+  <!-- Laser -->
+  <rosparam command="load" ns="/" file="$(find pandora_gazebo_interface)/config/laser_controllers.yaml" />
+
+  <group if="$(arg tune)">
+    <rosparam command="load" ns="/" file="$(find pandora_gazebo_interface)/config/monstertruck_pid_tuning_controllers.yaml" />
+  </group>
+
+  <!-- Load the controllers -->
+  <group unless="$(arg tune)">
+    <node name="controller_spawner"
+          pkg="controller_manager"
+          type="controller_manager"
+          respawn="false"
+          output="screen"
+          ns="/"
+          args="spawn
+                laser_roll_controller
+                laser_pitch_controller" />
+  </group>
+
+  <group if="$(arg tune)">
+    <node name="controller_spawner"
+          pkg="controller_manager"
+          type="controller_manager"
+          respawn="false"
+          output="screen"
+          ns="/"
+          args="spawn
+                laser_roll_controller
+                laser_pitch_controller
+                left_front_wheel_steer_controller
+                left_rear_wheel_steer_controller
+                right_front_wheel_steer_controller
+                right_rear_wheel_steer_controller
+                left_front_wheel_suspension_controller
+                left_rear_wheel_suspension_controller
+                right_front_wheel_suspension_controller
+                right_rear_wheel_suspension_controller
+                front_axle_suspension_controller
+                rear_axle_suspension_controller
+                front_axle_controller
+                rear_axle_controller"/>
+  </group>
+
+</launch>

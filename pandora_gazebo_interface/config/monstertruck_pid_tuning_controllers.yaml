@@ -1,0 +1,53 @@
+# suspension controllers
+left_front_wheel_suspension_controller:
+  joint: left_front_wheel_suspension_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 1000.0, i: 1.0, d: 50.0}
+right_front_wheel_suspension_controller:
+  joint: right_front_wheel_suspension_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 1000.0, i: 1.0, d: 50.0}
+left_rear_wheel_suspension_controller:
+  joint: left_rear_wheel_suspension_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 1000.0, i: 1.0, d: 50.0}
+right_rear_wheel_suspension_controller:
+  joint: right_rear_wheel_suspension_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 1000.0, i: 1.0, d: 50.0}
+
+# steer_joint_controllers
+left_front_wheel_steer_controller:
+  joint: left_front_wheel_steer_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 30.0, i: 1.0, d: 0.01}
+right_front_wheel_steer_controller:
+  joint: right_front_wheel_steer_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 30.0, i: 1.0, d: 0.01}
+left_rear_wheel_steer_controller:
+  joint: left_rear_wheel_steer_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 30.0, i: 1.0, d: 0.01}
+right_rear_wheel_steer_controller:
+  joint: right_rear_wheel_steer_joint
+  type: effort_controllers/JointPositionController
+  pid: {p: 30.0, i: 1.0, d: 0.01}
+
+# axle joints
+front_axle_suspension_controller:
+  joint: "front_axle_suspension_joint"
+  type: effort_controllers/JointPositionController
+  pid: {p: 10000.0, i: 1.0, d: 300.0}
+rear_axle_suspension_controller:
+  joint: "rear_axle_suspension_joint"
+  type: effort_controllers/JointPositionController
+  pid: {p: 10000.0, i: 1.0, d: 300.0}
+front_axle_controller:
+  joint: "front_axle_joint"
+  type: effort_controllers/JointPositionController
+  pid: {p: 500.0, i: 0.1, d: 1.0}
+rear_axle_controller:
+  joint: "rear_axle_joint"
+  type: effort_controllers/JointPositionController
+  pid: {p: 500.0, i: 0.1, d: 1.0}
