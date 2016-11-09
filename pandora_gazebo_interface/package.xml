@@ -12,6 +12,7 @@
 
   <author>Dimitris Geromichalos</author>
   <author>Evangelos Apostolidis</author>
+  <author>George Kouros</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
@@ -26,6 +27,7 @@
   <depend>pandora_imu_hardware_interface</depend>
   <depend>pandora_arm_hardware_interface</depend>
   <depend>pandora_xmega_hardware_interface</depend>
+  <depend>pandora_monstertruck_hardware_interface</depend>
   <depend>pandora_sensor_msgs</depend>
   <depend>pluginlib</depend>
 

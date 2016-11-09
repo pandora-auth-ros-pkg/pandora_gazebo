@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(pandora_gazebo_interface)
 
+# Enable C++11 support, in order to link with gazebo6
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+
 find_package(
   catkin
   REQUIRED COMPONENTS
@@ -13,6 +16,7 @@ find_package(
   pandora_imu_hardware_interface
   pandora_xmega_hardware_interface
   pandora_arm_hardware_interface
+  pandora_monstertruck_hardware_interface
   pandora_sensor_msgs
   pluginlib
 )
@@ -45,12 +49,20 @@ include_directories(
 link_directories(
   ${GAZEBO_LIBRARY_DIRS}
   ${catkin_LIBRARY_DIRS})
-  
+
 add_library(
   ${PROJECT_NAME}_gio_gazebo_interface
   src/gio_gazebo_interface.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_gio_gazebo_interface
+  ${catkin_LIBRARIES}
+  ${GAZEBO_LIBRARIES})
+
+add_library(
+  ${PROJECT_NAME}_monstertruck_gazebo_interface
+  src/monstertruck_gazebo_interface.cpp)
+target_link_libraries(
+  ${PROJECT_NAME}_monstertruck_gazebo_interface
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES})
 

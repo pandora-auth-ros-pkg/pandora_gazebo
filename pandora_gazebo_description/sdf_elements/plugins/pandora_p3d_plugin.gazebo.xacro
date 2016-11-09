@@ -8,8 +8,8 @@
         <robotNamespace>/</robotNamespace>
         <bodyName>base_link</bodyName>
         <frameName>map</frameName>
-        <topicName>perfect_pose</topicName>
-        <broadcastTF>0</broadcastTF>
+        <topicName>perfect_odom</topicName>
+        <broadcastTF>false</broadcastTF>
       </plugin>
     </gazebo>
   </xacro:macro>

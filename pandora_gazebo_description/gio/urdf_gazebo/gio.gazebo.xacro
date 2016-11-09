@@ -14,7 +14,8 @@
 
   <!-- Load gazebo sensors -->
   <xacro:if value="${enable_laser}" >
-    <xacro:laser_sensor range="${laser_range}" />
+    <!--<xacro:laser_sensor range="${laser_range}" update_rate="${laser_update_rate}" />-->
+    <xacro:laser_sensor_gpu range="${laser_range}" update_rate="${laser_update_rate}" />
   </xacro:if>
   <xacro:if value="${enable_kinect}" >
     <xacro:kinect_sensor />
@@ -43,6 +44,9 @@
 
   <!-- Load Plugins -->
   <xacro:gazebo_ros_control interface="pandora_gazebo_interface/GioGazeboInterface" />
+  <xacro:pandora_differential />
+  <xacro:ros_imu />
+  <!--<xacro:ros_skid_steer_drive />-->
   <xacro:pandora_p3d />
   <xacro:if value="$(arg tune)" >
     <xacro:pandora_wheel_physics />

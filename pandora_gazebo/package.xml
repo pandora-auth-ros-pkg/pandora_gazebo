@@ -13,9 +13,11 @@
   <author>Dimitris Geromichalos</author>
   <author>Chris Zalidis</author>
   <author>Manos Tsardoulias</author>
+  <author>Zisis Konstantinos</author>
+  <author>George Kouros</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  
+
   <exec_depend>pandora_gazebo_description</exec_depend>
   <exec_depend>pandora_gazebo_interface</exec_depend>
   <exec_depend>pandora_gazebo_plugins</exec_depend>

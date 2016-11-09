@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(pandora_gazebo_plugins)
 
+# Enable C++11 support, in order to link with gazebo6
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -16,7 +19,6 @@ find_package(catkin REQUIRED COMPONENTS
       gazebo_plugins
       pandora_sensor_msgs
 )
-
 include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
@@ -120,12 +122,12 @@ target_link_libraries(${PROJECT_NAME}_pandora_wheel_physics_plugin
     ${Boost_LIBRARIES}
 )
 
-add_library(${PROJECT_NAME}_pandora_fdir_plugin src/pandora_fdir_plugin.cpp)
-target_link_libraries(${PROJECT_NAME}_pandora_fdir_plugin 
-    ${GAZEBO_LIBRARIES} 
-    ${catkin_LIBRARIES} 
-    ${Boost_LIBRARIES}
-)
+#add_library(${PROJECT_NAME}_pandora_fdir_plugin src/pandora_fdir_plugin.cpp)
+#target_link_libraries(${PROJECT_NAME}_pandora_fdir_plugin 
+#    ${GAZEBO_LIBRARIES} 
+#    ${catkin_LIBRARIES} 
+#    ${Boost_LIBRARIES}
+#)
 
 # To check lint : catkin_make roslint_pandora_gazebo_plugins
 set(ROSLINT_CPP_OPTS
